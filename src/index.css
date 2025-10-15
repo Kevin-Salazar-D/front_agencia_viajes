@@ -1,0 +1,19 @@
+/* App.css */
+
+body {
+  background-color: rgb(73, 71, 68);
+
+ 
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+  height: 100vh;         
+  margin: 0;              
+}
+
+h1 {
+  font-size: 30px;      
+  color: white;
+  font-weight: 1000;
+  text-align: center;    
+}
