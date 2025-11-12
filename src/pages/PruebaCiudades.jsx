@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCities } from "../api/cities";
+import { getCities } from "../services/cities";
 
 export default function PruebaCities() {
   const [cities, setCities] = useState([]);
