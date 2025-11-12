@@ -1,20 +1,22 @@
 import api from "./axiosConfig";
 
-// Obtener todos los hoteles
-export const getHotels = () => api.get("/mostrarTodosHoteles");
+// Prefijo del backend: /agenciaViajes/hoteles
 
-// Obtener hoteles por ciudad (se pasa ciudad_id como query param)
+// GET /agenciaViajes/hoteles/mostrarTodosHoteles
+export const getHotels = () => api.get("/agenciaViajes/hoteles/mostrarTodosHoteles");
+
+// GET /agenciaViajes/hoteles/mostrarHotelesCiudad
 export const getHotelsByCity = (cityId) =>
-  api.get("/mostrarHotelesCiudad", { params: { ciudad_id: cityId } });
+  api.get("/agenciaViajes/hoteles/mostrarHotelesCiudad", { params: { ciudad_id: cityId } });
 
-// Crear hotel
-export const createHotel = (data) => api.post("/crearHotel", data);
+// POST /agenciaViajes/hoteles/crearHotel
+export const createHotel = (data) => api.post("/agenciaViajes/hoteles/crearHotel", data);
 
-// Actualizar hotel
-export const updateHotel = (data) => api.put("/actualizarHotel", data);
+// PUT /agenciaViajes/hoteles/actualizarHotel
+export const updateHotel = (data) => api.put("/agenciaViajes/hoteles/actualizarHotel", data);
 
-// Actualizar solo la ciudad del hotel
-export const updateHotelCity = (data) => api.put("/actualizarCiudadIdHotel", data);
+// PUT /agenciaViajes/hoteles/actualizarCiudadIdHotel
+export const updateHotelCity = (data) => api.put("/agenciaViajes/hoteles/actualizarCiudadIdHotel", data);
 
-// Borrar hotel (body con id)
-export const deleteHotel = (id) => api.delete("/borrarHotel", { data: { id } });
+// DELETE /agenciaViajes/hoteles/borrarHotel
+export const deleteHotel = (id) => api.delete("/agenciaViajes/hoteles/borrarHotel", { data: { id } });

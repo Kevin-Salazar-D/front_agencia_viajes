@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, MapPin, Calendar, Star, ArrowRight, Phone, Mail, Facebook, Instagram, Twitter, Menu, X } from 'lucide-react';
+import { Search, MapPin, Calendar, Star, ArrowRight, Phone, Mail, Facebook, Instagram, Twitter, Menu, X, Loader } from 'lucide-react';
+import { getCities } from '../services/cities';
+import { getHotels } from '../services/hotels';
 import '../App.css';
 
 // ========== NAVBAR ==========
@@ -46,7 +48,7 @@ const Navbar = () => {
             <a href="#destinos">Destinos</a>
             <a href="#ofertas">Ofertas</a>
             <a href="#contacto">Contacto</a>
-            <button className="btn-text" onClick={() => navigate('/Login')}>
+            <button className="btn-text" onClick={() => navigate('/login')}>
               Iniciar sesión
             </button>
             <button className="btn-primary" onClick={() => navigate('/register')}>
@@ -60,7 +62,7 @@ const Navbar = () => {
 };
 
 // ========== SEARCH BAR ==========
-const SearchBar = ({ cities, onSearch }) => {
+const SearchBar = ({ cities, onSearch, loading }) => {
   const [searchData, setSearchData] = useState({
     origin: '',
     destination: '',
@@ -92,6 +94,7 @@ const SearchBar = ({ cities, onSearch }) => {
             <select 
               value={searchData.origin}
               onChange={(e) => setSearchData({...searchData, origin: e.target.value})}
+              disabled={loading}
             >
               <option value="">Seleccionar ciudad</option>
               {cities.map(city => (
@@ -108,6 +111,7 @@ const SearchBar = ({ cities, onSearch }) => {
             <select 
               value={searchData.destination}
               onChange={(e) => setSearchData({...searchData, destination: e.target.value})}
+              disabled={loading}
             >
               <option value="">Seleccionar ciudad</option>
               {cities.map(city => (
@@ -146,7 +150,7 @@ const SearchBar = ({ cities, onSearch }) => {
         <div className="search-field search-button-wrapper">
           <button 
             onClick={handleSearch}
-            disabled={isSearching}
+            disabled={isSearching || loading}
             className="btn-search"
           >
             {isSearching ? (
@@ -167,29 +171,36 @@ const SearchBar = ({ cities, onSearch }) => {
   );
 };
 
-// ========== PACKAGE CARD ==========
-const PackageCard = ({ pkg }) => {
+// ========== PACKAGE CARD (HOTEL) ==========
+const PackageCard = ({ hotel }) => {
+  // Generar rating aleatorio entre 4.0 y 5.0
+  const rating = hotel.calificacion || (4.0 + Math.random()).toFixed(1);
+  const reviews = Math.floor(Math.random() * 500) + 50;
+  
+  // Imagen placeholder basada en el hotel
+  const imageUrl = hotel.imagen || `https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80`;
+
   return (
     <div className="package-card">
       <div className="package-image">
-        <img src={pkg.image} alt={pkg.destination} />
-        <div className="package-badge">{pkg.badge}</div>
+        <img src={imageUrl} alt={hotel.nombre} />
+        <div className="package-badge">Disponible</div>
         <div className="package-rating">
           <Star className="star-icon" size={16} />
-          <span className="rating-value">{pkg.rating}</span>
-          <span className="rating-count">({pkg.reviews})</span>
+          <span className="rating-value">{rating}</span>
+          <span className="rating-count">({reviews})</span>
         </div>
       </div>
 
       <div className="package-content">
-        <h3>{pkg.destination}</h3>
-        <p className="package-hotel">{pkg.hotel}</p>
+        <h3>{hotel.nombre}</h3>
+        <p className="package-hotel">{hotel.direccion || 'Ubicación céntrica'}</p>
         
         <div className="package-details">
-          <span>{pkg.nights} noches</span>
+          <span>Desde 3 noches</span>
           <div className="package-price">
             <div className="price-label">Desde</div>
-            <div className="price-value">${pkg.price.toLocaleString('es-MX')}</div>
+            <div className="price-value">${hotel.precio ? hotel.precio.toLocaleString('es-MX') : '5,999'}</div>
           </div>
         </div>
 
@@ -264,62 +275,74 @@ const Footer = () => {
   );
 };
 
-// ========== HOME COMPONENT (IMPORTANTE: SE LLAMA Home, NO App) ==========
+// ========== HOME COMPONENT ==========
 function Home() {
   const [cities, setCities] = useState([]);
-  const [packages, setPackages] = useState([]);
+  const [hotels, setHotels] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    setCities([
-      { id: 1, nombre: 'Cancún' },
-      { id: 2, nombre: 'Ciudad de México' },
-      { id: 3, nombre: 'Guadalajara' },
-      { id: 4, nombre: 'Monterrey' },
-      { id: 5, nombre: 'Puerto Vallarta' },
-      { id: 6, nombre: 'Playa del Carmen' },
-    ]);
-
-    setPackages([
-      {
-        id: 1,
-        destination: 'Cancún',
-        hotel: 'Resort Paradise All Inclusive',
-        image: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800',
-        price: 8999,
-        rating: 4.8,
-        reviews: 234,
-        nights: 4,
-        badge: 'Más vendido'
-      },
-      {
-        id: 2,
-        destination: 'Puerto Vallarta',
-        hotel: 'Ocean Breeze Hotel & Spa',
-        image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800',
-        price: 6499,
-        rating: 4.6,
-        reviews: 189,
-        nights: 3,
-        badge: 'Oferta'
-      },
-      {
-        id: 3,
-        destination: 'Los Cabos',
-        hotel: 'Luxury Sunset Resort',
-        image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800',
-        price: 12999,
-        rating: 4.9,
-        reviews: 456,
-        nights: 5,
-        badge: 'Premium'
-      }
-    ]);
+    loadData();
   }, []);
 
-  const handleSearch = (searchData) => {
-    console.log('Búsqueda realizada:', searchData);
-    alert(`Buscando paquetes de ciudad ${searchData.origin} a ciudad ${searchData.destination}`);
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Cargar ciudades y hoteles en paralelo
+      const [citiesResponse, hotelsResponse] = await Promise.all([
+        getCities(),
+        getHotels()
+      ]);
+
+      console.log('📍 Ciudades cargadas:', citiesResponse.data);
+      console.log('🏨 Hoteles cargados:', hotelsResponse.data);
+
+      setCities(citiesResponse.data || []);
+      setHotels(hotelsResponse.data || []);
+    } catch (error) {
+      console.error('❌ Error cargando datos:', error);
+      setError('Error al cargar los datos. Por favor intenta de nuevo.');
+      
+      // Datos de respaldo en caso de error
+      setCities([
+        { id: 1, nombre: 'Cancún' },
+        { id: 2, nombre: 'Ciudad de México' },
+        { id: 3, nombre: 'Guadalajara' },
+      ]);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleSearch = (searchData) => {
+    console.log('🔍 Búsqueda realizada:', searchData);
+    const originCity = cities.find(c => c.id === parseInt(searchData.origin));
+    const destCity = cities.find(c => c.id === parseInt(searchData.destination));
+    
+    alert(`Buscando paquetes de ${originCity?.nombre} a ${destCity?.nombre}`);
+  };
+
+  if (loading) {
+    return (
+      <div className="app">
+        <Navbar />
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          minHeight: '60vh',
+          flexDirection: 'column',
+          gap: '1rem'
+        }}>
+          <Loader size={48} className="spinner" />
+          <p>Cargando datos...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="app">
@@ -342,15 +365,28 @@ function Home() {
             Los mejores paquetes de viaje con hoteles y transporte incluido
           </p>
 
-          <SearchBar cities={cities} onSearch={handleSearch} />
+          {error && (
+            <div style={{
+              background: '#fee',
+              border: '1px solid #fcc',
+              padding: '1rem',
+              borderRadius: '8px',
+              marginBottom: '1rem',
+              color: '#c00'
+            }}>
+              {error}
+            </div>
+          )}
+
+          <SearchBar cities={cities} onSearch={handleSearch} loading={loading} />
         </div>
       </section>
 
       <section id="ofertas" className="packages-section">
         <div className="section-header">
           <div>
-            <h2>Paquetes destacados</h2>
-            <p>Las mejores ofertas de la semana</p>
+            <h2>Hoteles destacados</h2>
+            <p>{hotels.length > 0 ? `${hotels.length} hoteles disponibles` : 'Cargando hoteles...'}</p>
           </div>
           <button className="btn-text-link">
             <span>Ver todos</span>
@@ -359,9 +395,15 @@ function Home() {
         </div>
 
         <div className="packages-grid">
-          {packages.map((pkg) => (
-            <PackageCard key={pkg.id} pkg={pkg} />
-          ))}
+          {hotels.length > 0 ? (
+            hotels.slice(0, 6).map((hotel) => (
+              <PackageCard key={hotel.id} hotel={hotel} />
+            ))
+          ) : (
+            <p style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem' }}>
+              No hay hoteles disponibles en este momento
+            </p>
+          )}
         </div>
       </section>
 
@@ -369,7 +411,7 @@ function Home() {
         <div className="stats-container">
           <div className="stats-grid">
             <div className="stat-item">
-              <div className="stat-value">50+</div>
+              <div className="stat-value">{cities.length}+</div>
               <div className="stat-label">Destinos</div>
             </div>
             <div className="stat-item">
@@ -377,7 +419,7 @@ function Home() {
               <div className="stat-label">Viajeros felices</div>
             </div>
             <div className="stat-item">
-              <div className="stat-value">200+</div>
+              <div className="stat-value">{hotels.length}+</div>
               <div className="stat-label">Hoteles aliados</div>
             </div>
             <div className="stat-item">

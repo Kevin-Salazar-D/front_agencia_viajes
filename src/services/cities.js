@@ -1,14 +1,17 @@
 import api from "./axiosConfig";
 
 // Obtener todas las ciudades
-export const getCities = () => api.get("/obtenerTodasCiudades");
+// GET /agenciaViajes/ciudades/obtenerTodasCiudades
+export const getCities = () => api.get("/agenciaViajes/ciudades/obtenerTodasCiudades");
 
 // Crear ciudad
-export const createCity = (data) => api.post("/crearCiudad", data);
+// POST /agenciaViajes/ciudades/crearCiudad
+export const createCity = (data) => api.post("/agenciaViajes/ciudades/crearCiudad", data);
 
 // Actualizar ciudad
-export const updateCity = (data) => api.put("/actualizarCiudad", data);
+// PUT /agenciaViajes/ciudades/actualizarCiudad
+export const updateCity = (data) => api.put("/agenciaViajes/ciudades/actualizarCiudad", data);
 
-// Borrar ciudad (body con id)
-export const deleteCity = (id) => api.delete("/borrarCiudad", { data: { id } });
-
+// Borrar ciudad
+// DELETE /agenciaViajes/ciudades/borrarCiudad
+export const deleteCity = (id) => api.delete("/agenciaViajes/ciudades/borrarCiudad", { data: { id } });
