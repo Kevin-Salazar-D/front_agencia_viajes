@@ -1,9 +1,97 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, MapPin, Calendar, Star, ArrowRight, Phone, Mail, Facebook, Instagram, Twitter, Menu, X, Loader } from 'lucide-react';
+import { Search, MapPin, Calendar, Star, ArrowRight, Phone, Mail, Facebook, Instagram, Twitter, Menu, X, Loader, AlertCircle, CheckCircle } from 'lucide-react';
 import { getCities } from '../services/cities';
 import { getHotels } from '../services/hotels';
 import '../App.css';
+
+// ========== ALERT COMPONENT ==========
+const Alert = ({ type = 'info', title, message, onClose, autoClose = 4000 }) => {
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    if (autoClose) {
+      const timer = setTimeout(() => {
+        setIsVisible(false);
+        onClose?.();
+      }, autoClose);
+      return () => clearTimeout(timer);
+    }
+  }, [autoClose, onClose]);
+
+  if (!isVisible) return null;
+
+  const getIcon = () => {
+    switch (type) {
+      case 'error':
+        return <AlertCircle size={24} />;
+      case 'success':
+        return <CheckCircle size={24} />;
+      case 'warning':
+        return <AlertCircle size={24} />;
+      default:
+        return <AlertCircle size={24} />;
+    }
+  };
+
+  const alertStyles = {
+    error: { border: '#fecaca', bg: '#fef2f2', icon: '#dc2626', title: '#991b1b', text: '#7f1d1d' },
+    success: { border: '#86efac', bg: '#f0fdf4', icon: '#10b981', title: '#065f46', text: '#047857' },
+    warning: { border: '#fcd34d', bg: '#fffbeb', icon: '#f59e0b', title: '#92400e', text: '#b45309' },
+    info: { border: '#bfdbfe', bg: '#eff6ff', icon: '#2563eb', title: '#1e40af', text: '#1d4ed8' }
+  };
+
+  const style = alertStyles[type] || alertStyles.info;
+
+  return (
+    <div style={{
+      position: 'fixed',
+      top: '20px',
+      right: '20px',
+      maxWidth: '400px',
+      display: 'flex',
+      alignItems: 'flex-start',
+      gap: '12px',
+      padding: '16px',
+      background: style.bg,
+      border: `1px solid ${style.border}`,
+      borderRadius: '12px',
+      boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
+      zIndex: 9999,
+      animation: 'slideIn 0.3s ease-out'
+    }}>
+      <div style={{ color: style.icon, flexShrink: 0 }}>
+        {getIcon()}
+      </div>
+      <div style={{ flex: 1 }}>
+        {title && <h4 style={{ margin: '0 0 4px 0', fontSize: '0.95rem', fontWeight: '600', color: style.title }}>
+          {title}
+        </h4>}
+        <p style={{ margin: 0, fontSize: '0.875rem', color: style.text }}>
+          {message}
+        </p>
+      </div>
+      <button 
+        onClick={() => {
+          setIsVisible(false);
+          onClose?.();
+        }}
+        style={{
+          background: 'none',
+          border: 'none',
+          color: '#9ca3af',
+          cursor: 'pointer',
+          padding: 0,
+          display: 'flex',
+          alignItems: 'center',
+          flexShrink: 0
+        }}
+      >
+        <X size={20} />
+      </button>
+    </div>
+  );
+};
 
 // ========== NAVBAR ==========
 const Navbar = () => {
@@ -62,7 +150,7 @@ const Navbar = () => {
 };
 
 // ========== SEARCH BAR ==========
-const SearchBar = ({ cities, onSearch, loading }) => {
+const SearchBar = ({ cities, navigate, showAlert }) => {
   const [searchData, setSearchData] = useState({
     origin: '',
     destination: '',
@@ -71,17 +159,63 @@ const SearchBar = ({ cities, onSearch, loading }) => {
   });
   const [isSearching, setIsSearching] = useState(false);
 
-  const handleSearch = () => {
-    if (!searchData.origin || !searchData.destination || !searchData.startDate || !searchData.endDate) {
-      alert('Por favor completa todos los campos');
+  const handleSearch = async () => {
+    // Validar origen
+    if (!searchData.origin) {
+      showAlert('error', 'Campo incompleto', 'Por favor selecciona una ciudad de origen');
       return;
     }
     
+    // Validar destino
+    if (!searchData.destination) {
+      showAlert('error', 'Campo incompleto', 'Por favor selecciona una ciudad de destino');
+      return;
+    }
+    
+    // Validar fecha inicio
+    if (!searchData.startDate) {
+      showAlert('error', 'Campo incompleto', 'Por favor selecciona una fecha de inicio');
+      return;
+    }
+    
+    // Validar fecha fin
+    if (!searchData.endDate) {
+      showAlert('error', 'Campo incompleto', 'Por favor selecciona una fecha de finalización');
+      return;
+    }
+
+    // Validar que no sea la misma ciudad
+    if (searchData.origin === searchData.destination) {
+      showAlert('error', 'Destinos iguales', 'El origen y destino no pueden ser la misma ciudad');
+      return;
+    }
+
+    // Validar que las fechas sean válidas
+    if (new Date(searchData.startDate) >= new Date(searchData.endDate)) {
+      showAlert('error', 'Fechas inválidas', 'La fecha de inicio debe ser anterior a la fecha de fin');
+      return;
+    }
+
     setIsSearching(true);
-    setTimeout(() => {
+
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      const originCity = cities.find(c => c.id === parseInt(searchData.origin));
+      const destCity = cities.find(c => c.id === parseInt(searchData.destination));
+
+      showAlert('success', '¡Búsqueda exitosa!', `Buscando viajes de ${originCity?.nombre} a ${destCity?.nombre}`);
+
+      // Navegar a página de resultados con parámetros
+      setTimeout(() => {
+        navigate(`/resultados?from=${searchData.origin}&to=${searchData.destination}&start=${searchData.startDate}&end=${searchData.endDate}`);
+      }, 500);
+
+    } catch (err) {
+      showAlert('error', 'Error en la búsqueda', 'Ocurrió un problema. Intenta de nuevo.');
+    } finally {
       setIsSearching(false);
-      onSearch(searchData);
-    }, 1500);
+    }
   };
 
   return (
@@ -94,7 +228,7 @@ const SearchBar = ({ cities, onSearch, loading }) => {
             <select 
               value={searchData.origin}
               onChange={(e) => setSearchData({...searchData, origin: e.target.value})}
-              disabled={loading}
+              disabled={isSearching}
             >
               <option value="">Seleccionar ciudad</option>
               {cities.map(city => (
@@ -111,7 +245,7 @@ const SearchBar = ({ cities, onSearch, loading }) => {
             <select 
               value={searchData.destination}
               onChange={(e) => setSearchData({...searchData, destination: e.target.value})}
-              disabled={loading}
+              disabled={isSearching}
             >
               <option value="">Seleccionar ciudad</option>
               {cities.map(city => (
@@ -130,6 +264,7 @@ const SearchBar = ({ cities, onSearch, loading }) => {
               value={searchData.startDate}
               onChange={(e) => setSearchData({...searchData, startDate: e.target.value})}
               min={new Date().toISOString().split('T')[0]}
+              disabled={isSearching}
             />
           </div>
         </div>
@@ -143,6 +278,7 @@ const SearchBar = ({ cities, onSearch, loading }) => {
               value={searchData.endDate}
               onChange={(e) => setSearchData({...searchData, endDate: e.target.value})}
               min={searchData.startDate || new Date().toISOString().split('T')[0]}
+              disabled={isSearching}
             />
           </div>
         </div>
@@ -150,7 +286,7 @@ const SearchBar = ({ cities, onSearch, loading }) => {
         <div className="search-field search-button-wrapper">
           <button 
             onClick={handleSearch}
-            disabled={isSearching || loading}
+            disabled={isSearching}
             className="btn-search"
           >
             {isSearching ? (
@@ -171,14 +307,28 @@ const SearchBar = ({ cities, onSearch, loading }) => {
   );
 };
 
-// ========== PACKAGE CARD (HOTEL) ==========
-const PackageCard = ({ hotel }) => {
-  // Generar rating aleatorio entre 4.0 y 5.0
+// ========== PACKAGE CARD ==========
+const PackageCard = ({ hotel, navigate }) => {
   const rating = hotel.calificacion || (4.0 + Math.random()).toFixed(1);
   const reviews = Math.floor(Math.random() * 500) + 50;
   
-  // Imagen placeholder basada en el hotel
-  const imageUrl = hotel.imagen || `https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80`;
+  // Array de imágenes de ejemplo para cada hotel
+  const hotelImages = [
+    "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
+    "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80",
+    "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80",
+    "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80",
+    "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80",
+    "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=800&q=80"
+  ];
+
+  // Seleccionar una imagen basada en el ID del hotel para mantener consistencia
+  const imageUrl = hotel.imagen || hotelImages[hotel.id % hotelImages.length];
+
+  const handleViewDetails = () => {
+    // Navegar a la página de detalles del hotel
+    navigate(`/hotel/${hotel.id}`);
+  };
 
   return (
     <div className="package-card">
@@ -204,7 +354,7 @@ const PackageCard = ({ hotel }) => {
           </div>
         </div>
 
-        <button className="btn-package">
+        <button className="btn-package" onClick={handleViewDetails}>
           <span>Ver detalles</span>
           <ArrowRight size={18} />
         </button>
@@ -277,10 +427,12 @@ const Footer = () => {
 
 // ========== HOME COMPONENT ==========
 function Home() {
+  const navigate = useNavigate();
   const [cities, setCities] = useState([]);
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
     loadData();
@@ -291,7 +443,6 @@ function Home() {
       setLoading(true);
       setError(null);
 
-      // Cargar ciudades y hoteles en paralelo
       const [citiesResponse, hotelsResponse] = await Promise.all([
         getCities(),
         getHotels()
@@ -306,7 +457,6 @@ function Home() {
       console.error('❌ Error cargando datos:', error);
       setError('Error al cargar los datos. Por favor intenta de nuevo.');
       
-      // Datos de respaldo en caso de error
       setCities([
         { id: 1, nombre: 'Cancún' },
         { id: 2, nombre: 'Ciudad de México' },
@@ -317,12 +467,13 @@ function Home() {
     }
   };
 
-  const handleSearch = (searchData) => {
-    console.log('🔍 Búsqueda realizada:', searchData);
-    const originCity = cities.find(c => c.id === parseInt(searchData.origin));
-    const destCity = cities.find(c => c.id === parseInt(searchData.destination));
-    
-    alert(`Buscando paquetes de ${originCity?.nombre} a ${destCity?.nombre}`);
+  const showAlert = (type, title, message) => {
+    const id = Date.now();
+    setAlerts(prev => [...prev, { id, type, title, message }]);
+  };
+
+  const removeAlert = (id) => {
+    setAlerts(prev => prev.filter(alert => alert.id !== id));
   };
 
   if (loading) {
@@ -346,6 +497,17 @@ function Home() {
 
   return (
     <div className="app">
+      {/* Mostrar alertas */}
+      {alerts.map(alert => (
+        <Alert
+          key={alert.id}
+          type={alert.type}
+          title={alert.title}
+          message={alert.message}
+          onClose={() => removeAlert(alert.id)}
+        />
+      ))}
+
       <Navbar />
       
       <section id="inicio" className="hero">
@@ -378,7 +540,7 @@ function Home() {
             </div>
           )}
 
-          <SearchBar cities={cities} onSearch={handleSearch} loading={loading} />
+          <SearchBar cities={cities} navigate={navigate} showAlert={showAlert} />
         </div>
       </section>
 
@@ -397,7 +559,7 @@ function Home() {
         <div className="packages-grid">
           {hotels.length > 0 ? (
             hotels.slice(0, 6).map((hotel) => (
-              <PackageCard key={hotel.id} hotel={hotel} />
+              <PackageCard key={hotel.id} hotel={hotel} navigate={navigate} />
             ))
           ) : (
             <p style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem' }}>
@@ -431,6 +593,19 @@ function Home() {
       </section>
 
       <Footer />
+
+      <style>{`
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateX(400px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+      `}</style>
     </div>
   );
 }
