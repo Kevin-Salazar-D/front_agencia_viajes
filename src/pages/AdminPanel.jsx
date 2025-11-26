@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Building2, MapPin, Bed, Bus, Users, Plus, Edit2, Trash2, X, Search, 
-  Save, AlertCircle, CheckCircle, Briefcase, User, WifiOff, RefreshCw 
+  Save, AlertCircle, CheckCircle, Briefcase, User, WifiOff, RefreshCw, AlertTriangle 
 } from 'lucide-react';
 
 // ========== CONFIGURACIÓN EXACTA SEGÚN TU APP.JS ==========
@@ -9,26 +9,53 @@ const API_BASE = 'http://localhost:3000/agenciaViajes';
 
 // ========== COMPONENTES UI COMPARTIDOS ==========
 
-const Alert = ({ type = 'info', message, onClose }) => {
-  const styles = {
-    success: { bg: '#f0fdf4', border: '#86efac', text: '#065f46' },
-    error: { bg: '#fef2f2', border: '#fecaca', text: '#991b1b' },
-    info: { bg: '#eff6ff', border: '#bfdbfe', text: '#1e40af' },
-    warning: { bg: '#fffbeb', border: '#fcd34d', text: '#92400e' }
+// Componente Alert actualizado
+const Alert = ({ type = 'info', title, message, onClose, autoClose = 4000 }) => {
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    if (autoClose) {
+      const timer = setTimeout(() => {
+        setIsVisible(false);
+        onClose?.();
+      }, autoClose);
+      return () => clearTimeout(timer);
+    }
+  }, [autoClose, onClose]);
+
+  if (!isVisible) return null;
+
+  const getIcon = () => {
+    switch (type) {
+      case 'error': return <AlertCircle size={24} />;
+      case 'success': return <CheckCircle size={24} />;
+      case 'warning': return <AlertCircle size={24} />;
+      default: return <AlertCircle size={24} />;
+    }
   };
-  const style = styles[type] || styles.info;
+
+  const alertStyles = {
+    error: { border: '#fecaca', bg: '#fef2f2', icon: '#dc2626', title: '#991b1b', text: '#7f1d1d' },
+    success: { border: '#86efac', bg: '#f0fdf4', icon: '#10b981', title: '#065f46', text: '#047857' },
+    warning: { border: '#fcd34d', bg: '#fffbeb', icon: '#f59e0b', title: '#92400e', text: '#b45309' },
+    info: { border: '#bfdbfe', bg: '#eff6ff', icon: '#2563eb', title: '#1e40af', text: '#1d4ed8' }
+  };
+
+  const style = alertStyles[type] || alertStyles.info;
 
   return (
     <div style={{
-      position: 'fixed', top: '20px', right: '20px', maxWidth: '400px',
-      background: style.bg, border: `1px solid ${style.border}`, borderRadius: '12px',
-      padding: '16px', display: 'flex', alignItems: 'center', gap: '12px',
-      boxShadow: '0 10px 30px rgba(0,0,0,0.2)', zIndex: 9999, animation: 'slideIn 0.3s ease-out'
+      position: 'fixed', top: '20px', right: '20px', maxWidth: '400px', display: 'flex', alignItems: 'flex-start',
+      gap: '12px', padding: '16px', background: style.bg, border: `1px solid ${style.border}`, borderRadius: '12px',
+      boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)', zIndex: 9999, animation: 'slideIn 0.3s ease-out'
     }}>
-      {type === 'success' ? <CheckCircle color="#10b981" /> : type === 'error' ? <AlertCircle color="#dc2626" /> : <AlertCircle color="#f59e0b" />}
-      <span style={{ flex: 1, color: style.text, fontWeight: '500' }}>{message}</span>
-      <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-        <X size={20} color="#9ca3af" />
+      <div style={{ color: style.icon, flexShrink: 0 }}>{getIcon()}</div>
+      <div style={{ flex: 1 }}>
+        {title && <h4 style={{ margin: '0 0 4px 0', fontSize: '0.95rem', fontWeight: '600', color: style.title }}>{title}</h4>}
+        <p style={{ margin: 0, fontSize: '0.875rem', color: style.text }}>{message}</p>
+      </div>
+      <button onClick={() => { setIsVisible(false); onClose?.(); }} style={{ background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer', padding: 0 }}>
+        <X size={20} />
       </button>
     </div>
   );
@@ -50,6 +77,53 @@ const Modal = ({ isOpen, onClose, title, children }) => {
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={24} /></button>
         </div>
         <div style={{ padding: '24px' }}>{children}</div>
+      </div>
+    </div>
+  );
+};
+
+// NUEVO: Modal de Confirmación para eliminar
+const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
+  if (!isOpen) return null;
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex',
+      alignItems: 'center', justifyContent: 'center', zIndex: 1001, padding: '20px'
+    }} onClick={onClose}>
+      <div style={{
+        background: 'white', borderRadius: '16px', maxWidth: '400px', width: '100%',
+        padding: '24px', boxShadow: '0 20px 60px rgba(0,0,0,0.3)', textAlign: 'center'
+      }} onClick={(e) => e.stopPropagation()}>
+        <div style={{ 
+            margin: '0 auto 16px', width: '56px', height: '56px', borderRadius: '50%', 
+            background: '#fee2e2', display: 'flex', alignItems: 'center', justifyContent: 'center' 
+        }}>
+            <AlertTriangle size={28} color="#dc2626" />
+        </div>
+        <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#1f2937', marginBottom: '8px' }}>{title}</h3>
+        <p style={{ color: '#6b7280', marginBottom: '24px', lineHeight: '1.5' }}>{message}</p>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button 
+            onClick={onClose} 
+            style={{ 
+                flex: 1, padding: '12px', border: '1px solid #e5e7eb', borderRadius: '8px', 
+                background: 'white', fontWeight: '600', color: '#374151', cursor: 'pointer',
+                transition: 'background 0.2s'
+            }}
+          >
+            Cancelar
+          </button>
+          <button 
+            onClick={onConfirm} 
+            style={{ 
+                flex: 1, padding: '12px', border: 'none', borderRadius: '8px', 
+                background: '#dc2626', fontWeight: '600', color: 'white', cursor: 'pointer',
+                transition: 'background 0.2s', boxShadow: '0 4px 6px -1px rgba(220, 38, 38, 0.3)'
+            }}
+          >
+            Sí, eliminar
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -78,6 +152,9 @@ const CiudadesManager = ({ onUpdate, onError }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ nombre: '', pais: '', region: '', codigo_postal: '' });
+  
+  // Estado para confirmación de eliminación
+  const [deleteId, setDeleteId] = useState(null);
 
   const fetchCiudades = async () => {
     try {
@@ -106,15 +183,17 @@ const CiudadesManager = ({ onUpdate, onError }) => {
     } catch (e) { onUpdate('error', e.message); }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('¿Borrar ciudad?')) return;
+  // Ejecutar eliminación después de confirmar
+  const executeDelete = async () => {
+    if (!deleteId) return;
     try {
       await safeFetch(`${API_BASE}/ciudades/borrarCiudad`, {
-        method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id })
+        method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: deleteId })
       });
       onUpdate('success', 'Ciudad borrada');
       fetchCiudades();
     } catch (e) { onUpdate('error', e.message); }
+    setDeleteId(null);
   };
 
   return (
@@ -134,7 +213,7 @@ const CiudadesManager = ({ onUpdate, onError }) => {
                     <td>
                     <div style={{ display: 'flex', gap: '8px' }}>
                         <button className="btn-icon edit" onClick={() => { setEditing(c); setForm(c); setModalOpen(true); }}><Edit2 size={16} /></button>
-                        <button className="btn-icon delete" onClick={() => handleDelete(c.id)}><Trash2 size={16} /></button>
+                        <button className="btn-icon delete" onClick={() => setDeleteId(c.id)}><Trash2 size={16} /></button>
                     </div>
                     </td>
                 </tr>
@@ -142,6 +221,7 @@ const CiudadesManager = ({ onUpdate, onError }) => {
             </tbody>
         </table>
       </div>
+      
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editing ? "Editar Ciudad" : "Nueva Ciudad"}>
         <div className="form-grid">
           <input placeholder="Nombre" value={form.nombre} onChange={e => setForm({...form, nombre: e.target.value})} className="input-field" />
@@ -151,6 +231,15 @@ const CiudadesManager = ({ onUpdate, onError }) => {
           <button onClick={handleSubmit} className="btn-primary full-width">Guardar</button>
         </div>
       </Modal>
+
+      {/* Modal de confirmación */}
+      <ConfirmationModal 
+        isOpen={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={executeDelete}
+        title="¿Eliminar Ciudad?"
+        message="Esta acción borrará la ciudad permanentemente. ¿Estás seguro?"
+      />
     </div>
   );
 };
@@ -161,6 +250,8 @@ const HotelesManager = ({ onUpdate, onError, ciudades }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ nombre: '', direccion: '', ciudad_id: '', estrellas: 5, telefono: '', imagen: '' });
+  
+  const [deleteId, setDeleteId] = useState(null);
 
   const fetchHoteles = async () => {
     try {
@@ -196,15 +287,16 @@ const HotelesManager = ({ onUpdate, onError, ciudades }) => {
     } catch (e) { onUpdate('error', e.message); }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('¿Borrar hotel?')) return;
+  const executeDelete = async () => {
+    if (!deleteId) return;
     try {
       await safeFetch(`${API_BASE}/hoteles/borrarHotel`, {
-        method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id })
+        method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: deleteId })
       });
       onUpdate('success', 'Hotel borrado');
       fetchHoteles();
     } catch (e) { onUpdate('error', e.message); }
+    setDeleteId(null);
   };
 
   return (
@@ -224,7 +316,7 @@ const HotelesManager = ({ onUpdate, onError, ciudades }) => {
                     <td>
                     <div style={{ display: 'flex', gap: '8px' }}>
                         <button className="btn-icon edit" onClick={() => { setEditing(h); setForm(h); setModalOpen(true); }}><Edit2 size={16} /></button>
-                        <button className="btn-icon delete" onClick={() => handleDelete(h.id)}><Trash2 size={16} /></button>
+                        <button className="btn-icon delete" onClick={() => setDeleteId(h.id)}><Trash2 size={16} /></button>
                     </div>
                     </td>
                 </tr>
@@ -246,6 +338,14 @@ const HotelesManager = ({ onUpdate, onError, ciudades }) => {
             <button onClick={handleSubmit} className="btn-primary full-width">Guardar</button>
         </div>
       </Modal>
+
+      <ConfirmationModal 
+        isOpen={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={executeDelete}
+        title="¿Eliminar Hotel?"
+        message="Esta acción eliminará el hotel y su información. ¿Continuar?"
+      />
     </div>
   );
 };
@@ -256,6 +356,8 @@ const HabitacionesManager = ({ onUpdate, onError, hoteles }) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState({ hotel_id: '', numero_habitacion: '', tipo_habitacion: '', estatus: 'disponible' });
+    
+    const [deleteId, setDeleteId] = useState(null);
   
     const fetchHabitaciones = async () => {
       try {
@@ -270,7 +372,6 @@ const HabitacionesManager = ({ onUpdate, onError, hoteles }) => {
   
     const handleSubmit = async () => {
       try {
-        // CORRECCIÓN 1: Asegurar que hotel_id sea un entero
         const hotelIdInt = parseInt(form.hotel_id);
         if (!hotelIdInt) {
              onUpdate('error', 'Debes seleccionar un hotel válido');
@@ -302,19 +403,19 @@ const HabitacionesManager = ({ onUpdate, onError, hoteles }) => {
       } catch (e) { onUpdate('error', e.message); }
     };
   
-    const handleDelete = async (id) => {
-      if (!window.confirm('¿Borrar habitación?')) return;
+    const executeDelete = async () => {
+      if (!deleteId) return;
       try {
         await safeFetch(`${API_BASE}/habitaciones/borrarHabitacion`, {
-          method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id })
+          method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: deleteId })
         });
         onUpdate('success', 'Habitación borrada');
         fetchHabitaciones();
       } catch (e) { onUpdate('error', e.message); }
+      setDeleteId(null);
     };
 
     const getHotelName = (id) => {
-        // Validación extra: si hoteles es undefined o null, devolver ID
         if (!hoteles) return `ID: ${id}`;
         const h = hoteles.find(h => h.id === id);
         return h ? h.nombre : `ID: ${id}`;
@@ -344,7 +445,7 @@ const HabitacionesManager = ({ onUpdate, onError, hoteles }) => {
                     <td>
                     <div style={{ display: 'flex', gap: '8px' }}>
                         <button className="btn-icon edit" onClick={() => { setEditing(hab); setForm(hab); setModalOpen(true); }}><Edit2 size={16} /></button>
-                        <button className="btn-icon delete" onClick={() => handleDelete(hab.id)}><Trash2 size={16} /></button>
+                        <button className="btn-icon delete" onClick={() => setDeleteId(hab.id)}><Trash2 size={16} /></button>
                     </div>
                     </td>
                 </tr>
@@ -357,7 +458,6 @@ const HabitacionesManager = ({ onUpdate, onError, hoteles }) => {
           <div className="form-grid">
             <select value={form.hotel_id} onChange={e => setForm({...form, hotel_id: e.target.value})} className="input-field">
                 <option value="">Seleccionar Hotel</option>
-                {/* Validación para asegurar que hoteles no sea null antes de map */}
                 {hoteles && hoteles.map(h => <option key={h.id} value={h.id}>{h.nombre}</option>)}
             </select>
             <input placeholder="Número de Habitación" value={form.numero_habitacion} onChange={e => setForm({...form, numero_habitacion: e.target.value})} className="input-field" />
@@ -375,6 +475,14 @@ const HabitacionesManager = ({ onUpdate, onError, hoteles }) => {
             <button onClick={handleSubmit} className="btn-primary full-width">Guardar</button>
           </div>
         </Modal>
+
+        <ConfirmationModal 
+            isOpen={!!deleteId}
+            onClose={() => setDeleteId(null)}
+            onConfirm={executeDelete}
+            title="¿Eliminar Habitación?"
+            message="Esta acción eliminará la habitación permanentemente."
+        />
       </div>
     );
 };
@@ -384,8 +492,9 @@ const TransportesManager = ({ onUpdate, onError }) => {
     const [transportes, setTransportes] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
-    // CORRECCIÓN 2: Default state con un valor válido 'avion'
     const [form, setForm] = useState({ tipo: 'avion', nombre: '', modelo: '', capacidad: '', asientos_disponibles: '' });
+    
+    const [deleteId, setDeleteId] = useState(null);
   
     const fetchTransportes = async () => {
       try {
@@ -414,15 +523,16 @@ const TransportesManager = ({ onUpdate, onError }) => {
       } catch (e) { onUpdate('error', e.message); }
     };
   
-    const handleDelete = async (id) => {
-      if (!window.confirm('¿Borrar transporte?')) return;
+    const executeDelete = async () => {
+      if (!deleteId) return;
       try {
         await safeFetch(`${API_BASE}/transportes/eliminarTransporte`, {
-          method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id })
+          method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: deleteId })
         });
         onUpdate('success', 'Transporte borrado');
         fetchTransportes();
       } catch (e) { onUpdate('error', e.message); }
+      setDeleteId(null);
     };
   
     return (
@@ -445,7 +555,7 @@ const TransportesManager = ({ onUpdate, onError }) => {
                         <td>
                         <div style={{ display: 'flex', gap: '8px' }}>
                             <button className="btn-icon edit" onClick={() => { setEditing(t); setForm(t); setModalOpen(true); }}><Edit2 size={16} /></button>
-                            <button className="btn-icon delete" onClick={() => handleDelete(t.id)}><Trash2 size={16} /></button>
+                            <button className="btn-icon delete" onClick={() => setDeleteId(t.id)}><Trash2 size={16} /></button>
                         </div>
                         </td>
                     </tr>
@@ -456,7 +566,6 @@ const TransportesManager = ({ onUpdate, onError }) => {
         </div>
         <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editing ? "Editar Transporte" : "Nuevo Transporte"}>
           <div className="form-grid">
-            {/* CORRECCIÓN 3: Select en lugar de Input para 'tipo' */}
             <select value={form.tipo} onChange={e => setForm({...form, tipo: e.target.value})} className="input-field">
                 <option value="avion">Avión</option>
                 <option value="camion">Camión</option>
@@ -468,6 +577,14 @@ const TransportesManager = ({ onUpdate, onError }) => {
             <button onClick={handleSubmit} className="btn-primary full-width">Guardar</button>
           </div>
         </Modal>
+
+        <ConfirmationModal 
+            isOpen={!!deleteId}
+            onClose={() => setDeleteId(null)}
+            onConfirm={executeDelete}
+            title="¿Eliminar Transporte?"
+            message="Esta acción eliminará el transporte. ¿Estás seguro?"
+        />
       </div>
     );
   };
@@ -478,10 +595,11 @@ const UsuariosManager = ({ onUpdate, onError }) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState({ usuario: '', correo: '', contra: '', nombre: '', apellido: '', telefono: '' });
+    
+    const [deleteId, setDeleteId] = useState(null);
   
     const fetchUsuarios = async () => {
       try {
-        // Ruta app.js: /agenciaViajes/usuarios -> /obtenerTodosUsuarios
         const data = await safeFetch(`${API_BASE}/usuarios/obtenerTodosUsuarios`);
         setUsuarios(Array.isArray(data) ? data : []);
       } catch (e) { 
@@ -493,7 +611,6 @@ const UsuariosManager = ({ onUpdate, onError }) => {
   
     const handleSubmit = async () => {
       try {
-        // Ruta para crear era plural en tu código: /crearUsuarios
         const url = editing ? `${API_BASE}/usuarios/actualizarUsuario` : `${API_BASE}/usuarios/crearUsuarios`;
         const method = editing ? 'PUT' : 'POST';
         const body = editing ? { ...form, id: editing.id } : form;
@@ -508,15 +625,16 @@ const UsuariosManager = ({ onUpdate, onError }) => {
       } catch (e) { onUpdate('error', e.message); }
     };
   
-    const handleDelete = async (id) => {
-      if (!window.confirm('¿Eliminar usuario permanentemente?')) return;
+    const executeDelete = async () => {
+      if (!deleteId) return;
       try {
         await safeFetch(`${API_BASE}/usuarios/eliminarUsuario`, {
-          method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id })
+          method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: deleteId })
         });
         onUpdate('success', 'Usuario eliminado');
         fetchUsuarios();
       } catch (e) { onUpdate('error', e.message); }
+      setDeleteId(null);
     };
   
     return (
@@ -537,7 +655,7 @@ const UsuariosManager = ({ onUpdate, onError }) => {
                     <td>
                     <div style={{ display: 'flex', gap: '8px' }}>
                         <button className="btn-icon edit" onClick={() => { setEditing(u); setForm(u); setModalOpen(true); }}><Edit2 size={16} /></button>
-                        <button className="btn-icon delete" onClick={() => handleDelete(u.id)}><Trash2 size={16} /></button>
+                        <button className="btn-icon delete" onClick={() => setDeleteId(u.id)}><Trash2 size={16} /></button>
                     </div>
                     </td>
                 </tr>
@@ -556,6 +674,14 @@ const UsuariosManager = ({ onUpdate, onError }) => {
             <button onClick={handleSubmit} className="btn-primary full-width">Guardar</button>
           </div>
         </Modal>
+
+        <ConfirmationModal 
+            isOpen={!!deleteId}
+            onClose={() => setDeleteId(null)}
+            onConfirm={executeDelete}
+            title="¿Eliminar Usuario?"
+            message="Esta acción eliminará el usuario permanentemente."
+        />
       </div>
     );
   };
@@ -566,19 +692,15 @@ const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState('hoteles');
   const [alert, setAlert] = useState(null);
   const [ciudades, setCiudades] = useState([]);
-  // Corrección 1: Agregamos el estado de hoteles aquí
   const [hoteles, setHoteles] = useState([]);
   const [connectionError, setConnectionError] = useState(false);
 
-  // Cargamos datos globales necesarios para las relaciones (Selects)
   const loadGlobalData = async () => {
     try {
         setConnectionError(false); 
-        // Ruta app.js: /agenciaViajes/ciudades/obtenerTodasCiudades
         const dataCiudades = await safeFetch(`${API_BASE}/ciudades/obtenerTodasCiudades`);
         setCiudades(Array.isArray(dataCiudades) ? dataCiudades : []);
         
-        // Corrección 2: Obtenemos Y GUARDAMOS los hoteles en el estado
         const dataHoteles = await safeFetch(`${API_BASE}/hoteles/mostrarTodosHoteles`);
         setHoteles(Array.isArray(dataHoteles) ? dataHoteles : []);
         
@@ -591,8 +713,7 @@ const AdminPanel = () => {
   useEffect(() => { loadGlobalData(); }, [activeTab]); 
 
   const showAlert = (type, message) => {
-    setAlert({ type, message });
-    setTimeout(() => setAlert(null), 4000);
+    setAlert({ type, message, title: type === 'error' ? 'Error' : 'Éxito' });
   };
   
   const handleChildError = (msg) => {
@@ -610,7 +731,15 @@ const AdminPanel = () => {
 
   return (
     <div style={{ minHeight: '100vh', background: '#f9fafb', fontFamily: 'system-ui, sans-serif' }}>
-      {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />}
+      {/* Renderizado del nuevo componente Alert */}
+      {alert && (
+        <Alert 
+          type={alert.type} 
+          title={alert.title} 
+          message={alert.message} 
+          onClose={() => setAlert(null)} 
+        />
+      )}
 
       <div style={{ background: 'white', borderBottom: '1px solid #e5e7eb', padding: '20px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
@@ -685,7 +814,6 @@ const AdminPanel = () => {
           
           {activeTab === 'hoteles' && <HotelesManager ciudades={ciudades} onUpdate={showAlert} onError={handleChildError} />}
           {activeTab === 'ciudades' && <CiudadesManager onUpdate={showAlert} onError={handleChildError} />}
-          {/* Corrección 3: Pasamos la variable real "hoteles" en vez de [] */}
           {activeTab === 'habitaciones' && <HabitacionesManager hoteles={hoteles} onUpdate={showAlert} onError={handleChildError} />}
           {activeTab === 'transportes' && <TransportesManager onUpdate={showAlert} onError={handleChildError} />}
           {activeTab === 'usuarios' && <UsuariosManager onUpdate={showAlert} onError={handleChildError} />}
