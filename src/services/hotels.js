@@ -5,9 +5,13 @@ import api from "./axiosConfig";
 // GET /agenciaViajes/hoteles/mostrarTodosHoteles
 export const getHotels = () => api.get("/agenciaViajes/hoteles/mostrarTodosHoteles");
 
+// GET /agenciaViajes/hoteles/mostrarHotelPorId/:id  👈 NUEVA FUNCIÓN
+export const getHotelById = (id) => 
+  api.get(`/agenciaViajes/hoteles/mostrarHotelPorId/${id}`);
+
 // GET /agenciaViajes/hoteles/mostrarHotelesCiudad
 export const getHotelsByCity = (cityId) =>
-  api.get("/agenciaViajes/hoteles/mostrarHotelesCiudad", { params: { ciudad_id: cityId } });
+  api.get("/agenciaViajes/hoteles/mostrarHotelesCiudad", { params: { ciudad_id: cityId } });
 
 // POST /agenciaViajes/hoteles/crearHotel
 export const createHotel = (data) => api.post("/agenciaViajes/hoteles/crearHotel", data);

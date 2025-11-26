@@ -97,6 +97,9 @@ const Alert = ({ type = 'info', title, message, onClose, autoClose = 4000 }) => 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  
+  // Cambiar a false cuando no quieras ver el botón de admin
+  const isAdmin = true;
 
   return (
     <header className="navbar">
@@ -123,6 +126,20 @@ const Navbar = () => {
             <button className="btn-primary" onClick={() => navigate('/register')}>
               Registrarse
             </button>
+            
+            {/* Botón de Admin */}
+            {isAdmin && (
+              <button 
+                className="btn-primary" 
+                onClick={() => navigate('/admin')}
+                style={{ 
+                  background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                  marginLeft: '8px'
+                }}
+              >
+                🔧 Admin
+              </button>
+            )}
           </div>
 
           <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
@@ -142,12 +159,26 @@ const Navbar = () => {
             <button className="btn-primary" onClick={() => navigate('/register')}>
               Registrarse
             </button>
+            
+            {/* Botón de Admin en menú móvil */}
+            {isAdmin && (
+              <button 
+                className="btn-primary" 
+                onClick={() => navigate('/admin')}
+                style={{ 
+                  background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                  marginTop: '8px'
+                }}
+              >
+                🔧 Admin
+              </button>
+            )}
           </div>
         )}
       </nav>
     </header>
   );
-};
+}; 
 
 // ========== SEARCH BAR ==========
 const SearchBar = ({ cities, navigate, showAlert }) => {

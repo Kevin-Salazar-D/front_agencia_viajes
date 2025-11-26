@@ -6,7 +6,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Results from './pages/Results';
-import HotelDetails from './pages/HotelDetails';  // 👈 IMPORTAR
+import HotelDetails from './pages/HotelDetails';
+import AdminPanel from './pages/AdminPanel';  // 👈 NUEVO IMPORT
 
 import './App.css';
 
@@ -19,7 +20,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/resultados" element={<Results />} />
-          <Route path="/hotel/:id" element={<HotelDetails />} />  {/* 👈 NUEVA RUTA */}
+          <Route path="/hotel/:id" element={<HotelDetails />} />
+          <Route path="/admin" element={<AdminPanel />} />  {/* 👈 NUEVA RUTA */}
         </Routes>
       </AuthProvider>
     </BrowserRouter>
