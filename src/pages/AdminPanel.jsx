@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Building2, MapPin, Bed, Bus, Users, Plus, Edit2, Trash2, X, Search, 
-  Save, AlertCircle, CheckCircle, Briefcase, User, WifiOff, RefreshCw, AlertTriangle 
+  Save, AlertCircle, CheckCircle, Briefcase, User, WifiOff, RefreshCw, AlertTriangle,
+  BookOpen, Image as ImageIcon, List, DollarSign, Clock, Map as MapIcon, Calendar, 
+  ArrowRight
 } from 'lucide-react';
 
-// ========== CONFIGURACIÓN EXACTA SEGÚN TU APP.JS ==========
+// ========== CONFIGURACIÓN API ==========
 const API_BASE = 'http://localhost:3000/agenciaViajes';
 
 // ========== COMPONENTES UI COMPARTIDOS ==========
 
-// Componente Alert actualizado
 const Alert = ({ type = 'info', title, message, onClose, autoClose = 4000 }) => {
   const [isVisible, setIsVisible] = useState(true);
 
@@ -61,15 +62,17 @@ const Alert = ({ type = 'info', title, message, onClose, autoClose = 4000 }) => 
   );
 };
 
-const Modal = ({ isOpen, onClose, title, children }) => {
+const Modal = ({ isOpen, onClose, title, children, size = 'medium' }) => {
   if (!isOpen) return null;
+  const maxWidth = size === 'large' ? '900px' : '600px';
+  
   return (
     <div style={{
       position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex',
       alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px'
     }} onClick={onClose}>
       <div style={{
-        background: 'white', borderRadius: '16px', maxWidth: '600px', width: '100%',
+        background: 'white', borderRadius: '16px', maxWidth, width: '100%',
         maxHeight: '90vh', overflow: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
       }} onClick={(e) => e.stopPropagation()}>
         <div style={{ padding: '24px', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -82,7 +85,6 @@ const Modal = ({ isOpen, onClose, title, children }) => {
   );
 };
 
-// NUEVO: Modal de Confirmación para eliminar
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
   if (!isOpen) return null;
   return (
@@ -94,42 +96,20 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
         background: 'white', borderRadius: '16px', maxWidth: '400px', width: '100%',
         padding: '24px', boxShadow: '0 20px 60px rgba(0,0,0,0.3)', textAlign: 'center'
       }} onClick={(e) => e.stopPropagation()}>
-        <div style={{ 
-            margin: '0 auto 16px', width: '56px', height: '56px', borderRadius: '50%', 
-            background: '#fee2e2', display: 'flex', alignItems: 'center', justifyContent: 'center' 
-        }}>
+        <div style={{ margin: '0 auto 16px', width: '56px', height: '56px', borderRadius: '50%', background: '#fee2e2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <AlertTriangle size={28} color="#dc2626" />
         </div>
         <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#1f2937', marginBottom: '8px' }}>{title}</h3>
         <p style={{ color: '#6b7280', marginBottom: '24px', lineHeight: '1.5' }}>{message}</p>
         <div style={{ display: 'flex', gap: '12px' }}>
-          <button 
-            onClick={onClose} 
-            style={{ 
-                flex: 1, padding: '12px', border: '1px solid #e5e7eb', borderRadius: '8px', 
-                background: 'white', fontWeight: '600', color: '#374151', cursor: 'pointer',
-                transition: 'background 0.2s'
-            }}
-          >
-            Cancelar
-          </button>
-          <button 
-            onClick={onConfirm} 
-            style={{ 
-                flex: 1, padding: '12px', border: 'none', borderRadius: '8px', 
-                background: '#dc2626', fontWeight: '600', color: 'white', cursor: 'pointer',
-                transition: 'background 0.2s', boxShadow: '0 4px 6px -1px rgba(220, 38, 38, 0.3)'
-            }}
-          >
-            Sí, eliminar
-          </button>
+          <button onClick={onClose} style={{ flex: 1, padding: '12px', border: '1px solid #e5e7eb', borderRadius: '8px', background: 'white', fontWeight: '600', color: '#374151', cursor: 'pointer' }}>Cancelar</button>
+          <button onClick={onConfirm} style={{ flex: 1, padding: '12px', border: 'none', borderRadius: '8px', background: '#dc2626', fontWeight: '600', color: 'white', cursor: 'pointer' }}>Sí, eliminar</button>
         </div>
       </div>
     </div>
   );
 };
 
-// Fetch seguro con manejo de errores JSON
 const safeFetch = async (url, options = {}) => {
   try {
     const response = await fetch(url, options);
@@ -152,17 +132,13 @@ const CiudadesManager = ({ onUpdate, onError }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ nombre: '', pais: '', region: '', codigo_postal: '' });
-  
-  // Estado para confirmación de eliminación
   const [deleteId, setDeleteId] = useState(null);
 
   const fetchCiudades = async () => {
     try {
       const data = await safeFetch(`${API_BASE}/ciudades/obtenerTodasCiudades`);
       setCiudades(Array.isArray(data) ? data : []);
-    } catch (e) { 
-      onError('Error cargando ciudades.');
-    }
+    } catch (e) { onError('Error cargando ciudades.'); }
   };
 
   useEffect(() => { fetchCiudades(); }, []);
@@ -172,24 +148,17 @@ const CiudadesManager = ({ onUpdate, onError }) => {
       const url = editing ? `${API_BASE}/ciudades/actualizarCiudad` : `${API_BASE}/ciudades/crearCiudad`;
       const method = editing ? 'PUT' : 'POST';
       const body = editing ? { ...form, id: editing.id } : form;
-      
-      await safeFetch(url, {
-        method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
-      });
-      
+      await safeFetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       onUpdate('success', `Ciudad ${editing ? 'actualizada' : 'creada'} correctamente`);
       setModalOpen(false);
       fetchCiudades();
     } catch (e) { onUpdate('error', e.message); }
   };
 
-  // Ejecutar eliminación después de confirmar
   const executeDelete = async () => {
     if (!deleteId) return;
     try {
-      await safeFetch(`${API_BASE}/ciudades/borrarCiudad`, {
-        method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: deleteId })
-      });
+      await safeFetch(`${API_BASE}/ciudades/borrarCiudad`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: deleteId }) });
       onUpdate('success', 'Ciudad borrada');
       fetchCiudades();
     } catch (e) { onUpdate('error', e.message); }
@@ -221,7 +190,6 @@ const CiudadesManager = ({ onUpdate, onError }) => {
             </tbody>
         </table>
       </div>
-      
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editing ? "Editar Ciudad" : "Nueva Ciudad"}>
         <div className="form-grid">
           <input placeholder="Nombre" value={form.nombre} onChange={e => setForm({...form, nombre: e.target.value})} className="input-field" />
@@ -231,53 +199,56 @@ const CiudadesManager = ({ onUpdate, onError }) => {
           <button onClick={handleSubmit} className="btn-primary full-width">Guardar</button>
         </div>
       </Modal>
-
-      {/* Modal de confirmación */}
-      <ConfirmationModal 
-        isOpen={!!deleteId}
-        onClose={() => setDeleteId(null)}
-        onConfirm={executeDelete}
-        title="¿Eliminar Ciudad?"
-        message="Esta acción borrará la ciudad permanentemente. ¿Estás seguro?"
-      />
+      <ConfirmationModal isOpen={!!deleteId} onClose={() => setDeleteId(null)} onConfirm={executeDelete} title="¿Eliminar Ciudad?" message="Esta acción borrará la ciudad permanentemente. ¿Estás seguro?" />
     </div>
   );
 };
 
-// 2. GESTOR DE HOTELES
+// 2. GESTOR DE HOTELES (CON INFO EXTENDIDA)
 const HotelesManager = ({ onUpdate, onError, ciudades }) => {
   const [hoteles, setHoteles] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [selectedHotel, setSelectedHotel] = useState(null);
   const [form, setForm] = useState({ nombre: '', direccion: '', ciudad_id: '', estrellas: 5, telefono: '', imagen: '' });
   
+  // Estado para detalles
+  const [detailsForm, setDetailsForm] = useState({
+    descripcion: '', amenidades: '', politicas: '', check_in: '15:00', check_out: '12:00', 
+    precio_noche: '', cancelacion: '', retricciones: '', total_resenas: 0
+  });
+  const [hasDetails, setHasDetails] = useState(false);
+  
+  // Estado para imágenes
+  const [galleryImages, setGalleryImages] = useState([]);
+  const [newImageUrl, setNewImageUrl] = useState('');
+  const [imageToDelete, setImageToDelete] = useState(null); // NUEVO: Estado para borrar imagen con modal
+  
+  const [activeTab, setActiveTab] = useState('info');
   const [deleteId, setDeleteId] = useState(null);
 
   const fetchHoteles = async () => {
     try {
       const data = await safeFetch(`${API_BASE}/hoteles/mostrarTodosHoteles`);
       setHoteles(Array.isArray(data) ? data : []);
-    } catch (e) { 
-        onError('Error cargando hoteles.');
-    }
+    } catch (e) { onError('Error cargando hoteles.'); }
   };
 
   useEffect(() => { fetchHoteles(); }, []);
 
+  // --- CRUD BÁSICO DE HOTEL ---
   const handleSubmit = async () => {
     try {
       const url = editing ? `${API_BASE}/hoteles/actualizarHotel` : `${API_BASE}/hoteles/crearHotel`;
       const method = editing ? 'PUT' : 'POST';
       const body = editing ? { ...form, id: editing.id } : form;
       
-      await safeFetch(url, {
-        method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
-      });
+      await safeFetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
 
       if (editing && editing.ciudad_id !== form.ciudad_id) {
             await safeFetch(`${API_BASE}/hoteles/actualizarCiudadIdHotel`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                method: 'PUT', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: editing.id, ciudad_id: form.ciudad_id })
             });
       }
@@ -290,13 +261,90 @@ const HotelesManager = ({ onUpdate, onError, ciudades }) => {
   const executeDelete = async () => {
     if (!deleteId) return;
     try {
-      await safeFetch(`${API_BASE}/hoteles/borrarHotel`, {
-        method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: deleteId })
-      });
+      await safeFetch(`${API_BASE}/hoteles/borrarHotel`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: deleteId }) });
       onUpdate('success', 'Hotel borrado');
       fetchHoteles();
     } catch (e) { onUpdate('error', e.message); }
     setDeleteId(null);
+  };
+
+  // --- GESTIÓN DE DETALLES Y GALERÍA ---
+  const openDetailsModal = async (hotel) => {
+    setSelectedHotel(hotel);
+    setActiveTab('info');
+    setDetailsForm({
+        descripcion: '', amenidades: '', politicas: '', check_in: '15:00', check_out: '12:00', 
+        precio_noche: '', cancelacion: '', retricciones: '', total_resenas: 0
+    });
+    setGalleryImages([]);
+    
+    try {
+        const detailsData = await safeFetch(`${API_BASE}/hotelDetalles/mostrarDetallesDeUnHotel/${hotel.id}`);
+        if (detailsData && (detailsData.hotel_id || detailsData.id)) {
+            setDetailsForm(detailsData);
+            setHasDetails(true);
+        } else {
+            setHasDetails(false);
+        }
+    } catch (error) {
+        setHasDetails(false);
+    }
+
+    try {
+        const imagesData = await safeFetch(`${API_BASE}/hotelImagenes/mostrarImagenHotel?hotel_id=${hotel.id}`);
+        setGalleryImages(Array.isArray(imagesData) ? imagesData : []);
+    } catch (error) {
+        console.log("Error cargando imágenes", error);
+    }
+
+    setDetailsModalOpen(true);
+  };
+
+  const handleSaveDetails = async () => {
+      try {
+          const url = hasDetails ? `${API_BASE}/hotelDetalles/actualizarDetallesHotel` : `${API_BASE}/hotelDetalles/crearDetallesHotel`;
+          const method = hasDetails ? 'PUT' : 'POST';
+          const body = { ...detailsForm, hotel_id: selectedHotel.id };
+          if (hasDetails) body.id = detailsForm.id;
+
+          await safeFetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+          onUpdate('success', 'Información detallada guardada');
+          setHasDetails(true);
+      } catch (error) {
+          onUpdate('error', 'Error guardando detalles: ' + error.message);
+      }
+  };
+
+  const handleAddImage = async () => {
+      if (!newImageUrl) return;
+      try {
+          await safeFetch(`${API_BASE}/hotelImagenes/crearImagenHotel`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ hotel_id: selectedHotel.id, url: newImageUrl, orden: galleryImages.length + 1 })
+          });
+          const imagesData = await safeFetch(`${API_BASE}/hotelImagenes/mostrarImagenHotel?hotel_id=${selectedHotel.id}`);
+          setGalleryImages(Array.isArray(imagesData) ? imagesData : []);
+          setNewImageUrl('');
+          onUpdate('success', 'Imagen agregada');
+      } catch (error) {
+          onUpdate('error', error.message);
+      }
+  };
+
+  // NUEVO: Función de borrado de imagen con modal
+  const executeDeleteImage = async () => {
+      if (!imageToDelete) return;
+      try {
+          await safeFetch(`${API_BASE}/hotelImagenes/borrarImagenHotel`, {
+              method: 'DELETE', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: imageToDelete })
+          });
+          setGalleryImages(prev => prev.filter(img => img.id !== imageToDelete));
+          onUpdate('success', 'Imagen eliminada');
+      } catch (error) {
+          onUpdate('error', error.message);
+      }
+      setImageToDelete(null);
   };
 
   return (
@@ -308,13 +356,21 @@ const HotelesManager = ({ onUpdate, onError, ciudades }) => {
       </div>
       <div style={{ overflowX: 'auto' }}>
         <table className="custom-table">
-            <thead><tr><th>Nombre</th><th>Dirección</th><th>Estrellas</th><th>Teléfono</th><th>Acciones</th></tr></thead>
+            <thead><tr><th>Nombre</th><th>Dirección</th><th>Estrellas</th><th>Acciones</th></tr></thead>
             <tbody>
             {hoteles.map(h => (
                 <tr key={h.id}>
-                    <td>{h.nombre}</td><td>{h.direccion}</td><td>{'⭐'.repeat(h.estrellas)}</td><td>{h.telefono}</td>
+                    <td>{h.nombre}</td><td>{h.direccion}</td><td>{'⭐'.repeat(h.estrellas)}</td>
                     <td>
                     <div style={{ display: 'flex', gap: '8px' }}>
+                        <button 
+                            className="btn-icon" 
+                            style={{ background: '#e0e7ff', color: '#4338ca' }} 
+                            onClick={() => openDetailsModal(h)} 
+                            title="Gestionar Detalles y Galería"
+                        >
+                            <BookOpen size={16} />
+                        </button>
                         <button className="btn-icon edit" onClick={() => { setEditing(h); setForm(h); setModalOpen(true); }}><Edit2 size={16} /></button>
                         <button className="btn-icon delete" onClick={() => setDeleteId(h.id)}><Trash2 size={16} /></button>
                     </div>
@@ -324,6 +380,8 @@ const HotelesManager = ({ onUpdate, onError, ciudades }) => {
             </tbody>
         </table>
       </div>
+
+      {/* Modal Básico */}
       <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editing ? "Editar Hotel" : "Nuevo Hotel"}>
         <div className="form-grid">
             <input placeholder="Nombre" value={form.nombre} onChange={e => setForm({...form, nombre: e.target.value})} className="input-field" />
@@ -334,17 +392,87 @@ const HotelesManager = ({ onUpdate, onError, ciudades }) => {
             </select>
             <input type="number" max="5" min="1" placeholder="Estrellas" value={form.estrellas} onChange={e => setForm({...form, estrellas: e.target.value})} className="input-field" />
             <input placeholder="Teléfono" value={form.telefono} onChange={e => setForm({...form, telefono: e.target.value})} className="input-field" />
-            <input placeholder="URL Imagen" value={form.imagen} onChange={e => setForm({...form, imagen: e.target.value})} className="input-field" />
+            <input placeholder="URL Imagen Principal (Portada)" value={form.imagen} onChange={e => setForm({...form, imagen: e.target.value})} className="input-field" />
             <button onClick={handleSubmit} className="btn-primary full-width">Guardar</button>
         </div>
       </Modal>
 
+      {/* Modal Avanzado */}
+      <Modal isOpen={detailsModalOpen} onClose={() => setDetailsModalOpen(false)} title={`Gestionar: ${selectedHotel?.nombre}`} size="large">
+        <div>
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', borderBottom: '1px solid #e5e7eb' }}>
+                <button onClick={() => setActiveTab('info')} style={{ padding: '10px 20px', border: 'none', background: 'none', borderBottom: activeTab === 'info' ? '3px solid #2563eb' : '3px solid transparent', color: activeTab === 'info' ? '#2563eb' : '#6b7280', fontWeight: '600', cursor: 'pointer' }}>
+                    <List size={18} style={{ display: 'inline', marginRight: '5px' }} /> Información Detallada
+                </button>
+                <button onClick={() => setActiveTab('imagenes')} style={{ padding: '10px 20px', border: 'none', background: 'none', borderBottom: activeTab === 'imagenes' ? '3px solid #2563eb' : '3px solid transparent', color: activeTab === 'imagenes' ? '#2563eb' : '#6b7280', fontWeight: '600', cursor: 'pointer' }}>
+                    <ImageIcon size={18} style={{ display: 'inline', marginRight: '5px' }} /> Galería de Fotos
+                </button>
+            </div>
+
+            {activeTab === 'info' && (
+                <div className="form-grid">
+                    <label style={{ fontSize: '0.9em', fontWeight: '600', color: '#374151' }}>Descripción General</label>
+                    <textarea placeholder="Describe el hotel..." rows="4" value={detailsForm.descripcion} onChange={e => setDetailsForm({...detailsForm, descripcion: e.target.value})} className="input-field" style={{ resize: 'vertical' }} />
+                    <label style={{ fontSize: '0.9em', fontWeight: '600', color: '#374151' }}>Amenidades</label>
+                    <textarea placeholder="Ej: WiFi, Piscina, Gym, Spa..." rows="2" value={detailsForm.amenidades} onChange={e => setDetailsForm({...detailsForm, amenidades: e.target.value})} className="input-field" />
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                        <div>
+                            <label style={{ fontSize: '0.9em', fontWeight: '600', color: '#374151' }}>Horarios</label>
+                            <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                                <input placeholder="Check-In" value={detailsForm.check_in} onChange={e => setDetailsForm({...detailsForm, check_in: e.target.value})} className="input-field" />
+                                <input placeholder="Check-Out" value={detailsForm.check_out} onChange={e => setDetailsForm({...detailsForm, check_out: e.target.value})} className="input-field" />
+                            </div>
+                        </div>
+                        <div>
+                            <label style={{ fontSize: '0.9em', fontWeight: '600', color: '#374151' }}>Precios y Reseñas</label>
+                            <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                                <input type="number" placeholder="Precio/Noche" value={detailsForm.precio_noche} onChange={e => setDetailsForm({...detailsForm, precio_noche: e.target.value})} className="input-field" />
+                                <input type="number" placeholder="Total Reseñas" value={detailsForm.total_resenas} onChange={e => setDetailsForm({...detailsForm, total_resenas: e.target.value})} className="input-field" />
+                            </div>
+                        </div>
+                    </div>
+                    <label style={{ fontSize: '0.9em', fontWeight: '600', color: '#374151' }}>Políticas y Restricciones</label>
+                    <textarea placeholder="Políticas del hotel..." rows="2" value={detailsForm.politicas} onChange={e => setDetailsForm({...detailsForm, politicas: e.target.value})} className="input-field" />
+                    <textarea placeholder="Restricciones..." rows="2" value={detailsForm.retricciones} onChange={e => setDetailsForm({...detailsForm, retricciones: e.target.value})} className="input-field" />
+                    <button onClick={handleSaveDetails} className="btn-primary full-width" style={{ marginTop: '10px' }}><Save size={18} /> {hasDetails ? 'Actualizar Información' : 'Guardar Información'}</button>
+                </div>
+            )}
+
+            {activeTab === 'imagenes' && (
+                <div>
+                    <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', alignItems: 'flex-end' }}>
+                        <div style={{ flex: 1 }}>
+                            <label style={{ fontSize: '0.9em', fontWeight: '600', color: '#374151' }}>Agregar Nueva Imagen</label>
+                            <input placeholder="https://ejemplo.com/imagen.jpg" value={newImageUrl} onChange={e => setNewImageUrl(e.target.value)} className="input-field" style={{ marginTop: '4px' }} />
+                        </div>
+                        <button onClick={handleAddImage} className="btn-primary" style={{ height: '42px' }}><Plus size={18} /> Agregar</button>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '16px' }}>
+                        {galleryImages.map(img => (
+                            <div key={img.id} style={{ position: 'relative', height: '120px', borderRadius: '8px', overflow: 'hidden', border: '1px solid #e5e7eb' }}>
+                                <img src={img.url} alt="Hotel" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                {/* Botón de eliminar con lógica de modal */}
+                                <button onClick={() => setImageToDelete(img.id)} style={{ position: 'absolute', top: '4px', right: '4px', background: 'rgba(220, 38, 38, 0.9)', border: 'none', borderRadius: '4px', color: 'white', cursor: 'pointer', padding: '4px' }}>
+                                    <Trash2 size={14} />
+                                </button>
+                            </div>
+                        ))}
+                        {galleryImages.length === 0 && <p style={{ gridColumn: '1/-1', textAlign: 'center', color: '#9ca3af' }}>No hay imágenes en la galería.</p>}
+                    </div>
+                </div>
+            )}
+        </div>
+      </Modal>
+
+      <ConfirmationModal isOpen={!!deleteId} onClose={() => setDeleteId(null)} onConfirm={executeDelete} title="¿Eliminar Hotel?" message="Esta acción eliminará el hotel y su información. ¿Continuar?" />
+      
+      {/* Modal de Confirmación para Imágenes */}
       <ConfirmationModal 
-        isOpen={!!deleteId}
-        onClose={() => setDeleteId(null)}
-        onConfirm={executeDelete}
-        title="¿Eliminar Hotel?"
-        message="Esta acción eliminará el hotel y su información. ¿Continuar?"
+        isOpen={!!imageToDelete} 
+        onClose={() => setImageToDelete(null)} 
+        onConfirm={executeDeleteImage} 
+        title="¿Eliminar Imagen?" 
+        message="Esta imagen se borrará de la galería permanentemente." 
       />
     </div>
   );
@@ -356,16 +484,13 @@ const HabitacionesManager = ({ onUpdate, onError, hoteles }) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState({ hotel_id: '', numero_habitacion: '', tipo_habitacion: '', estatus: 'disponible' });
-    
     const [deleteId, setDeleteId] = useState(null);
   
     const fetchHabitaciones = async () => {
       try {
         const data = await safeFetch(`${API_BASE}/habitaciones/mostrarTodasHabitaciones`);
         setHabitaciones(Array.isArray(data) ? data : []);
-      } catch (e) { 
-        onError('Error cargando habitaciones.');
-      }
+      } catch (e) { onError('Error cargando habitaciones.'); }
     };
   
     useEffect(() => { fetchHabitaciones(); }, []);
@@ -373,29 +498,16 @@ const HabitacionesManager = ({ onUpdate, onError, hoteles }) => {
     const handleSubmit = async () => {
       try {
         const hotelIdInt = parseInt(form.hotel_id);
-        if (!hotelIdInt) {
-             onUpdate('error', 'Debes seleccionar un hotel válido');
-             return;
-        }
-
+        if (!hotelIdInt) { onUpdate('error', 'Debes seleccionar un hotel válido'); return; }
         const payload = { ...form, hotel_id: hotelIdInt };
 
         if (editing) {
-            await safeFetch(`${API_BASE}/habitaciones/actualizarHabitacion`, {
-                method: 'PUT', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...payload, id: editing.id })
-            });
+            await safeFetch(`${API_BASE}/habitaciones/actualizarHabitacion`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...payload, id: editing.id }) });
             if (editing.hotel_id !== hotelIdInt) {
-                await safeFetch(`${API_BASE}/habitaciones/actualizarIdHabitacion`, {
-                    method: 'PUT', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: editing.id, hotel_id: hotelIdInt })
-                });
+                await safeFetch(`${API_BASE}/habitaciones/actualizarIdHabitacion`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: editing.id, hotel_id: hotelIdInt }) });
             }
         } else {
-            await safeFetch(`${API_BASE}/habitaciones/crearHabitacion`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+            await safeFetch(`${API_BASE}/habitaciones/crearHabitacion`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         }
         onUpdate('success', 'Habitación procesada');
         setModalOpen(false);
@@ -406,9 +518,7 @@ const HabitacionesManager = ({ onUpdate, onError, hoteles }) => {
     const executeDelete = async () => {
       if (!deleteId) return;
       try {
-        await safeFetch(`${API_BASE}/habitaciones/borrarHabitacion`, {
-          method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: deleteId })
-        });
+        await safeFetch(`${API_BASE}/habitaciones/borrarHabitacion`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: deleteId }) });
         onUpdate('success', 'Habitación borrada');
         fetchHabitaciones();
       } catch (e) { onUpdate('error', e.message); }
@@ -434,14 +544,8 @@ const HabitacionesManager = ({ onUpdate, onError, hoteles }) => {
             <tbody>
                 {habitaciones.map(hab => (
                 <tr key={hab.id}>
-                    <td>{hab.numero_habitacion}</td>
-                    <td>{getHotelName(hab.hotel_id)}</td>
-                    <td>{hab.tipo_habitacion}</td>
-                    <td>
-                        <span style={{ padding: '4px 8px', borderRadius: '4px', background: hab.estatus === 0 || hab.estatus === 'disponible' ? '#dcfce7' : '#fee2e2', color: hab.estatus === 0 || hab.estatus === 'disponible' ? '#166534' : '#991b1b', fontSize: '12px' }}>
-                            {hab.estatus === 0 || hab.estatus === 'disponible' ? 'Disponible' : 'Ocupada/Mant.'}
-                        </span>
-                    </td>
+                    <td>{hab.numero_habitacion}</td><td>{getHotelName(hab.hotel_id)}</td><td>{hab.tipo_habitacion}</td>
+                    <td><span style={{ padding: '4px 8px', borderRadius: '4px', background: hab.estatus === 0 || hab.estatus === 'disponible' ? '#dcfce7' : '#fee2e2', color: hab.estatus === 0 || hab.estatus === 'disponible' ? '#166534' : '#991b1b', fontSize: '12px' }}>{hab.estatus === 0 || hab.estatus === 'disponible' ? 'Disponible' : 'Ocupada/Mant.'}</span></td>
                     <td>
                     <div style={{ display: 'flex', gap: '8px' }}>
                         <button className="btn-icon edit" onClick={() => { setEditing(hab); setForm(hab); setModalOpen(true); }}><Edit2 size={16} /></button>
@@ -453,7 +557,6 @@ const HabitacionesManager = ({ onUpdate, onError, hoteles }) => {
             </tbody>
             </table>
         </div>
-  
         <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editing ? "Editar Habitación" : "Nueva Habitación"}>
           <div className="form-grid">
             <select value={form.hotel_id} onChange={e => setForm({...form, hotel_id: e.target.value})} className="input-field">
@@ -462,27 +565,15 @@ const HabitacionesManager = ({ onUpdate, onError, hoteles }) => {
             </select>
             <input placeholder="Número de Habitación" value={form.numero_habitacion} onChange={e => setForm({...form, numero_habitacion: e.target.value})} className="input-field" />
             <select value={form.tipo_habitacion} onChange={e => setForm({...form, tipo_habitacion: e.target.value})} className="input-field">
-                <option value="">Seleccionar Tipo</option>
-                <option value="Sencilla">Sencilla</option>
-                <option value="Doble">Doble</option>
-                <option value="Suite">Suite</option>
+                <option value="">Seleccionar Tipo</option><option value="Sencilla">Sencilla</option><option value="Doble">Doble</option><option value="Suite">Suite</option>
             </select>
             <select value={form.estatus} onChange={e => setForm({...form, estatus: e.target.value})} className="input-field">
-                <option value="disponible">Disponible</option>
-                <option value="ocupado">Ocupada</option>
-                <option value="mantenimiento">Mantenimiento</option>
+                <option value="disponible">Disponible</option><option value="ocupado">Ocupada</option><option value="mantenimiento">Mantenimiento</option>
             </select>
             <button onClick={handleSubmit} className="btn-primary full-width">Guardar</button>
           </div>
         </Modal>
-
-        <ConfirmationModal 
-            isOpen={!!deleteId}
-            onClose={() => setDeleteId(null)}
-            onConfirm={executeDelete}
-            title="¿Eliminar Habitación?"
-            message="Esta acción eliminará la habitación permanentemente."
-        />
+        <ConfirmationModal isOpen={!!deleteId} onClose={() => setDeleteId(null)} onConfirm={executeDelete} title="¿Eliminar Habitación?" message="Esta acción eliminará la habitación permanentemente." />
       </div>
     );
 };
@@ -493,16 +584,13 @@ const TransportesManager = ({ onUpdate, onError }) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState({ tipo: 'avion', nombre: '', modelo: '', capacidad: '', asientos_disponibles: '' });
-    
     const [deleteId, setDeleteId] = useState(null);
   
     const fetchTransportes = async () => {
       try {
         const data = await safeFetch(`${API_BASE}/transportes/obtenerTodosTransportes`);
         setTransportes(Array.isArray(data) ? data : []);
-      } catch (e) { 
-        onError('Error cargando transportes.');
-      }
+      } catch (e) { onError('Error cargando transportes.'); }
     };
   
     useEffect(() => { fetchTransportes(); }, []);
@@ -512,11 +600,7 @@ const TransportesManager = ({ onUpdate, onError }) => {
         const url = editing ? `${API_BASE}/transportes/actualizarTransporte` : `${API_BASE}/transportes/crearTransporte`;
         const method = editing ? 'PUT' : 'POST';
         const body = editing ? { ...form, id: editing.id } : form;
-        
-        await safeFetch(url, {
-          method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
-        });
-        
+        await safeFetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
         onUpdate('success', `Transporte ${editing ? 'actualizado' : 'creado'} correctamente`);
         setModalOpen(false);
         fetchTransportes();
@@ -526,9 +610,7 @@ const TransportesManager = ({ onUpdate, onError }) => {
     const executeDelete = async () => {
       if (!deleteId) return;
       try {
-        await safeFetch(`${API_BASE}/transportes/eliminarTransporte`, {
-          method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: deleteId })
-        });
+        await safeFetch(`${API_BASE}/transportes/eliminarTransporte`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: deleteId }) });
         onUpdate('success', 'Transporte borrado');
         fetchTransportes();
       } catch (e) { onUpdate('error', e.message); }
@@ -546,9 +628,7 @@ const TransportesManager = ({ onUpdate, onError }) => {
             <table className="custom-table">
             <thead><tr><th>Tipo</th><th>Nombre</th><th>Modelo</th><th>Capacidad</th><th>Asientos Disp.</th><th>Acciones</th></tr></thead>
             <tbody>
-                {transportes.length === 0 ? (
-                    <tr><td colSpan="6" style={{ textAlign: 'center', color: '#9ca3af' }}>No hay transportes registrados</td></tr>
-                ) : (
+                {transportes.length === 0 ? (<tr><td colSpan="6" style={{ textAlign: 'center', color: '#9ca3af' }}>No hay transportes registrados</td></tr>) : (
                     transportes.map(t => (
                     <tr key={t.id}>
                         <td>{t.tipo}</td><td>{t.nombre}</td><td>{t.modelo}</td><td>{t.capacidad}</td><td>{t.asientos_disponibles}</td>
@@ -567,8 +647,7 @@ const TransportesManager = ({ onUpdate, onError }) => {
         <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editing ? "Editar Transporte" : "Nuevo Transporte"}>
           <div className="form-grid">
             <select value={form.tipo} onChange={e => setForm({...form, tipo: e.target.value})} className="input-field">
-                <option value="avion">Avión</option>
-                <option value="camion">Camión</option>
+                <option value="avion">Avión</option><option value="camion">Camión</option>
             </select>
             <input placeholder="Nombre" value={form.nombre} onChange={e => setForm({...form, nombre: e.target.value})} className="input-field" />
             <input placeholder="Modelo" value={form.modelo} onChange={e => setForm({...form, modelo: e.target.value})} className="input-field" />
@@ -577,14 +656,7 @@ const TransportesManager = ({ onUpdate, onError }) => {
             <button onClick={handleSubmit} className="btn-primary full-width">Guardar</button>
           </div>
         </Modal>
-
-        <ConfirmationModal 
-            isOpen={!!deleteId}
-            onClose={() => setDeleteId(null)}
-            onConfirm={executeDelete}
-            title="¿Eliminar Transporte?"
-            message="Esta acción eliminará el transporte. ¿Estás seguro?"
-        />
+        <ConfirmationModal isOpen={!!deleteId} onClose={() => setDeleteId(null)} onConfirm={executeDelete} title="¿Eliminar Transporte?" message="Esta acción eliminará el transporte. ¿Estás seguro?" />
       </div>
     );
   };
@@ -595,16 +667,13 @@ const UsuariosManager = ({ onUpdate, onError }) => {
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState({ usuario: '', correo: '', contra: '', nombre: '', apellido: '', telefono: '' });
-    
     const [deleteId, setDeleteId] = useState(null);
   
     const fetchUsuarios = async () => {
       try {
         const data = await safeFetch(`${API_BASE}/usuarios/obtenerTodosUsuarios`);
         setUsuarios(Array.isArray(data) ? data : []);
-      } catch (e) { 
-        onError('Error cargando usuarios.');
-      }
+      } catch (e) { onError('Error cargando usuarios.'); }
     };
   
     useEffect(() => { fetchUsuarios(); }, []);
@@ -614,11 +683,7 @@ const UsuariosManager = ({ onUpdate, onError }) => {
         const url = editing ? `${API_BASE}/usuarios/actualizarUsuario` : `${API_BASE}/usuarios/crearUsuarios`;
         const method = editing ? 'PUT' : 'POST';
         const body = editing ? { ...form, id: editing.id } : form;
-        
-        await safeFetch(url, {
-          method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
-        });
-        
+        await safeFetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
         onUpdate('success', `Usuario ${editing ? 'actualizado' : 'creado'} correctamente`);
         setModalOpen(false);
         fetchUsuarios();
@@ -628,9 +693,7 @@ const UsuariosManager = ({ onUpdate, onError }) => {
     const executeDelete = async () => {
       if (!deleteId) return;
       try {
-        await safeFetch(`${API_BASE}/usuarios/eliminarUsuario`, {
-          method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: deleteId })
-        });
+        await safeFetch(`${API_BASE}/usuarios/eliminarUsuario`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: deleteId }) });
         onUpdate('success', 'Usuario eliminado');
         fetchUsuarios();
       } catch (e) { onUpdate('error', e.message); }
@@ -650,8 +713,7 @@ const UsuariosManager = ({ onUpdate, onError }) => {
             <tbody>
                 {usuarios.map(u => (
                 <tr key={u.id}>
-                    <td style={{ fontWeight: 'bold' }}>{u.usuario}</td>
-                    <td>{u.correo}</td><td>{u.nombre}</td><td>{u.apellido}</td><td>{u.telefono}</td>
+                    <td style={{ fontWeight: 'bold' }}>{u.usuario}</td><td>{u.correo}</td><td>{u.nombre}</td><td>{u.apellido}</td><td>{u.telefono}</td>
                     <td>
                     <div style={{ display: 'flex', gap: '8px' }}>
                         <button className="btn-icon edit" onClick={() => { setEditing(u); setForm(u); setModalOpen(true); }}><Edit2 size={16} /></button>
@@ -674,35 +736,180 @@ const UsuariosManager = ({ onUpdate, onError }) => {
             <button onClick={handleSubmit} className="btn-primary full-width">Guardar</button>
           </div>
         </Modal>
-
-        <ConfirmationModal 
-            isOpen={!!deleteId}
-            onClose={() => setDeleteId(null)}
-            onConfirm={executeDelete}
-            title="¿Eliminar Usuario?"
-            message="Esta acción eliminará el usuario permanentemente."
-        />
+        <ConfirmationModal isOpen={!!deleteId} onClose={() => setDeleteId(null)} onConfirm={executeDelete} title="¿Eliminar Usuario?" message="Esta acción eliminará el usuario permanentemente." />
       </div>
     );
   };
+
+// 6. GESTOR DE VIAJES
+const ViajesManager = ({ onUpdate, onError, ciudades, transportes }) => {
+    const [viajes, setViajes] = useState([]);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [editing, setEditing] = useState(null);
+    const [form, setForm] = useState({ tipo_transporte_id: '', fecha_salida: '', fecha_llegada: '', origen_ciudad_id: '', destino_ciudad_id: '', numero_transporte: '' });
+    const [deleteId, setDeleteId] = useState(null);
+  
+    const fetchViajes = async () => {
+      try {
+        const data = await safeFetch(`${API_BASE}/viajes/mostrarTodosLosViajes`);
+        setViajes(Array.isArray(data) ? data : []);
+      } catch (e) { onError('Error cargando viajes.'); }
+    };
+  
+    useEffect(() => { fetchViajes(); }, []);
+  
+    const handleSubmit = async () => {
+      try {
+        if (!form.tipo_transporte_id || !form.origen_ciudad_id || !form.destino_ciudad_id) {
+            onUpdate('error', 'Por favor completa todos los campos requeridos');
+            return;
+        }
+
+        const formatDateForMySQL = (dateString) => {
+            if (!dateString) return null;
+            const date = new Date(dateString);
+            const pad = (num) => num.toString().padStart(2, '0');
+            const year = date.getFullYear();
+            const month = pad(date.getMonth() + 1);
+            const day = pad(date.getDate());
+            const hours = pad(date.getHours());
+            const minutes = pad(date.getMinutes());
+            const seconds = pad(date.getSeconds());
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        };
+
+        const payload = { 
+            ...form,
+            id: editing ? editing.id : undefined,
+            fecha_salida: formatDateForMySQL(form.fecha_salida),
+            fecha_llegada: formatDateForMySQL(form.fecha_llegada)
+        };
+
+        const url = editing ? `${API_BASE}/viajes/actualizarViaje` : `${API_BASE}/viajes/crearViaje`;
+        const method = editing ? 'PUT' : 'POST';
+        
+        await safeFetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        onUpdate('success', `Viaje ${editing ? 'actualizado' : 'programado'} correctamente`);
+        setModalOpen(false);
+        fetchViajes();
+      } catch (e) { onUpdate('error', e.message); }
+    };
+  
+    const executeDelete = async () => {
+      if (!deleteId) return;
+      try {
+        await safeFetch(`${API_BASE}/viajes/borrarViaje`, { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: deleteId }) });
+        onUpdate('success', 'Viaje cancelado');
+        fetchViajes();
+      } catch (e) { onUpdate('error', e.message); }
+      setDeleteId(null);
+    };
+
+    const getCityName = (id) => ciudades.find(c => c.id === id)?.nombre || `ID: ${id}`;
+    const getTransportName = (id) => transportes.find(t => t.id === id)?.nombre || `ID: ${id}`;
+  
+    return (
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
+          <button onClick={() => { setEditing(null); setForm({ tipo_transporte_id: '', fecha_salida: '', fecha_llegada: '', origen_ciudad_id: '', destino_ciudad_id: '', numero_transporte: '' }); setModalOpen(true); }} className="btn-primary">
+            <Plus size={20} /> Programar Viaje
+          </button>
+        </div>
+        <div style={{ overflowX: 'auto' }}>
+            <table className="custom-table">
+            <thead><tr><th>Transporte</th><th>Ruta</th><th>Salida</th><th>Llegada</th><th>Acciones</th></tr></thead>
+            <tbody>
+                {viajes.map(v => (
+                <tr key={v.id}>
+                    <td>
+                        <div style={{ fontWeight: '600' }}>{getTransportName(v.tipo_transporte_id || v.id)}</div>
+                        <div style={{ fontSize: '0.8em', color: '#6b7280' }}>#{v.numero_transporte}</div>
+                    </td>
+                    <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                            {getCityName(v.origen_ciudad_id)} <ArrowRight size={14} /> {getCityName(v.destino_ciudad_id)}
+                        </div>
+                    </td>
+                    <td>{new Date(v.fecha_salida).toLocaleString()}</td>
+                    <td>{new Date(v.fecha_llegada).toLocaleString()}</td>
+                    <td>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                        <button className="btn-icon edit" onClick={() => { setEditing(v); setForm(v); setModalOpen(true); }}><Edit2 size={16} /></button>
+                        <button className="btn-icon delete" onClick={() => setDeleteId(v.id)}><Trash2 size={16} /></button>
+                    </div>
+                    </td>
+                </tr>
+                ))}
+            </tbody>
+            </table>
+        </div>
+        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editing ? "Reprogramar Viaje" : "Programar Nuevo Viaje"}>
+          <div className="form-grid">
+            <label style={{ fontSize: '0.9em', fontWeight: '600', color: '#374151' }}>Transporte y Ruta</label>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <select value={form.tipo_transporte_id} onChange={e => setForm({...form, tipo_transporte_id: parseInt(e.target.value)})} className="input-field">
+                    <option value="">Transporte...</option>
+                    {transportes.map(t => <option key={t.id} value={t.id}>{t.nombre} ({t.tipo})</option>)}
+                </select>
+                <input placeholder="Num. Vuelo/Bus" value={form.numero_transporte} onChange={e => setForm({...form, numero_transporte: e.target.value})} className="input-field" />
+            </div>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <select value={form.origen_ciudad_id} onChange={e => setForm({...form, origen_ciudad_id: parseInt(e.target.value)})} className="input-field">
+                    <option value="">Origen...</option>
+                    {ciudades.map(c => <option key={c.id} value={c.id}>{c.nombre}</option>)}
+                </select>
+                <select value={form.destino_ciudad_id} onChange={e => setForm({...form, destino_ciudad_id: parseInt(e.target.value)})} className="input-field">
+                    <option value="">Destino...</option>
+                    {ciudades.map(c => <option key={c.id} value={c.id}>{c.nombre}</option>)}
+                </select>
+            </div>
+
+            <label style={{ fontSize: '0.9em', fontWeight: '600', color: '#374151', marginTop: '10px' }}>Horarios</label>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                    <span style={{ fontSize: '0.8em', color: '#6b7280' }}>Salida</span>
+                    <input type="datetime-local" value={form.fecha_salida ? new Date(form.fecha_salida).toISOString().slice(0, 16) : ''} onChange={e => setForm({...form, fecha_salida: e.target.value})} className="input-field" />
+                </div>
+                <div>
+                    <span style={{ fontSize: '0.8em', color: '#6b7280' }}>Llegada</span>
+                    <input type="datetime-local" value={form.fecha_llegada ? new Date(form.fecha_llegada).toISOString().slice(0, 16) : ''} onChange={e => setForm({...form, fecha_llegada: e.target.value})} className="input-field" />
+                </div>
+            </div>
+
+            <button onClick={handleSubmit} className="btn-primary full-width" style={{ marginTop: '15px' }}>Guardar Viaje</button>
+          </div>
+        </Modal>
+        <ConfirmationModal isOpen={!!deleteId} onClose={() => setDeleteId(null)} onConfirm={executeDelete} title="¿Cancelar Viaje?" message="Esta acción eliminará el viaje programado." />
+      </div>
+    );
+};
 
 // ========== PANEL PRINCIPAL ==========
 
 const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState('hoteles');
   const [alert, setAlert] = useState(null);
+  
+  // Datos Globales necesarios para relaciones
   const [ciudades, setCiudades] = useState([]);
   const [hoteles, setHoteles] = useState([]);
+  const [transportes, setTransportes] = useState([]); 
   const [connectionError, setConnectionError] = useState(false);
 
   const loadGlobalData = async () => {
     try {
         setConnectionError(false); 
-        const dataCiudades = await safeFetch(`${API_BASE}/ciudades/obtenerTodasCiudades`);
+        // Cargar todo en paralelo para optimizar
+        const [dataCiudades, dataHoteles, dataTransportes] = await Promise.all([
+            safeFetch(`${API_BASE}/ciudades/obtenerTodasCiudades`),
+            safeFetch(`${API_BASE}/hoteles/mostrarTodosHoteles`),
+            safeFetch(`${API_BASE}/transportes/obtenerTodosTransportes`)
+        ]);
+
         setCiudades(Array.isArray(dataCiudades) ? dataCiudades : []);
-        
-        const dataHoteles = await safeFetch(`${API_BASE}/hoteles/mostrarTodosHoteles`);
         setHoteles(Array.isArray(dataHoteles) ? dataHoteles : []);
+        setTransportes(Array.isArray(dataTransportes) ? dataTransportes : []);
         
     } catch (error) {
         console.error("Error cargando datos globales", error);
@@ -726,20 +933,13 @@ const AdminPanel = () => {
     { id: 'ciudades', label: 'Ciudades', icon: MapPin },
     { id: 'habitaciones', label: 'Habitaciones', icon: Bed },
     { id: 'transportes', label: 'Transportes', icon: Bus },
+    { id: 'viajes', label: 'Viajes', icon: MapIcon }, 
     { id: 'usuarios', label: 'Usuarios', icon: Users }
   ];
 
   return (
     <div style={{ minHeight: '100vh', background: '#f9fafb', fontFamily: 'system-ui, sans-serif' }}>
-      {/* Renderizado del nuevo componente Alert */}
-      {alert && (
-        <Alert 
-          type={alert.type} 
-          title={alert.title} 
-          message={alert.message} 
-          onClose={() => setAlert(null)} 
-        />
-      )}
+      {alert && <Alert type={alert.type} title={alert.title} message={alert.message} onClose={() => setAlert(null)} />}
 
       <div style={{ background: 'white', borderBottom: '1px solid #e5e7eb', padding: '20px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
@@ -768,14 +968,7 @@ const AdminPanel = () => {
                     2. Verifica que el backend esté en el puerto 3000.
                 </div>
             </div>
-            <button 
-                onClick={loadGlobalData} 
-                style={{ 
-                    marginLeft: '20px', padding: '8px 16px', background: 'white', border: '1px solid #fecaca', 
-                    borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px',
-                    fontWeight: '600', color: '#991b1b'
-                }}
-            >
+            <button onClick={loadGlobalData} style={{ marginLeft: '20px', padding: '8px 16px', background: 'white', border: '1px solid #fecaca', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '600', color: '#991b1b' }}>
                 <RefreshCw size={16} /> Reintentar
             </button>
         </div>
@@ -816,6 +1009,7 @@ const AdminPanel = () => {
           {activeTab === 'ciudades' && <CiudadesManager onUpdate={showAlert} onError={handleChildError} />}
           {activeTab === 'habitaciones' && <HabitacionesManager hoteles={hoteles} onUpdate={showAlert} onError={handleChildError} />}
           {activeTab === 'transportes' && <TransportesManager onUpdate={showAlert} onError={handleChildError} />}
+          {activeTab === 'viajes' && <ViajesManager onUpdate={showAlert} onError={handleChildError} ciudades={ciudades} transportes={transportes} />}
           {activeTab === 'usuarios' && <UsuariosManager onUpdate={showAlert} onError={handleChildError} />}
         </div>
       </div>
