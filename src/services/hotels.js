@@ -1,26 +1,70 @@
-import api from "./axiosConfig";
+import axios from 'axios';
 
-// Prefijo del backend: /agenciaViajes/hoteles
+const API_URL = 'http://localhost:3000/agenciaViajes';
 
-// GET /agenciaViajes/hoteles/mostrarTodosHoteles
-export const getHotels = () => api.get("/agenciaViajes/hoteles/mostrarTodosHoteles");
+// Obtener todos los hoteles
+export const getHotels = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/hoteles/mostrarTodosHoteles`);
+    return response;
+  } catch (error) {
+    console.error('Error obteniendo hoteles:', error);
+    throw error;
+  }
+};
 
-// GET /agenciaViajes/hoteles/mostrarHotelPorId/:id  👈 NUEVA FUNCIÓN
-export const getHotelById = (id) => 
-  api.get(`/agenciaViajes/hoteles/mostrarHotelPorId/${id}`);
+// Obtener hoteles por ciudad
+export const getHotelsByCity = async (cityId) => {
+  try {
+    const response = await axios.get(`${API_URL}/hoteles/mostrarHotelesCiudad`, {
+      params: { ciudad_id: cityId }
+    });
+    return response;
+  } catch (error) {
+    console.error('Error obteniendo hoteles por ciudad:', error);
+    throw error;
+  }
+};
 
-// GET /agenciaViajes/hoteles/mostrarHotelesCiudad
-export const getHotelsByCity = (cityId) =>
-  api.get("/agenciaViajes/hoteles/mostrarHotelesCiudad", { params: { ciudad_id: cityId } });
+// Obtener detalles de un hotel específico
+export const getHotelDetails = async (hotelId) => {
+  try {
+    const response = await axios.get(`${API_URL}/hotelDetalles/mostrarDetallesDeUnHotel/${hotelId}`);
+    return response;
+  } catch (error) {
+    console.error('Error obteniendo detalles del hotel:', error);
+    throw error;
+  }
+};
 
-// POST /agenciaViajes/hoteles/crearHotel
-export const createHotel = (data) => api.post("/agenciaViajes/hoteles/crearHotel", data);
+// Obtener imágenes de un hotel
+export const getHotelImages = async (hotelId) => {
+  try {
+    const response = await axios.get(`${API_URL}/hotelImagenes/mostrarImagenHotel`, {
+      params: { hotel_id: hotelId }
+    });
+    return response;
+  } catch (error) {
+    console.error('Error obteniendo imágenes del hotel:', error);
+    throw error;
+  }
+};
 
-// PUT /agenciaViajes/hoteles/actualizarHotel
-export const updateHotel = (data) => api.put("/agenciaViajes/hoteles/actualizarHotel", data);
+// Obtener todos los detalles de hoteles
+export const getAllHotelDetails = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/hotelDetalles/mostrarTodosDetallesHoteles`);
+    return response;
+  } catch (error) {
+    console.error('Error obteniendo todos los detalles:', error);
+    throw error;
+  }
+};
 
-// PUT /agenciaViajes/hoteles/actualizarCiudadIdHotel
-export const updateHotelCity = (data) => api.put("/agenciaViajes/hoteles/actualizarCiudadIdHotel", data);
-
-// DELETE /agenciaViajes/hoteles/borrarHotel
-export const deleteHotel = (id) => api.delete("/agenciaViajes/hoteles/borrarHotel", { data: { id } });
+export default {
+  getHotels,
+  getHotelsByCity,
+  getHotelDetails,
+  getHotelImages,
+  getAllHotelDetails
+};

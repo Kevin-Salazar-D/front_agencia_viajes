@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, MapPin, Calendar, Star, ArrowRight, Phone, Mail, Facebook, Instagram, Twitter, Menu, X, Loader, AlertCircle, CheckCircle } from 'lucide-react';
 import { getCities } from '../services/cities';
-import { getHotels } from '../services/hotels';
+import { getHotels, getAllHotelDetails } from '../services/hotels';
 import '../App.css';
 
 // ========== ALERT COMPONENT ==========
@@ -98,7 +98,6 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   
-  // Cambiar a false cuando no quieras ver el botón de admin
   const isAdmin = true;
 
   return (
@@ -114,8 +113,8 @@ const Navbar = () => {
           
           <div className="nav-links">
             <a href="#inicio">Inicio</a>
-            <a href="#destinos">Destinos</a>
-            <a href="#ofertas">Ofertas</a>
+            <a href="/hoteles">Destinos</a>
+            <a href="/paquetes">Paquetes</a>
             <a href="#contacto">Contacto</a>
           </div>
 
@@ -127,7 +126,6 @@ const Navbar = () => {
               Registrarse
             </button>
             
-            {/* Botón de Admin */}
             {isAdmin && (
               <button 
                 className="btn-primary" 
@@ -150,8 +148,8 @@ const Navbar = () => {
         {mobileMenuOpen && (
           <div className="mobile-menu">
             <a href="#inicio">Inicio</a>
-            <a href="#destinos">Destinos</a>
-            <a href="#ofertas">Ofertas</a>
+            <a href="/hoteles">Destinos</a>
+            <a href="/paquetes">Paquetes</a>
             <a href="#contacto">Contacto</a>
             <button className="btn-text" onClick={() => navigate('/login')}>
               Iniciar sesión
@@ -160,7 +158,6 @@ const Navbar = () => {
               Registrarse
             </button>
             
-            {/* Botón de Admin en menú móvil */}
             {isAdmin && (
               <button 
                 className="btn-primary" 
@@ -191,37 +188,31 @@ const SearchBar = ({ cities, navigate, showAlert }) => {
   const [isSearching, setIsSearching] = useState(false);
 
   const handleSearch = async () => {
-    // Validar origen
     if (!searchData.origin) {
       showAlert('error', 'Campo incompleto', 'Por favor selecciona una ciudad de origen');
       return;
     }
     
-    // Validar destino
     if (!searchData.destination) {
       showAlert('error', 'Campo incompleto', 'Por favor selecciona una ciudad de destino');
       return;
     }
     
-    // Validar fecha inicio
     if (!searchData.startDate) {
       showAlert('error', 'Campo incompleto', 'Por favor selecciona una fecha de inicio');
       return;
     }
     
-    // Validar fecha fin
     if (!searchData.endDate) {
       showAlert('error', 'Campo incompleto', 'Por favor selecciona una fecha de finalización');
       return;
     }
 
-    // Validar que no sea la misma ciudad
     if (searchData.origin === searchData.destination) {
       showAlert('error', 'Destinos iguales', 'El origen y destino no pueden ser la misma ciudad');
       return;
     }
 
-    // Validar que las fechas sean válidas
     if (new Date(searchData.startDate) >= new Date(searchData.endDate)) {
       showAlert('error', 'Fechas inválidas', 'La fecha de inicio debe ser anterior a la fecha de fin');
       return;
@@ -237,7 +228,6 @@ const SearchBar = ({ cities, navigate, showAlert }) => {
 
       showAlert('success', '¡Búsqueda exitosa!', `Buscando viajes de ${originCity?.nombre} a ${destCity?.nombre}`);
 
-      // Navegar a página de resultados con parámetros
       setTimeout(() => {
         navigate(`/resultados?from=${searchData.origin}&to=${searchData.destination}&start=${searchData.startDate}&end=${searchData.endDate}`);
       }, 500);
@@ -339,11 +329,13 @@ const SearchBar = ({ cities, navigate, showAlert }) => {
 };
 
 // ========== PACKAGE CARD ==========
-const PackageCard = ({ hotel, navigate }) => {
-  const rating = hotel.calificacion || (4.0 + Math.random()).toFixed(1);
-  const reviews = Math.floor(Math.random() * 500) + 50;
+const PackageCard = ({ hotel, hotelDetails, navigate }) => {
+  // Usar datos reales del backend
+  const rating = hotel.estrellas || 4.0;
+  const reviews = hotelDetails?.total_resenas || 0;
+  const precioNoche = hotelDetails?.precio_noche || 999;
   
-  // Array de imágenes de ejemplo para cada hotel
+  // Array de imágenes de respaldo
   const hotelImages = [
     "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
     "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80",
@@ -353,11 +345,9 @@ const PackageCard = ({ hotel, navigate }) => {
     "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=800&q=80"
   ];
 
-  // Seleccionar una imagen basada en el ID del hotel para mantener consistencia
   const imageUrl = hotel.imagen || hotelImages[hotel.id % hotelImages.length];
 
   const handleViewDetails = () => {
-    // Navegar a la página de detalles del hotel
     navigate(`/hotel/${hotel.id}`);
   };
 
@@ -369,7 +359,7 @@ const PackageCard = ({ hotel, navigate }) => {
         <div className="package-rating">
           <Star className="star-icon" size={16} />
           <span className="rating-value">{rating}</span>
-          <span className="rating-count">({reviews})</span>
+          <span className="rating-count">({reviews} reseñas)</span>
         </div>
       </div>
 
@@ -378,10 +368,10 @@ const PackageCard = ({ hotel, navigate }) => {
         <p className="package-hotel">{hotel.direccion || 'Ubicación céntrica'}</p>
         
         <div className="package-details">
-          <span>Desde 3 noches</span>
+          <span>Por noche</span>
           <div className="package-price">
             <div className="price-label">Desde</div>
-            <div className="price-value">${hotel.precio ? hotel.precio.toLocaleString('es-MX') : '5,999'}</div>
+            <div className="price-value">${precioNoche.toLocaleString('es-MX')}</div>
           </div>
         </div>
 
@@ -461,9 +451,11 @@ function Home() {
   const navigate = useNavigate();
   const [cities, setCities] = useState([]);
   const [hotels, setHotels] = useState([]);
+  const [hotelDetails, setHotelDetails] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [alerts, setAlerts] = useState([]);
+  const [selectedCity, setSelectedCity] = useState('');
 
   useEffect(() => {
     loadData();
@@ -474,16 +466,28 @@ function Home() {
       setLoading(true);
       setError(null);
 
-      const [citiesResponse, hotelsResponse] = await Promise.all([
+      const [citiesResponse, hotelsResponse, detailsResponse] = await Promise.all([
         getCities(),
-        getHotels()
+        getHotels(),
+        getAllHotelDetails().catch(() => ({ data: [] }))
       ]);
 
       console.log('📍 Ciudades cargadas:', citiesResponse.data);
       console.log('🏨 Hoteles cargados:', hotelsResponse.data);
+      console.log('📋 Detalles cargados:', detailsResponse.data);
 
       setCities(citiesResponse.data || []);
       setHotels(hotelsResponse.data || []);
+
+      // Crear un mapa de detalles por hotel_id
+      const detailsMap = {};
+      if (detailsResponse.data && Array.isArray(detailsResponse.data)) {
+        detailsResponse.data.forEach(detail => {
+          detailsMap[detail.hotel_id] = detail;
+        });
+      }
+      setHotelDetails(detailsMap);
+
     } catch (error) {
       console.error('❌ Error cargando datos:', error);
       setError('Error al cargar los datos. Por favor intenta de nuevo.');
@@ -507,6 +511,11 @@ function Home() {
     setAlerts(prev => prev.filter(alert => alert.id !== id));
   };
 
+  // Filtrar hoteles por ciudad seleccionada
+  const filteredHotels = selectedCity 
+    ? hotels.filter(hotel => hotel.ciudad_id === parseInt(selectedCity))
+    : hotels;
+
   if (loading) {
     return (
       <div className="app">
@@ -528,7 +537,6 @@ function Home() {
 
   return (
     <div className="app">
-      {/* Mostrar alertas */}
       {alerts.map(alert => (
         <Alert
           key={alert.id}
@@ -579,22 +587,56 @@ function Home() {
         <div className="section-header">
           <div>
             <h2>Hoteles destacados</h2>
-            <p>{hotels.length > 0 ? `${hotels.length} hoteles disponibles` : 'Cargando hoteles...'}</p>
+            <p>{filteredHotels.length > 0 ? `${filteredHotels.length} hoteles disponibles` : 'Cargando hoteles...'}</p>
           </div>
-          <button className="btn-text-link">
-            <span>Ver todos</span>
-            <ArrowRight size={20} />
-          </button>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <select 
+              value={selectedCity}
+              onChange={(e) => setSelectedCity(e.target.value)}
+              style={{ 
+                padding: '8px 12px', 
+                borderRadius: '8px', 
+                border: '1px solid #e5e7eb',
+                background: 'white',
+                cursor: 'pointer',
+                fontSize: '0.9rem'
+              }}
+            >
+              <option value="">Todas las ciudades</option>
+              {cities.map(city => (
+                <option key={city.id} value={city.id}>{city.nombre}</option>
+              ))}
+            </select>
+            <button 
+              className="btn-text-link"
+              onClick={() => navigate('/viajes')}
+            >
+              <span>Ver viajes</span>
+              <ArrowRight size={20} />
+            </button>
+            <button 
+              className="btn-text-link"
+              onClick={() => navigate('/hoteles')}
+            >
+              <span>Ver todos</span>
+              <ArrowRight size={20} />
+            </button>
+          </div>
         </div>
 
         <div className="packages-grid">
-          {hotels.length > 0 ? (
-            hotels.slice(0, 6).map((hotel) => (
-              <PackageCard key={hotel.id} hotel={hotel} navigate={navigate} />
+          {filteredHotels.length > 0 ? (
+            filteredHotels.slice(0, 6).map((hotel) => (
+              <PackageCard 
+                key={hotel.id} 
+                hotel={hotel} 
+                hotelDetails={hotelDetails[hotel.id]}
+                navigate={navigate} 
+              />
             ))
           ) : (
             <p style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem' }}>
-              No hay hoteles disponibles en este momento
+              No hay hoteles disponibles para esta ciudad
             </p>
           )}
         </div>
