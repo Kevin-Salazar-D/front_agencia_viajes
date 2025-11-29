@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, Star, ArrowRight, ArrowLeft, Phone, Mail, Facebook, Instagram, Twitter, Menu, X, Loader, Filter, Package } from 'lucide-react';
 import { getCities } from '../services/cities';
-import { getAllJourneys } from '../services/journeys';
-import { getHotels, getAllHotelDetails } from '../services/hotels';
+import { getAllPackages } from '../services/packages';
 import '../App.css';
 
 // ========== NAVBAR ==========
@@ -91,10 +90,9 @@ const Navbar = () => {
 };
 
 // ========== PACKAGE CARD ==========
-const PackageCard = ({ journey, hotel, hotelDetails, navigate }) => {
-  const rating = hotel?.estrellas || 4.0;
-  const reviews = hotelDetails?.total_resenas || 0;
-  const precioNoche = hotelDetails?.precio_noche || 999;
+const PackageCard = ({ packageData, navigate }) => {
+  const rating = packageData.hotel_estrellas || 4.0;
+  const precio = packageData.precio || 999;
   
   const hotelImages = [
     "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
@@ -105,35 +103,31 @@ const PackageCard = ({ journey, hotel, hotelDetails, navigate }) => {
     "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=800&q=80"
   ];
 
-  const imageUrl = hotel?.imagen || hotelImages[(hotel?.id || 0) % hotelImages.length];
+  const imageUrl = packageData.hotel_imagen || hotelImages[(packageData.hotel_id || 0) % hotelImages.length];
 
   // Calcular días de estadía
-  const fechaSalida = new Date(journey.fecha_salida);
-  const fechaLlegada = new Date(journey.fecha_llegada);
-  const dias = Math.ceil((fechaLlegada - fechaSalida) / (1000 * 60 * 60 * 24));
-
-  // Calcular precio total del paquete (transporte + hotel)
-  const precioTotal = precioNoche * dias + 500; // +500 por el transporte (estimado)
+  const fechaInicio = new Date(packageData.fecha_inicio);
+  const fechaFin = new Date(packageData.fecha_fin);
+  const dias = Math.ceil((fechaFin - fechaInicio) / (1000 * 60 * 60 * 24));
 
   return (
     <div className="package-card">
       <div className="package-image">
-        <img src={imageUrl} alt={hotel?.nombre || 'Hotel'} />
+        <img src={imageUrl} alt={packageData.hotel_nombre || 'Hotel'} />
         <div className="package-badge" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-          Paquete Completo
+          {packageData.tipo_paquete}
         </div>
         <div className="package-rating">
           <Star className="star-icon" size={16} />
           <span className="rating-value">{rating}</span>
-          <span className="rating-count">({reviews} reseñas)</span>
         </div>
       </div>
 
       <div className="package-content">
-        <h3>{hotel?.nombre || 'Hotel Incluido'}</h3>
+        <h3>{packageData.hotel_nombre || 'Hotel Incluido'}</h3>
         <p className="package-hotel" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <MapPin size={16} />
-          {journey.ciudad_origen} → {journey.ciudad_destino}
+          {packageData.ciudad}
         </p>
         
         <div style={{ 
@@ -145,27 +139,27 @@ const PackageCard = ({ journey, hotel, hotelDetails, navigate }) => {
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
             <span style={{ color: '#6b7280' }}>🚌 Transporte:</span>
-            <strong>{journey.transporte}</strong>
+            <strong>{packageData.transporte}</strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
             <span style={{ color: '#6b7280' }}>📅 Duración:</span>
-            <strong>{dias} {dias === 1 ? 'día' : 'días'}</strong>
+            <strong>{packageData.tiempo_estadia || dias} {(packageData.tiempo_estadia || dias) === 1 ? 'día' : 'días'}</strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span style={{ color: '#6b7280' }}>🏨 Hotel:</span>
-            <strong>Incluido</strong>
+            <strong>{packageData.hotel_estrellas}★</strong>
           </div>
         </div>
         
         <div className="package-details">
           <span>Paquete completo</span>
           <div className="package-price">
-            <div className="price-label">Desde</div>
-            <div className="price-value">${precioTotal.toLocaleString('es-MX')}</div>
+            <div className="price-label">Precio total</div>
+            <div className="price-value">${precio.toLocaleString('es-MX')}</div>
           </div>
         </div>
 
-        <button className="btn-package" onClick={() => navigate(`/paquete/${journey.viaje_id}`)}>
+        <button className="btn-package" onClick={() => navigate(`/paquete/${packageData.paquete_id}`)}>
           <span>Ver detalles</span>
           <ArrowRight size={18} />
         </button>
@@ -240,12 +234,10 @@ const Footer = () => {
 function Packages() {
   const navigate = useNavigate();
   const [cities, setCities] = useState([]);
-  const [journeys, setJourneys] = useState([]);
-  const [hotels, setHotels] = useState([]);
-  const [hotelDetails, setHotelDetails] = useState({});
+  const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedOrigin, setSelectedOrigin] = useState('');
-  const [selectedDestination, setSelectedDestination] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedType, setSelectedType] = useState('');
 
   useEffect(() => {
     loadData();
@@ -255,28 +247,16 @@ function Packages() {
     try {
       setLoading(true);
 
-      const [citiesResponse, journeysResponse, hotelsResponse, detailsResponse] = await Promise.all([
+      const [citiesResponse, packagesResponse] = await Promise.all([
         getCities(),
-        getAllJourneys(),
-        getHotels(),
-        getAllHotelDetails().catch(() => ({ data: [] }))
+        getAllPackages()
       ]);
 
       console.log('📍 Ciudades:', citiesResponse.data);
-      console.log('✈️ Viajes:', journeysResponse.data);
-      console.log('🏨 Hoteles:', hotelsResponse.data);
+      console.log('📦 Paquetes:', packagesResponse.data);
 
       setCities(citiesResponse.data || []);
-      setJourneys(journeysResponse.data || []);
-      setHotels(hotelsResponse.data || []);
-
-      const detailsMap = {};
-      if (detailsResponse.data && Array.isArray(detailsResponse.data)) {
-        detailsResponse.data.forEach(detail => {
-          detailsMap[detail.hotel_id] = detail;
-        });
-      }
-      setHotelDetails(detailsMap);
+      setPackages(packagesResponse.data || []);
 
     } catch (error) {
       console.error('❌ Error cargando datos:', error);
@@ -285,41 +265,29 @@ function Packages() {
     }
   };
 
-  // Crear paquetes combinando viajes con hoteles
-  const createPackages = () => {
-    return journeys.map(journey => {
-      // Buscar hoteles en la ciudad de destino
-      const destinationHotels = hotels.filter(h => h.ciudad_id === journey.destino_ciudad_id);
-      const hotel = destinationHotels[0]; // Tomar el primer hotel disponible
-      
-      return {
-        journey,
-        hotel,
-        hotelDetails: hotel ? hotelDetails[hotel.id] : null
-      };
-    }).filter(pkg => pkg.hotel); // Solo mostrar paquetes que tengan hotel
-  };
-
   // Filtrar paquetes
   const getFilteredPackages = () => {
-    let packages = createPackages();
+    let filtered = packages;
 
-    if (selectedOrigin) {
-      packages = packages.filter(pkg => 
-        pkg.journey.origen_ciudad_id === parseInt(selectedOrigin)
+    if (selectedCity) {
+      filtered = filtered.filter(pkg => 
+        pkg.ciudad_id === parseInt(selectedCity)
       );
     }
 
-    if (selectedDestination) {
-      packages = packages.filter(pkg => 
-        pkg.journey.destino_ciudad_id === parseInt(selectedDestination)
+    if (selectedType) {
+      filtered = filtered.filter(pkg => 
+        pkg.tipo_paquete === selectedType
       );
     }
 
-    return packages;
+    return filtered;
   };
 
   const filteredPackages = getFilteredPackages();
+  
+  // Obtener tipos únicos de paquetes
+  const packageTypes = [...new Set(packages.map(p => p.tipo_paquete))].filter(Boolean);
 
   if (loading) {
     return (
@@ -400,8 +368,8 @@ function Packages() {
           <Filter size={20} color="#6b7280" />
           
           <select 
-            value={selectedOrigin}
-            onChange={(e) => setSelectedOrigin(e.target.value)}
+            value={selectedCity}
+            onChange={(e) => setSelectedCity(e.target.value)}
             style={{ 
               padding: '0.75rem 1rem', 
               borderRadius: '8px', 
@@ -412,15 +380,15 @@ function Packages() {
               minWidth: '200px'
             }}
           >
-            <option value="">Ciudad de origen</option>
+            <option value="">Todas las ciudades</option>
             {cities.map(city => (
               <option key={city.id} value={city.id}>{city.nombre}</option>
             ))}
           </select>
 
           <select 
-            value={selectedDestination}
-            onChange={(e) => setSelectedDestination(e.target.value)}
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value)}
             style={{ 
               padding: '0.75rem 1rem', 
               borderRadius: '8px', 
@@ -431,9 +399,9 @@ function Packages() {
               minWidth: '200px'
             }}
           >
-            <option value="">Ciudad de destino</option>
-            {cities.map(city => (
-              <option key={city.id} value={city.id}>{city.nombre}</option>
+            <option value="">Todos los tipos</option>
+            {packageTypes.map(type => (
+              <option key={type} value={type}>{type}</option>
             ))}
           </select>
 
@@ -448,12 +416,10 @@ function Packages() {
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           {filteredPackages.length > 0 ? (
             <div className="packages-grid">
-              {filteredPackages.map((pkg, index) => (
+              {filteredPackages.map((pkg) => (
                 <PackageCard 
-                  key={`${pkg.journey.viaje_id}-${index}`}
-                  journey={pkg.journey}
-                  hotel={pkg.hotel}
-                  hotelDetails={pkg.hotelDetails}
+                  key={pkg.paquete_id}
+                  packageData={pkg}
                   navigate={navigate} 
                 />
               ))}
