@@ -27,7 +27,7 @@ const Navbar = () => {
             <a href="/#inicio">Inicio</a>
             <a href="/hoteles">Destinos</a>
             <a href="/paquetes">Paquetes</a>
-            <a href="/#contacto">Contacto</a>
+            <a href="/transportes">Transportes</a>
           </div>
 
           <div className="nav-actions">

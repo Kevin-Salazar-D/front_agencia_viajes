@@ -1,87 +1,150 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { MapPin, ArrowLeft, Loader, Star } from 'lucide-react';
-import { getHotelsByCity } from '../services/hotels';
-import { getCities } from '../services/cities';
-import '../App.css';
+import { 
+  MapPin, ArrowLeft, Loader, Star, Package, Hotel, 
+  Calendar, Plane, Bus, Clock, Users, CheckCircle 
+} from 'lucide-react';
 
 const Results = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   
+  // Estado
+  const [view, setView] = useState('hotels'); // 'hotels' | 'packages' | 'transports'
   const [hotels, setHotels] = useState([]);
+  const [packages, setPackages] = useState([]);
+  const [transports, setTransports] = useState([]); // 👈 Nuevo estado
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
+  // Params URL
   const originId = searchParams.get('from');
   const destId = searchParams.get('to');
   const startDate = searchParams.get('start');
   const endDate = searchParams.get('end');
 
+  // API Base
+  const API_BASE = 'http://localhost:3000/agenciaViajes';
+
+  // Helper para fetch seguro
+  const safeFetch = async (url) => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Error en la petición');
+      return await response.json();
+    } catch (err) {
+      console.error(`Error fetching ${url}:`, err);
+      return []; 
+    }
+  };
+
   useEffect(() => {
     loadData();
-  }, []);
+  }, [destId]); 
 
   const loadData = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Cargar ciudades y hoteles
-      const [citiesRes, hotelsRes] = await Promise.all([
-        getCities(),
-        getHotelsByCity(destId)
+      // 1. Cargar TODOS los datos (incluyendo transportes)
+      const [citiesData, hotelsData, packagesData, transportsData] = await Promise.all([
+        safeFetch(`${API_BASE}/ciudades/obtenerTodasCiudades`),
+        safeFetch(`${API_BASE}/hoteles/mostrarTodosHoteles`), 
+        safeFetch(`${API_BASE}/paquetes/mostrarTodosPaquetes`),
+        safeFetch(`${API_BASE}/transportes/obtenerTodosTransportes`) // 👈 Nuevo fetch
       ]);
 
-      setCities(citiesRes.data || []);
-      setHotels(hotelsRes.data || []);
-    } catch (err) {
-      console.error('Error cargando resultados:', err);
-      setError('Error al cargar los resultados. Intenta de nuevo.');
+      const citiesList = Array.isArray(citiesData) ? citiesData : [];
+      setCities(citiesList);
       
-      // Datos de respaldo
-      setCities([
-        { id: 1, nombre: 'Cancún' },
-        { id: 2, nombre: 'Ciudad de México' },
-      ]);
+      // 2. Filtrar HOTELES por destino
+      const allHotels = Array.isArray(hotelsData) ? hotelsData : [];
+      let filteredHotels = [];
+      
+      if (destId) {
+        filteredHotels = allHotels.filter(h => 
+          parseInt(h.ciudad_id) === parseInt(destId) || 
+          parseInt(h.id_ciudad) === parseInt(destId)
+        );
+      } else {
+        filteredHotels = allHotels;
+      }
+      setHotels(filteredHotels);
+
+      // 3. Filtrar PAQUETES por destino
+      let allPackages = Array.isArray(packagesData) ? packagesData : [];
+      let filteredPackages = [];
+
+      if (destId) {
+        const destCity = citiesList.find(c => c.id === parseInt(destId));
+        filteredPackages = allPackages.filter(pkg => {
+          const cityIdMatch = pkg.ciudad_id && parseInt(pkg.ciudad_id) === parseInt(destId);
+          const cityNameMatch = destCity && pkg.ciudad && 
+                                pkg.ciudad.toLowerCase().trim() === destCity.nombre.toLowerCase().trim();
+          return cityIdMatch || cityNameMatch;
+        });
+      } else {
+        filteredPackages = allPackages;
+      }
+      setPackages(filteredPackages);
+
+      // 4. Procesar TRANSPORTES
+      // Como los transportes suelen ser rutas (origen-destino), y tu tabla es simple,
+      // mostraremos todos los disponibles para que el usuario elija cómo llegar.
+      const allTransports = Array.isArray(transportsData) ? transportsData : [];
+      setTransports(allTransports);
+
+      // Lógica de vista inicial inteligente
+      if (filteredHotels.length === 0) {
+        if (filteredPackages.length > 0) setView('packages');
+        else if (allTransports.length > 0) setView('transports');
+      }
+
+    } catch (err) {
+      console.error('Error general cargando resultados:', err);
+      setError('Hubo un problema al cargar las opciones.');
     } finally {
       setLoading(false);
     }
   };
 
-  const getOriginCityName = () => {
-    const city = cities.find(c => c.id === parseInt(originId));
-    return city?.nombre || 'Origen desconocido';
-  };
-
-  const getDestCityName = () => {
-    const city = cities.find(c => c.id === parseInt(destId));
-    return city?.nombre || 'Destino desconocido';
+  const getCityName = (id) => {
+    if (!id) return '...';
+    const city = cities.find(c => c.id === parseInt(id));
+    return city?.nombre || 'Desconocido';
   };
 
   const calculateNights = () => {
+    if (!startDate || !endDate) return 1;
     const start = new Date(startDate);
     const end = new Date(endDate);
-    return Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+    const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+    return diff > 0 ? diff : 1;
+  };
+
+  const getTransportIcon = (type) => {
+    if (!type) return <Bus size={16} />;
+    return type.toLowerCase().includes('avion') ? <Plane size={16} /> : <Bus size={16} />;
+  };
+
+  // Función para obtener imagen de transporte (simulada)
+  const getTransportImage = (type) => {
+    if (type?.toLowerCase() === 'avion') return 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&auto=format&fit=crop&q=60';
+    return 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400&auto=format&fit=crop&q=60';
   };
 
   if (loading) {
     return (
-      <div className="results-page">
-        <header className="results-header">
-          <div className="results-container">
-            <button className="btn-back" onClick={() => navigate('/')}>
-              <ArrowLeft size={20} />
-              Volver
-            </button>
-          </div>
-        </header>
-        
-        <div className="results-loading">
-          <Loader size={48} className="spinner" />
-          <p>Cargando resultados...</p>
-        </div>
+      <div className="results-page loading-center">
+        <Loader size={48} className="spinner" />
+        <p>Buscando las mejores ofertas...</p>
+        <style>{`
+          .loading-center { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; color: #2563eb; }
+          .spinner { animation: spin 1s linear infinite; }
+          @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        `}</style>
       </div>
     );
   }
@@ -91,139 +154,228 @@ const Results = () => {
       {/* Header */}
       <header className="results-header">
         <div className="results-container">
-          <button className="btn-back" onClick={() => navigate('/')}>
-            <ArrowLeft size={20} />
-            Volver
-          </button>
+          <div className="header-top">
+            <button className="btn-back" onClick={() => navigate('/')}>
+              <ArrowLeft size={20} /> Volver
+            </button>
+            <div className="trip-summary">
+              <span className="badge-date">{startDate} - {endDate}</span>
+            </div>
+          </div>
           
-          <div className="results-info">
-            <h1>Resultados de búsqueda</h1>
-            <p>
-              <strong>{getOriginCityName()}</strong> → <strong>{getDestCityName()}</strong>
-              <br />
-              <span style={{ fontSize: '0.9rem', color: '#666' }}>
-                {startDate} a {endDate} ({calculateNights()} noches)
-              </span>
-            </p>
+          <div className="header-content">
+            <h1>Explora {getCityName(destId)}</h1>
+            <p className="subtitle">Origen: {getCityName(originId)} • {calculateNights()} noches</p>
+          </div>
+
+          {/* Selector de Vista (Tabs) - AHORA CON TRANSPORTES */}
+          <div className="view-selector">
+            <button 
+              className={`view-btn ${view === 'hotels' ? 'active' : ''}`}
+              onClick={() => setView('hotels')}
+            >
+              <Hotel size={18} /> Hoteles ({hotels.length})
+            </button>
+            <button 
+              className={`view-btn ${view === 'packages' ? 'active' : ''}`}
+              onClick={() => setView('packages')}
+            >
+              <Package size={18} /> Paquetes ({packages.length})
+            </button>
+            <button 
+              className={`view-btn ${view === 'transports' ? 'active' : ''}`}
+              onClick={() => setView('transports')}
+            >
+              <Plane size={18} /> Transportes ({transports.length})
+            </button>
           </div>
         </div>
       </header>
 
-      {/* Content */}
-      <div className="results-container">
-        {error && (
-          <div style={{
-            background: '#fef2f2',
-            border: '1px solid #fecaca',
-            color: '#dc2626',
-            padding: '1rem',
-            borderRadius: '8px',
-            marginBottom: '2rem'
-          }}>
-            {error}
-          </div>
-        )}
+      {/* Contenido Principal */}
+      <div className="results-body results-container">
+        {error && <div className="error-banner">{error}</div>}
 
-        {hotels.length === 0 ? (
-          <div style={{
-            textAlign: 'center',
-            padding: '3rem',
-            background: 'white',
-            borderRadius: '12px',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-          }}>
-            <MapPin size={48} style={{ opacity: 0.5, marginBottom: '1rem' }} />
-            <h3>No hay hoteles disponibles</h3>
-            <p style={{ color: '#666', marginTop: '0.5rem' }}>
-              Intenta con otras fechas o ciudades
-            </p>
-          </div>
-        ) : (
-          <div className="results-grid">
-            {hotels.map((hotel) => (
-              <div key={hotel.id} className="result-card">
-                <div className="result-image">
-                  <img 
-                    src={hotel.imagen || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400'} 
-                    alt={hotel.nombre}
-                  />
-                  <div className="result-badge">Disponible</div>
-                </div>
-
-                <div className="result-content">
-                  <h3>{hotel.nombre}</h3>
-                  <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '0.5rem' }}>
-                    {hotel.direccion || 'Ubicación céntrica'}
-                  </p>
-
-                  <div style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '0.5rem',
-                    marginBottom: '1rem',
-                    color: '#f59e0b'
-                  }}>
-                    <Star size={16} fill="currentColor" />
-                    <span style={{ color: '#333', fontWeight: '600' }}>
-                      4.5 (234 reviews)
-                    </span>
-                  </div>
-
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    borderTop: '1px solid #eee',
-                    paddingTop: '1rem'
-                  }}>
-                    <div>
-                      <span style={{ color: '#666', fontSize: '0.9rem' }}>
-                        {calculateNights()} noches
-                      </span>
-                      <div style={{ fontSize: '1.5rem', fontWeight: '700', color: '#2563eb' }}>
-                        ${(hotel.precio || 5999).toLocaleString('es-MX')}
+        {/* VISTA DE HOTELES */}
+        {view === 'hotels' && (
+          <div className="fade-in">
+            {hotels.length === 0 ? (
+              <EmptyState type="hoteles" location={getCityName(destId)} />
+            ) : (
+              <div className="results-grid">
+                {hotels.map((hotel) => (
+                  <div key={hotel.id} className="card hotel-card">
+                    <div className="card-image">
+                      <img 
+                        src={hotel.imagen || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400'} 
+                        alt={hotel.nombre}
+                        onError={(e) => e.target.src = 'https://via.placeholder.com/400x200?text=Hotel'}
+                      />
+                      <span className="card-badge">Hotel</span>
+                    </div>
+                    <div className="card-content">
+                      <div className="card-header">
+                        <h3>{hotel.nombre}</h3>
+                        <div className="rating">
+                          <Star size={14} fill="currentColor" /> {hotel.estrellas}.0
+                        </div>
+                      </div>
+                      <p className="card-location"><MapPin size={14} /> {hotel.direccion || getCityName(destId)}</p>
+                      
+                      <div className="card-footer">
+                        <div className="price-info">
+                          <span className="price-label">Por noche</span>
+                          <span className="price-amount">${(hotel.precio || 1200).toLocaleString()}</span>
+                        </div>
+                        <button className="btn-action" onClick={() => navigate(`/hotel/${hotel.id}`)}>
+                          Ver Disponibilidad
+                        </button>
                       </div>
                     </div>
-
-                    <button 
-                      onClick={() => navigate(`/hotel/${hotel.id}`)}
-                      style={{
-                        background: 'linear-gradient(135deg, #2563eb, #06b6d4)',
-                        color: 'white',
-                        border: 'none',
-                        padding: '0.75rem 1.5rem',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        fontWeight: '600',
-                        transition: 'all 0.3s',
-                        fontSize: '0.9rem'
-                      }}
-                      onMouseOver={(e) => e.target.style.boxShadow = '0 10px 20px rgba(37, 99, 235, 0.3)'}
-                      onMouseOut={(e) => e.target.style.boxShadow = 'none'}
-                    >
-                      Ver detalles
-                    </button>
                   </div>
-                </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
         )}
+
+        {/* VISTA DE PAQUETES */}
+        {view === 'packages' && (
+          <div className="fade-in">
+            {packages.length === 0 ? (
+              <EmptyState type="paquetes" location={getCityName(destId)} />
+            ) : (
+              <div className="results-grid">
+                {packages.map((pkg) => (
+                  <div key={pkg.paquete_id || pkg.id} className="card package-card">
+                    <div className="card-image">
+                      <img 
+                        src={pkg.hotel_imagen || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400'} 
+                        alt={pkg.descripcion}
+                        onError={(e) => e.target.src = 'https://via.placeholder.com/400x200?text=Paquete'}
+                      />
+                      <span className="card-badge package-badge">Todo Incluido</span>
+                    </div>
+                    <div className="card-content">
+                      <div className="card-header">
+                        <h3 className="package-title">{pkg.tipo_paquete || 'Paquete Turístico'}</h3>
+                        <div className="transport-icon" title={pkg.transporte}>
+                           {getTransportIcon(pkg.transporte)}
+                        </div>
+                      </div>
+                      <p className="package-desc">{pkg.paquete_descripcion || pkg.descripcion}</p>
+                      
+                      <div className="package-details">
+                        <div className="detail-item">
+                            <Hotel size={14} /> <span>{pkg.hotel_nombre || 'Hotel incluido'}</span>
+                        </div>
+                        <div className="detail-item">
+                            <Clock size={14} /> <span>{pkg.tiempo_estadia} días</span>
+                        </div>
+                        <div className="detail-item">
+                            <Users size={14} /> <span>{pkg.ciudad || getCityName(destId)}</span>
+                        </div>
+                      </div>
+
+                      <div className="card-footer">
+                        <div className="price-info">
+                          <span className="price-label">Precio Total</span>
+                          <span className="price-amount">${pkg.precio?.toLocaleString()}</span>
+                        </div>
+                        <button className="btn-action btn-package" onClick={() => navigate(`/paquete/${pkg.paquete_id || pkg.id}`)}>
+                          Reservar Paquete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* VISTA DE TRANSPORTES (NUEVA) */}
+        {view === 'transports' && (
+          <div className="fade-in">
+            {transports.length === 0 ? (
+              <EmptyState type="transportes" location="tu búsqueda" />
+            ) : (
+              <div className="results-grid">
+                {transports.map((transport) => (
+                  <div key={transport.id} className="card transport-card">
+                    <div className="card-image">
+                      <img 
+                        src={getTransportImage(transport.tipo)} 
+                        alt={transport.nombre}
+                      />
+                      <span className={`card-badge transport-badge ${transport.tipo}`}>
+                        {getTransportIcon(transport.tipo)} {transport.tipo}
+                      </span>
+                    </div>
+                    <div className="card-content">
+                      <div className="card-header">
+                        <h3>{transport.nombre}</h3>
+                        <div className="rating" style={{color: '#4b5563'}}>
+                           <span style={{fontSize: '0.85rem'}}>{transport.modelo}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="package-details" style={{marginTop: '10px'}}>
+                        <div className="detail-item">
+                            <Users size={14} /> <span>Cap: {transport.capacidad}</span>
+                        </div>
+                        <div className="detail-item" style={{background: transport.asientos_disponibles > 0 ? '#dcfce7' : '#fee2e2'}}>
+                            <CheckCircle size={14} color={transport.asientos_disponibles > 0 ? '#166534' : '#991b1b'} /> 
+                            <span style={{color: transport.asientos_disponibles > 0 ? '#166534' : '#991b1b'}}>
+                                {transport.asientos_disponibles} disp.
+                            </span>
+                        </div>
+                      </div>
+
+                      <div className="card-footer">
+                        <div className="price-info">
+                          <span className="price-label">Precio por persona</span>
+                          <span className="price-amount">${(transport.precio || 0).toLocaleString()}</span>
+                        </div>
+                        <button className="btn-action" onClick={() => navigate(`/transporte/${transport.id}`)}>
+                          Ver Detalles
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
       </div>
 
       <style>{`
-        .results-page {
-          min-height: 100vh;
-          background: #f9fafb;
+        :root {
+          --primary: #2563eb;
+          --primary-dark: #1e40af;
+          --accent: #f59e0b;
+          --bg: #f3f4f6;
+          --surface: #ffffff;
+          --text: #1f2937;
+          --text-light: #6b7280;
         }
 
+        .results-page {
+          min-height: 100vh;
+          background-color: var(--bg);
+          font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        /* HEADER */
         .results-header {
-          background: white;
-          border-bottom: 1px solid #e5e7eb;
-          padding: 2rem 0;
-          sticky: 0;
+          background: var(--surface);
+          box-shadow: 0 4px 20px -10px rgba(0,0,0,0.1);
+          padding: 1.5rem 0 0 0;
+          position: sticky;
           top: 0;
-          z-index: 10;
+          z-index: 100;
         }
 
         .results-container {
@@ -232,121 +384,299 @@ const Results = () => {
           padding: 0 1.5rem;
         }
 
+        .header-top {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1rem;
+        }
+
         .btn-back {
+          background: none;
+          border: none;
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          background: none;
-          border: none;
-          color: #2563eb;
-          cursor: pointer;
+          color: var(--text-light);
           font-weight: 600;
-          margin-bottom: 1rem;
-          padding: 0;
+          cursor: pointer;
           transition: color 0.2s;
         }
+        .btn-back:hover { color: var(--primary); }
 
-        .btn-back:hover {
-          color: #1d4ed8;
+        .trip-summary {
+          font-size: 0.9rem;
+          color: var(--text-light);
         }
 
-        .results-info h1 {
-          font-size: 2rem;
-          color: #111827;
-          margin: 0 0 0.5rem 0;
+        .badge-date {
+          background: #eef2ff;
+          color: var(--primary);
+          padding: 4px 12px;
+          border-radius: 20px;
+          font-weight: 500;
         }
 
-        .results-info p {
-          color: #6b7280;
+        .header-content h1 {
+          font-size: 1.8rem;
           margin: 0;
-          line-height: 1.6;
+          color: var(--text);
+        }
+        .subtitle {
+          color: var(--text-light);
+          margin-top: 0.25rem;
         }
 
-        .results-loading {
+        /* TABS */
+        .view-selector {
           display: flex;
-          flex-direction: column;
+          gap: 2rem;
+          margin-top: 2rem;
+          border-bottom: 1px solid #e5e7eb;
+          overflow-x: auto; /* Scroll en móvil */
+        }
+
+        .view-btn {
+          background: none;
+          border: none;
+          padding: 1rem 0.5rem;
+          font-size: 1rem;
+          font-weight: 500;
+          color: var(--text-light);
+          cursor: pointer;
+          display: flex;
           align-items: center;
-          justify-content: center;
-          min-height: 60vh;
-          gap: 1rem;
+          gap: 0.5rem;
+          border-bottom: 3px solid transparent;
+          transition: all 0.2s;
+          white-space: nowrap;
+        }
+
+        .view-btn:hover { color: var(--primary); }
+        .view-btn.active {
+          color: var(--primary);
+          border-bottom-color: var(--primary);
+        }
+
+        /* BODY */
+        .results-body { padding-top: 2rem; padding-bottom: 4rem; }
+
+        .error-banner {
+          background: #fee2e2;
+          border: 1px solid #fecaca;
+          color: #991b1b;
+          padding: 1rem;
+          border-radius: 8px;
+          margin-bottom: 2rem;
         }
 
         .results-grid {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
           gap: 2rem;
-          padding: 2rem 0;
         }
 
-        .result-card {
-          background: white;
-          border-radius: 12px;
+        /* CARDS */
+        .card {
+          background: var(--surface);
+          border-radius: 16px;
           overflow: hidden;
-          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-          transition: all 0.3s;
+          box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+          transition: transform 0.3s, box-shadow 0.3s;
           display: flex;
           flex-direction: column;
         }
 
-        .result-card:hover {
-          box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-          transform: translateY(-4px);
+        .card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
         }
 
-        .result-image {
-          position: relative;
+        .card-image {
           height: 200px;
-          overflow: hidden;
+          position: relative;
         }
 
-        .result-image img {
+        .card-image img {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          transition: transform 0.3s;
         }
 
-        .result-card:hover .result-image img {
-          transform: scale(1.05);
-        }
-
-        .result-badge {
+        .card-badge {
           position: absolute;
           top: 1rem;
-          left: 1rem;
-          background: linear-gradient(135deg, #f97316, #ec4899);
-          color: white;
-          padding: 0.5rem 1rem;
+          right: 1rem;
+          background: rgba(255,255,255,0.95);
+          padding: 0.3rem 0.8rem;
           border-radius: 20px;
           font-size: 0.8rem;
-          font-weight: 600;
+          font-weight: 700;
+          color: var(--primary);
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .result-content {
+        .package-badge {
+          background: linear-gradient(135deg, #f59e0b, #d97706);
+          color: white;
+        }
+        
+        .transport-badge {
+           color: white;
+           display: flex; align-items: center; gap: 5px; text-transform: capitalize;
+        }
+        .transport-badge.avion { background: #0ea5e9; }
+        .transport-badge.camion { background: #f59e0b; }
+
+        .card-content {
           padding: 1.5rem;
           flex: 1;
           display: flex;
           flex-direction: column;
         }
 
-        .result-content h3 {
+        .card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 0.5rem;
+        }
+
+        .card-header h3 {
+          margin: 0;
           font-size: 1.25rem;
-          color: #111827;
-          margin: 0 0 0.5rem 0;
+          color: var(--text);
+          font-weight: 700;
         }
 
-        @media (max-width: 768px) {
-          .results-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .results-info h1 {
-            font-size: 1.5rem;
-          }
+        .rating {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          color: var(--accent);
+          font-weight: 600;
+          font-size: 0.9rem;
         }
+
+        .card-location {
+          color: var(--text-light);
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 0.9rem;
+          margin-bottom: 1.5rem;
+        }
+
+        /* Package specific */
+        .package-desc {
+          color: var(--text-light);
+          font-size: 0.9rem;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          margin-bottom: 1rem;
+        }
+
+        .package-details {
+          display: flex;
+          gap: 1rem;
+          margin-bottom: 1.5rem;
+          flex-wrap: wrap;
+        }
+
+        .detail-item {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 0.85rem;
+          background: #f3f4f6;
+          padding: 4px 8px;
+          border-radius: 6px;
+          color: var(--text);
+        }
+
+        .transport-icon {
+          background: #e0e7ff;
+          color: var(--primary);
+          padding: 6px;
+          border-radius: 50%;
+          display: flex;
+        }
+
+        /* FOOTER */
+        .card-footer {
+          margin-top: auto;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-top: 1rem;
+          border-top: 1px solid #f3f4f6;
+        }
+
+        .price-info {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .price-label {
+          font-size: 0.75rem;
+          color: var(--text-light);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .price-amount {
+          font-size: 1.4rem;
+          font-weight: 800;
+          color: var(--primary-dark);
+        }
+
+        .btn-action {
+          background: var(--primary);
+          color: white;
+          border: none;
+          padding: 0.75rem 1.25rem;
+          border-radius: 10px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+
+        .btn-action:hover { background: var(--primary-dark); }
+        
+        .btn-package {
+          background: var(--text); 
+        }
+        .btn-package:hover { background: black; }
+
+        /* Animation */
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Empty State */
+        .empty-state {
+          text-align: center;
+          padding: 4rem 2rem;
+          background: white;
+          border-radius: 16px;
+          box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .empty-icon { opacity: 0.3; margin-bottom: 1rem; color: var(--text-light); }
       `}</style>
     </div>
   );
 };
+
+// Componente pequeño para estado vacío
+const EmptyState = ({ type, location }) => (
+  <div className="empty-state fade-in">
+    <MapPin size={64} className="empty-icon" />
+    <h3>No encontramos {type} disponibles en {location}</h3>
+    <p style={{ color: '#6b7280' }}>
+      Intenta cambiar las fechas o verifica otros destinos.
+    </p>
+  </div>
+);
 
 export default Results;

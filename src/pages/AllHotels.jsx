@@ -26,8 +26,8 @@ const Navbar = () => {
           <div className="nav-links">
             <a href="/#inicio">Inicio</a>
             <a href="/#destinos">Destinos</a>
-            <a href="/#ofertas">Ofertas</a>
-            <a href="/#contacto">Contacto</a>
+            <a href="/paquetes">Paquetes</a>
+            <a href="/transportes">Transportes</a>
           </div>
 
           <div className="nav-actions">
@@ -62,7 +62,7 @@ const Navbar = () => {
             <a href="/#inicio">Inicio</a>
             <a href="/#destinos">Destinos</a>
             <a href="/#ofertas">Ofertas</a>
-            <a href="/#contacto">Contacto</a>
+            <a href="/#transportes">Transportes</a>
             <button className="btn-text" onClick={() => navigate('/login')}>
               Iniciar sesión
             </button>

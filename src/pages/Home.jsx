@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, MapPin, Calendar, Star, ArrowRight, Phone, Mail, Facebook, Instagram, Twitter, Menu, X, Loader, AlertCircle, CheckCircle } from 'lucide-react';
+import { Search, MapPin, Calendar, Star, ArrowRight, Phone, Mail, Facebook, Instagram, Twitter, Menu, X, Loader, AlertCircle, CheckCircle, User, LogOut } from 'lucide-react';
 import { getCities } from '../services/cities';
 import { getHotels, getAllHotelDetails } from '../services/hotels';
 import '../App.css';
@@ -96,9 +96,37 @@ const Alert = ({ type = 'info', title, message, onClose, autoClose = 4000 }) => 
 // ========== NAVBAR ==========
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   
-  const isAdmin = true;
+  // Leemos el usuario al cargar el componente
+  useEffect(() => {
+    const checkUser = () => {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      } else {
+        setUser(null);
+      }
+    };
+
+    checkUser();
+
+    // Escuchamos el evento 'storage' por si inicias sesión en otra pestaña o componente
+    window.addEventListener('storage', checkUser);
+    return () => window.removeEventListener('storage', checkUser);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    setUser(null);
+    navigate('/'); // Redirigir a inicio
+    window.dispatchEvent(new Event("storage")); // Notificar cambio
+  };
+
+  // Lógica simple para mostrar admin (puedes mejorarla validando un rol real)
+  const isAdmin = !!user; 
 
   return (
     <header className="navbar">
@@ -112,70 +140,105 @@ const Navbar = () => {
           </div>
           
           <div className="nav-links">
-            <a href="#inicio">Inicio</a>
-            <a href="/hoteles">Destinos</a>
-            <a href="/paquetes">Paquetes</a>
-            <a href="#contacto">Contacto</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/'); }}>Inicio</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/hoteles'); }}>Destinos</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/paquetes'); }}>Paquetes</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/transportes'); }}>Transportes</a>
           </div>
 
+          {/* --- SECCIÓN DE ACCIONES DE USUARIO --- */}
           <div className="nav-actions">
-            <button className="btn-text" onClick={() => navigate('/login')}>
-              Iniciar sesión
-            </button>
-            <button className="btn-primary" onClick={() => navigate('/register')}>
-              Registrarse
-            </button>
-            
-            {isAdmin && (
-              <button 
-                className="btn-primary" 
-                onClick={() => navigate('/admin')}
-                style={{ 
-                  background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                  marginLeft: '8px'
-                }}
-              >
-                🔧 Admin
-              </button>
+            {user ? (
+              // SI ESTÁ LOGUEADO
+              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: '600', color: '#374151' }}>
+                  <User size={18} color="#2563eb" /> Hola, {user.nombre}
+                </span>
+                
+                {isAdmin && (
+                  <button 
+                    className="btn-primary" 
+                    onClick={() => navigate('/admin')}
+                    style={{ 
+                      background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                      padding: '8px 16px',
+                      fontSize: '0.9rem'
+                    }}
+                  >
+                    🔧 Admin
+                  </button>
+                )}
+
+                <button 
+                  className="btn-text" 
+                  onClick={handleLogout}
+                  style={{ color: '#dc2626', display: 'flex', alignItems: 'center', gap: '5px' }}
+                >
+                  <LogOut size={18} /> Salir
+                </button>
+              </div>
+            ) : (
+              // SI NO ESTÁ LOGUEADO (INVITADO)
+              <>
+                <button className="btn-text" onClick={() => navigate('/login')}>
+                  Iniciar sesión
+                </button>
+                <button className="btn-primary" onClick={() => navigate('/register')}>
+                  Registrarse
+                </button>
+              </>
             )}
           </div>
 
+          {/* Botón Menú Móvil */}
           <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
 
+        {/* Menú Móvil */}
         {mobileMenuOpen && (
           <div className="mobile-menu">
-            <a href="#inicio">Inicio</a>
-            <a href="/hoteles">Destinos</a>
-            <a href="/paquetes">Paquetes</a>
-            <a href="#contacto">Contacto</a>
-            <button className="btn-text" onClick={() => navigate('/login')}>
-              Iniciar sesión
-            </button>
-            <button className="btn-primary" onClick={() => navigate('/register')}>
-              Registrarse
-            </button>
+            <a href="#" onClick={() => navigate('/')}>Inicio</a>
+            <a href="#" onClick={() => navigate('/hoteles')}>Destinos</a>
+            <a href="#" onClick={() => navigate('/paquetes')}>Paquetes</a>
             
-            {isAdmin && (
-              <button 
-                className="btn-primary" 
-                onClick={() => navigate('/admin')}
-                style={{ 
-                  background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                  marginTop: '8px'
-                }}
-              >
-                🔧 Admin
-              </button>
+            <div style={{ borderTop: '1px solid #e5e7eb', margin: '10px 0' }}></div>
+
+            {user ? (
+              <>
+                <div style={{ padding: '10px 0', fontWeight: '600', color: '#2563eb' }}>
+                   Hola, {user.nombre}
+                </div>
+                {isAdmin && (
+                  <button 
+                    className="btn-primary" 
+                    onClick={() => navigate('/admin')}
+                    style={{ width: '100%', marginBottom: '10px', background: '#059669' }}
+                  >
+                    🔧 Panel Admin
+                  </button>
+                )}
+                <button className="btn-text" onClick={handleLogout} style={{ width: '100%', textAlign: 'left', color: '#dc2626' }}>
+                  <LogOut size={16} style={{ marginRight: '5px', display:'inline' }}/> Cerrar Sesión
+                </button>
+              </>
+            ) : (
+              <>
+                <button className="btn-text" onClick={() => navigate('/login')}>
+                  Iniciar sesión
+                </button>
+                <button className="btn-primary" onClick={() => navigate('/register')}>
+                  Registrarse
+                </button>
+              </>
             )}
           </div>
         )}
       </nav>
     </header>
   );
-}; 
+};
 
 // ========== SEARCH BAR ==========
 const SearchBar = ({ cities, navigate, showAlert }) => {
@@ -609,7 +672,7 @@ function Home() {
             </select>
             <button 
               className="btn-text-link"
-              onClick={() => navigate('/viajes')}
+              onClick={() => navigate('/paquetes')}
             >
               <span>Ver viajes</span>
               <ArrowRight size={20} />
