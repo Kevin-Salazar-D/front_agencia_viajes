@@ -62,6 +62,8 @@ const PackageDetails = () => {
       // 1. Obtener todos los paquetes (ya que el endpoint por ID no trae los JOINs completos a veces)
       const packagesData = await safeFetch(`${API_BASE}/paquetes/mostrarTodosPaquetes`);
       const packagesList = Array.isArray(packagesData) ? packagesData : [];
+
+      console.log(packagesList);
       
       // Buscar el paquete actual (por ID de paquete o ID general)
       const currentPkg = packagesList.find(p => 
@@ -116,8 +118,11 @@ const PackageDetails = () => {
         direccion: pkg.hotel_direccion,
         estrellas: pkg.hotel_estrellas,
         imagen: pkg.hotel_imagen,
-        telefono: pkg.hotel_telefono
+        telefono: pkg.hotel_telefono,
+        paquete_id: pkg.paquete_id
+
     };
+    console.log(hotelObj);
 
     const datesObj = {
         start: new Date(pkg.fecha_inicio).toISOString().split('T')[0],

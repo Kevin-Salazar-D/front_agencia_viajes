@@ -7,6 +7,7 @@ import {
 
 const API_BASE = 'http://localhost:3000/agenciaViajes';
 
+
 const TransportDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -156,44 +157,6 @@ const TransportDetails = () => {
                   aire acondicionado y entretenimiento a bordo para hacer tu viaje placentero.
                 </p>
               </div>
-            </div>
-          </div>
-
-          <div className="booking-column">
-            <div className="booking-card">
-              <div className="price-header">
-                <span className="price-amount">${(transport.precio || 0).toLocaleString()}</span>
-                <span className="price-period"> / boleto o día</span>
-              </div>
-
-              <div className="date-selector">
-                <div className="input-group">
-                  <label>Fecha Salida</label>
-                  <input 
-                    type="date" 
-                    value={dates.start}
-                    min={new Date().toISOString().split('T')[0]}
-                    onChange={e => setDates({...dates, start: e.target.value})}
-                  />
-                </div>
-                <div className="input-group">
-                  <label>Fecha Regreso</label>
-                  <input 
-                    type="date" 
-                    value={dates.end}
-                    min={dates.start}
-                    onChange={e => setDates({...dates, end: e.target.value})}
-                  />
-                </div>
-              </div>
-
-              <div className="info-row">
-                <Info size={16} /> <span>Tarifa sujeta a disponibilidad</span>
-              </div>
-
-              <button className="btn-book-full" onClick={handleReserve}>
-                Continuar a Pago
-              </button>
             </div>
           </div>
         </div>

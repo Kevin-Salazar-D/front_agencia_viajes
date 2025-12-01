@@ -149,17 +149,19 @@ const HotelDetails = () => {
         );
         return;
     }
+   const paymentState = {
+        hotel: hotel,
+        details: details,
+        dates: dates,
+        totalDays: calculations.nights,
+        totalPrice: calculations.total
+    };
 
-    // 3. Redirigir a Pasarela
-    navigate('/payment', {
-        state: {
-            hotel: hotel,
-            details: details,
-            dates: dates,
-            totalDays: calculations.nights,
-            totalPrice: calculations.total
-        }
-    });
+    // 4. Console log completo
+    console.log('Datos que se envían a PaymentGateway:', paymentState);
+
+    // 5. Redirigir a Pasarela
+    navigate('/payment', { state: paymentState });
   };
 
   const getAmenitiesList = () => {
