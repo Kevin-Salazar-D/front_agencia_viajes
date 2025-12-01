@@ -42,7 +42,7 @@ const PaymentGateway = () => {
       navigate("/");
       return;
     }
-      console.log(hotel,"45")
+    console.log(hotel,"45")
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
@@ -84,12 +84,39 @@ const PaymentGateway = () => {
 
   const handlePayment = async (e) => {
     e.preventDefault();
+
+    // --- VALIDACIONES ---
     if (!roomId) {
-      setErrorMsg("No se pudo asignar una habitación. Intenta con otro hotel.");
+      setErrorMsg("Debes seleccionar una habitación.");
       setStep("error");
       return;
     }
 
+    if (!card.name.trim()) {
+      setErrorMsg("El nombre del titular es obligatorio.");
+      setStep("error");
+      return;
+    }
+
+    if (!/^\d{16}$/.test(card.number)) {
+      setErrorMsg("El número de tarjeta debe tener 16 dígitos.");
+      setStep("error");
+      return;
+    }
+
+    if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(card.expiry)) {
+      setErrorMsg("La fecha de expiración debe tener formato MM/AA.");
+      setStep("error");
+      return;
+    }
+
+    if (!/^\d{3,4}$/.test(card.cvv)) {
+      setErrorMsg("El CVV debe tener 3 o 4 dígitos.");
+      setStep("error");
+      return;
+    }
+
+    // --- PROCESO DE PAGO ---
     setLoading(true);
     setErrorMsg("");
     setStep("processing");
@@ -120,8 +147,6 @@ const PaymentGateway = () => {
       }
 
       const dataReserva = await resReservacion.json();
-      
-
       if (!dataReserva) throw new Error("No se recibió el ID de la reserva");
 
       // --- ESPERAR UN SEGUNDO PARA SIMULAR PROCESO ---
@@ -155,8 +180,6 @@ const PaymentGateway = () => {
         });
         throw new Error(errData.error || "El pago fue rechazado");
       }
-
-     
 
       setStep("success");
     } catch (err) {
@@ -205,8 +228,6 @@ const PaymentGateway = () => {
       </div>
     );
   }
-
-
 
   return (
     <div className="payment-container">
