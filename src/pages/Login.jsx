@@ -1,24 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, MapPin, AlertCircle } from 'lucide-react';
+import { useAuth } from '../context/AuthContext'; // 👈 Importamos el contexto
 
 const API_BASE = 'http://localhost:3000/agenciaViajes';
 
 const Login = () => {
   const navigate = useNavigate();
-  
+  const { login } = useAuth(); // 👈 Usamos login del contexto
+
   // Estado del formulario
   const [formData, setFormData] = useState({
     correo: '',
     contrasena: ''
   });
-  
+
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState('');
 
-  // Función de validación interna (reemplaza al archivo externo)
+  // Validación
   const validateLoginForm = (email, password) => {
     const newErrors = {};
     if (!email) {
@@ -30,14 +32,6 @@ const Login = () => {
       newErrors.contrasena = 'La contraseña es obligatoria';
     }
     return newErrors;
-  };
-
-  // Función de login interna (reemplaza al AuthContext)
-  const handleLoginSuccess = (userData, token) => {
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('token', token);
-    // Disparamos un evento de storage por si otros componentes escuchan cambios
-    window.dispatchEvent(new Event("storage"));
   };
 
   const handleChange = (e) => {
@@ -58,9 +52,8 @@ const Login = () => {
     e.preventDefault();
     setApiError('');
 
-    // Validar formulario
+    // Validación
     const validationErrors = validateLoginForm(formData.correo, formData.contrasena);
-    
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
@@ -69,45 +62,41 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // 1. Conectar con la API real
+      // Traemos todos los usuarios (simulación)
       const response = await fetch(`${API_BASE}/usuarios/obtenerTodosUsuarios`);
-      
-      if (!response.ok) {
-        throw new Error('Error al conectar con el servidor');
-      }
+      if (!response.ok) throw new Error('Error al conectar con el servidor');
 
       const usuarios = await response.json();
 
-      // 2. Buscar el usuario que coincida con el correo y contraseña
-      // NOTA: Esto es una validación básica frontend. Lo ideal es un endpoint /login en el backend que maneje bcrypt.
-      // Aquí buscamos coincidencia exacta. 
+      // Buscamos coincidencia exacta
       const userFound = usuarios.find(u => 
-        u.correo.toLowerCase() === formData.correo.toLowerCase() && 
-        (u.contra === formData.contrasena || u.contrasena === formData.contrasena || u.usuario === formData.contrasena) // Flexibilidad para pruebas
+        u.correo.toLowerCase() === formData.correo.toLowerCase() &&
+        (u.contra === formData.contrasena || u.contrasena === formData.contrasena || u.usuario === formData.contrasena)
       );
 
-      if (userFound) {
-        // 3. Login Exitoso
-        const token = 'dummy-token-' + Date.now(); // Simulamos token
-        
-        const userData = {
-            id: userFound.id,
-            nombre: userFound.nombre,
-            apellido: userFound.apellido,
-            email: userFound.correo,
-            usuario: userFound.usuario
-        };
+      if (!userFound) throw new Error('Credenciales inválidas');
 
-        // Guardar en localStorage
-        handleLoginSuccess(userData, token);
-        
-        // Redirigir
-        navigate('/'); 
+      // Creamos el objeto del usuario incluyendo el rol
+      const token = 'dummy-token-' + Date.now();
+      const userData = {
+        id: userFound.id,
+        nombre: userFound.nombre,
+        apellido: userFound.apellido,
+        email: userFound.correo,
+        usuario: userFound.usuario,
+        rol: userFound.rol // 👈 el rol que usará AdminRoute
+      };
+
+      // Guardamos en contexto + localStorage
+      login(userData, token);
+
+      // Redirigir según rol (opcional)
+      if (userData.rol === 'admin') {
+        navigate('/admin');
       } else {
-        // Fallo de credenciales
-        throw new Error('Credenciales inválidas');
+        navigate('/');
       }
-      
+
     } catch (error) {
       console.error('Error en login:', error);
       setApiError('Correo o contraseña incorrectos. Verifica tus datos.');
@@ -119,7 +108,7 @@ const Login = () => {
   return (
     <div className="auth-container">
       <div className="auth-content">
-        {/* Lado izquierdo - Imagen/Branding */}
+        {/* Lado izquierdo */}
         <div className="auth-side">
           <div className="auth-side-content">
             <div className="auth-logo">
@@ -229,7 +218,7 @@ const Login = () => {
         </div>
       </div>
 
-      {/* ESTILOS INTEGRADOS */}
+      {/* Tus estilos originales permanecen igual */}
       <style>{`
         :root {
           --primary: #2563eb;
@@ -545,6 +534,7 @@ const Login = () => {
           .auth-container { padding: 1rem; }
           .auth-content { min-height: auto; }
         }
+
       `}</style>
     </div>
   );

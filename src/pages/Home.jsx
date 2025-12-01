@@ -126,7 +126,8 @@ const Navbar = () => {
   };
 
   // Lógica simple para mostrar admin (puedes mejorarla validando un rol real)
-  const isAdmin = !!user; 
+  const isAdmin = user?.rol === 'admin';
+
 
   return (
     <header className="navbar">

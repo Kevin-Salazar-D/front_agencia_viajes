@@ -6,23 +6,44 @@ import { getHotels, getAllHotelDetails } from '../services/hotels';
 import '../App.css';
 
 // ========== NAVBAR ==========
+// ========== NAVBAR ==========  
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
-  
-  const isAdmin = true;
+
+  useEffect(() => {
+    const checkUser = () => {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      } else {
+        setUser(null);
+      }
+    };
+
+    checkUser();
+    window.addEventListener('storage', checkUser);
+    return () => window.removeEventListener('storage', checkUser);
+  }, []);
+
+  const isAdmin = user?.rol === 'admin';
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+    navigate('/');
+  };
 
   return (
     <header className="navbar">
       <nav className="nav-container">
         <div className="nav-content">
           <div className="logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-            <div className="logo-icon">
-              <MapPin size={24} />
-            </div>
+            <div className="logo-icon"><MapPin size={24} /></div>
             <span className="logo-text">ViajesFácil</span>
           </div>
-          
+
           <div className="nav-links">
             <a href="/#inicio">Inicio</a>
             <a href="/#destinos">Destinos</a>
@@ -30,25 +51,36 @@ const Navbar = () => {
             <a href="/transportes">Transportes</a>
           </div>
 
+          {/* ACCIONES DEL USUARIO */}
           <div className="nav-actions">
-            <button className="btn-text" onClick={() => navigate('/login')}>
-              Iniciar sesión
-            </button>
-            <button className="btn-primary" onClick={() => navigate('/register')}>
-              Registrarse
-            </button>
-            
-            {isAdmin && (
-              <button 
-                className="btn-primary" 
-                onClick={() => navigate('/admin')}
-                style={{ 
-                  background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                  marginLeft: '8px'
-                }}
-              >
-                🔧 Admin
-              </button>
+            {user ? (
+              <>
+                <span style={{ marginRight: '8px' }}>Hola, {user.nombre}</span>
+                <button className="btn-primary" onClick={handleLogout}>
+                  Cerrar sesión
+                </button>
+                {isAdmin && (
+                  <button
+                    className="btn-primary"
+                    onClick={() => navigate('/admin')}
+                    style={{
+                      background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                      marginLeft: '8px'
+                    }}
+                  >
+                    🔧 Admin
+                  </button>
+                )}
+              </>
+            ) : (
+              <>
+                <button className="btn-text" onClick={() => navigate('/login')}>
+                  Iniciar sesión
+                </button>
+                <button className="btn-primary" onClick={() => navigate('/register')}>
+                  Registrarse
+                </button>
+              </>
             )}
           </div>
 
@@ -57,30 +89,42 @@ const Navbar = () => {
           </button>
         </div>
 
+        {/* MENÚ MÓVIL */}
         {mobileMenuOpen && (
           <div className="mobile-menu">
             <a href="/#inicio">Inicio</a>
             <a href="/#destinos">Destinos</a>
             <a href="/#ofertas">Ofertas</a>
             <a href="/#transportes">Transportes</a>
-            <button className="btn-text" onClick={() => navigate('/login')}>
-              Iniciar sesión
-            </button>
-            <button className="btn-primary" onClick={() => navigate('/register')}>
-              Registrarse
-            </button>
-            
-            {isAdmin && (
-              <button 
-                className="btn-primary" 
-                onClick={() => navigate('/admin')}
-                style={{ 
-                  background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                  marginTop: '8px'
-                }}
-              >
-                🔧 Admin
-              </button>
+
+            {user ? (
+              <>
+                <span style={{ display: 'block', margin: '8px 0' }}>Hola, {user.nombre}</span>
+                <button className="btn-primary" onClick={handleLogout}>
+                  Cerrar sesión
+                </button>
+                {isAdmin && (
+                  <button
+                    className="btn-primary"
+                    onClick={() => navigate('/admin')}
+                    style={{
+                      background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                      marginTop: '8px'
+                    }}
+                  >
+                    🔧 Admin
+                  </button>
+                )}
+              </>
+            ) : (
+              <>
+                <button className="btn-text" onClick={() => navigate('/login')}>
+                  Iniciar sesión
+                </button>
+                <button className="btn-primary" onClick={() => navigate('/register')}>
+                  Registrarse
+                </button>
+              </>
             )}
           </div>
         )}
