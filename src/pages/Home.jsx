@@ -93,13 +93,174 @@ const Alert = ({ type = 'info', title, message, onClose, autoClose = 4000 }) => 
   );
 };
 
+// ========== MODAL ACTIVAR 2FA ==========
+const ModalActivar2FA = ({ onClose }) => {
+  const [qrCode, setQrCode] = useState('');
+  const [codigoIngresado, setCodigoIngresado] = useState('');
+  const [mensaje, setMensaje] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  const API_BASE = 'http://localhost:3000/agenciaViajes/autenticacion';
+
+  useEffect(() => {
+    const obtenerQR = async () => {
+      try {
+        const response = await fetch(`${API_BASE}/activarDosPasos`, {
+          method: 'POST',
+          credentials: 'include', // 👈 ESTO ES CLAVE PARA COOKIES
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setQrCode(data.codigoQR || data.qr);
+        } else {
+          setMensaje(data.error || 'No se pudo generar el QR');
+        }
+
+      } catch (error) {
+        console.error("Error al obtener QR:", error);
+        setMensaje('Error de conexión con el servidor');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    obtenerQR();
+  }, []);
+
+  const confirmarCodigo = async () => {
+    if (codigoIngresado.length < 6) {
+      setMensaje('❌ El código debe tener 6 dígitos');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/confirmarDosPasos`, {
+        method: 'POST',
+        credentials: 'include', // 👈 IMPORTANTE
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ codigo: codigoIngresado })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMensaje('✅ ¡Seguridad 2FA activada con éxito!');
+
+        // Actualizar usuario en localStorage SOLO visualmente (no token)
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+          const updatedUser = { ...user, activacion_dos_pasos: 1 };
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+          window.dispatchEvent(new Event("storage"));
+        }
+
+        setTimeout(() => onClose(), 2000);
+
+      } else {
+        setMensaje('❌ ' + (data.error || 'Código incorrecto.'));
+      }
+
+    } catch (error) {
+      setMensaje('❌ Error al verificar el código');
+    }
+  };
+
+  return (
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 10000 }}>
+      <div style={{ background: 'white', padding: '2.5rem', borderRadius: '16px', textAlign: 'center', maxWidth: '420px', width: '90%', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
+        
+        <h2 style={{marginTop: 0, color: '#111827', fontSize: '1.5rem'}}>
+          Configurar verificación
+        </h2>
+
+        {loading ? (
+          <div style={{padding: '20px'}}>Cargando QR seguro...</div>
+        ) : (
+          <>
+            <p style={{fontSize: '0.9rem', color: '#6b7280', marginBottom: '20px'}}>
+              Escanea el código con Google Authenticator para vincular tu cuenta
+            </p>
+
+            {qrCode ? (
+              <img 
+                src={qrCode} 
+                alt="QR 2FA"
+                style={{ 
+                  margin: '0 auto 20px', 
+                  display: 'block', 
+                  width: '180px', 
+                  height: '180px', 
+                  border: '1px solid #eee', 
+                  padding: '10px', 
+                  borderRadius: '8px' 
+                }} 
+              />
+            ) : (
+              <div style={{color: '#ef4444', marginBottom: '20px'}}>
+                No se pudo cargar la imagen del QR
+              </div>
+            )}
+
+            <input
+              type="text"
+              placeholder="Código de 6 dígitos"
+              value={codigoIngresado}
+              onChange={(e) => setCodigoIngresado(e.target.value.replace(/\D/g, ''))}
+              maxLength="6"
+              style={{ 
+                padding: '14px', 
+                width: '100%', 
+                marginBottom: '20px', 
+                borderRadius: '8px', 
+                border: '2px solid #d1d5db', 
+                textAlign: 'center', 
+                fontSize: '1.4rem', 
+                fontWeight: 'bold', 
+                letterSpacing: '5px' 
+              }}
+            />
+
+            {mensaje && (
+              <p style={{ 
+                fontSize: '0.9rem', 
+                marginBottom: '20px', 
+                color: mensaje.includes('✅') ? '#059669' : '#dc2626',
+                fontWeight: '600'
+              }}>
+                {mensaje}
+              </p>
+            )}
+
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button onClick={confirmarCodigo} className="btn-primary" style={{ flex: 2, padding: '12px' }}>
+                Activar ahora
+              </button>
+
+              <button onClick={onClose} style={{ flex: 1, background: '#f3f4f6', border: 'none', borderRadius: '8px', cursor: 'pointer', color: '#4b5563' }}>
+                Cerrar
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // ========== NAVBAR ==========
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [show2FAModal, setShow2FAModal] = useState(false); // Estado para abrir/cerrar el QR
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   
-  // Leemos el usuario al cargar el componente
   useEffect(() => {
     const checkUser = () => {
       const storedUser = localStorage.getItem('user');
@@ -111,8 +272,6 @@ const Navbar = () => {
     };
 
     checkUser();
-
-    // Escuchamos el evento 'storage' por si inicias sesión en otra pestaña o componente
     window.addEventListener('storage', checkUser);
     return () => window.removeEventListener('storage', checkUser);
   }, []);
@@ -121,122 +280,118 @@ const Navbar = () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     setUser(null);
-    navigate('/'); // Redirigir a inicio
-    window.dispatchEvent(new Event("storage")); // Notificar cambio
+    navigate('/'); 
+    window.dispatchEvent(new Event("storage")); 
   };
 
-  // Lógica simple para mostrar admin (puedes mejorarla validando un rol real)
-  const isAdmin = !!user; 
+  // ✅ CORRECCIÓN: Ahora validamos el rol real de tu base de datos
+  const isAdmin = user?.rol === 'admin'; 
+
+  // Verificamos si ya tiene activado el 2FA para no mostrarle el botón de configuración si ya lo hizo
+  const tiene2FA = user?.activacion_dos_pasos === 1 || user?.activacion_dos_pasos === true;
 
   return (
-    <header className="navbar">
-      <nav className="nav-container">
-        <div className="nav-content">
-          <div className="logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-            <div className="logo-icon">
-              <MapPin size={24} />
-            </div>
-            <span className="logo-text">ViajesFácil</span>
-          </div>
-          
-          <div className="nav-links">
-            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/'); }}>Inicio</a>
-            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/hoteles'); }}>Destinos</a>
-            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/paquetes'); }}>Paquetes</a>
-            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/transportes'); }}>Transportes</a>
-          </div>
+    <>
+      {/* Si el estado es true, dibujamos el modal por encima de todo */}
+      {show2FAModal && <ModalActivar2FA onClose={() => setShow2FAModal(false)} />}
 
-          {/* --- SECCIÓN DE ACCIONES DE USUARIO --- */}
-          <div className="nav-actions">
-            {user ? (
-              // SI ESTÁ LOGUEADO
-              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: '600', color: '#374151' }}>
-                  <User size={18} color="#2563eb" /> Hola, {user.nombre}
-                </span>
-                
-                {isAdmin && (
-                  <button 
-                    className="btn-primary" 
-                    onClick={() => navigate('/admin')}
-                    style={{ 
-                      background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                      padding: '8px 16px',
-                      fontSize: '0.9rem'
-                    }}
-                  >
-                    🔧 Admin
-                  </button>
-                )}
-
-                <button 
-                  className="btn-text" 
-                  onClick={handleLogout}
-                  style={{ color: '#dc2626', display: 'flex', alignItems: 'center', gap: '5px' }}
-                >
-                  <LogOut size={18} /> Salir
-                </button>
+      <header className="navbar">
+        <nav className="nav-container">
+          <div className="nav-content">
+            <div className="logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+              <div className="logo-icon">
+                <MapPin size={24} />
               </div>
-            ) : (
-              // SI NO ESTÁ LOGUEADO (INVITADO)
-              <>
-                <button className="btn-text" onClick={() => navigate('/login')}>
-                  Iniciar sesión
-                </button>
-                <button className="btn-primary" onClick={() => navigate('/register')}>
-                  Registrarse
-                </button>
-              </>
-            )}
-          </div>
-
-          {/* Botón Menú Móvil */}
-          <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-
-        {/* Menú Móvil */}
-        {mobileMenuOpen && (
-          <div className="mobile-menu">
-            <a href="#" onClick={() => navigate('/')}>Inicio</a>
-            <a href="#" onClick={() => navigate('/hoteles')}>Destinos</a>
-            <a href="#" onClick={() => navigate('/paquetes')}>Paquetes</a>
+              <span className="logo-text">ViajesFácil</span>
+            </div>
             
-            <div style={{ borderTop: '1px solid #e5e7eb', margin: '10px 0' }}></div>
+            <div className="nav-links">
+              <a href="#" onClick={(e) => { e.preventDefault(); navigate('/'); }}>Inicio</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); navigate('/hoteles'); }}>Destinos</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); navigate('/paquetes'); }}>Paquetes</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); navigate('/transportes'); }}>Transportes</a>
+            </div>
 
-            {user ? (
-              <>
-                <div style={{ padding: '10px 0', fontWeight: '600', color: '#2563eb' }}>
-                   Hola, {user.nombre}
-                </div>
-                {isAdmin && (
+            <div className="nav-actions">
+              {user ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: '600', color: '#374151' }}>
+                    <User size={18} color="#2563eb" /> Hola, {user.nombre}
+                  </span>
+                  
+                  {/* Botón de 2FA: Solo se muestra si NO lo tiene activado aún */}
+                  {!tiene2FA && (
+                    <button 
+                      onClick={() => setShow2FAModal(true)}
+                      style={{ background: '#3b82f6', color: 'white', padding: '6px 12px', borderRadius: '6px', border: 'none', cursor: 'pointer', fontSize: '0.85rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}
+                    >
+                      🔒 Proteger
+                    </button>
+                  )}
+                  
+                  {isAdmin && (
+                    <button 
+                      className="btn-primary" 
+                      onClick={() => navigate('/admin')}
+                      style={{ background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', padding: '8px 16px', fontSize: '0.9rem' }}
+                    >
+                      🔧 Admin
+                    </button>
+                  )}
+
                   <button 
-                    className="btn-primary" 
-                    onClick={() => navigate('/admin')}
-                    style={{ width: '100%', marginBottom: '10px', background: '#059669' }}
+                    className="btn-text" 
+                    onClick={handleLogout}
+                    style={{ color: '#dc2626', display: 'flex', alignItems: 'center', gap: '5px' }}
                   >
-                    🔧 Panel Admin
+                    <LogOut size={18} /> Salir
                   </button>
-                )}
-                <button className="btn-text" onClick={handleLogout} style={{ width: '100%', textAlign: 'left', color: '#dc2626' }}>
-                  <LogOut size={16} style={{ marginRight: '5px', display:'inline' }}/> Cerrar Sesión
-                </button>
-              </>
-            ) : (
-              <>
-                <button className="btn-text" onClick={() => navigate('/login')}>
-                  Iniciar sesión
-                </button>
-                <button className="btn-primary" onClick={() => navigate('/register')}>
-                  Registrarse
-                </button>
-              </>
-            )}
+                </div>
+              ) : (
+                <>
+                  <button className="btn-text" onClick={() => navigate('/login')}>Iniciar sesión</button>
+                  <button className="btn-primary" onClick={() => navigate('/register')}>Registrarse</button>
+                </>
+              )}
+            </div>
+
+            <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
-        )}
-      </nav>
-    </header>
+
+          {/* MENÚ MÓVIL (Versión condensada para no hacer el código gigante, aquí también agregué el botón 2FA) */}
+          {mobileMenuOpen && (
+            <div className="mobile-menu">
+              <a href="#" onClick={() => navigate('/')}>Inicio</a>
+              <div style={{ borderTop: '1px solid #e5e7eb', margin: '10px 0' }}></div>
+              {user ? (
+                <>
+                  <div style={{ padding: '10px 0', fontWeight: '600', color: '#2563eb' }}>Hola, {user.nombre}</div>
+                  
+                  {!tiene2FA && (
+                    <button onClick={() => setShow2FAModal(true)} style={{ width: '100%', marginBottom: '10px', background: '#3b82f6', color: 'white', padding: '8px', borderRadius: '6px', border: 'none', fontWeight: 'bold' }}>
+                      🔒 Proteger Cuenta
+                    </button>
+                  )}
+
+                  {isAdmin && (
+                    <button className="btn-primary" onClick={() => navigate('/admin')} style={{ width: '100%', marginBottom: '10px', background: '#059669' }}>
+                      🔧 Panel Admin
+                    </button>
+                  )}
+                  <button className="btn-text" onClick={handleLogout} style={{ width: '100%', textAlign: 'left', color: '#dc2626' }}>
+                    Cerrar Sesión
+                  </button>
+                </>
+              ) : (
+                <button className="btn-text" onClick={() => navigate('/login')}>Iniciar sesión</button>
+              )}
+            </div>
+          )}
+        </nav>
+      </header>
+    </>
   );
 };
 

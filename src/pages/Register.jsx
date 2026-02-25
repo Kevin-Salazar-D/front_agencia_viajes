@@ -87,7 +87,7 @@ const Register = () => {
         telefono: formData.telefono
       };
 
-      const response = await fetch(`${API_BASE}/usuarios/crearUsuarios`, {
+      const response = await fetch(`${API_BASE}/autenticacion/crearCuenta`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData)

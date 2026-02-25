@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, MapPin, AlertCircle } from 'lucide-react';
+import ModalVerificar2FA from '../components/ModalVerificar2FA';
 
 const API_BASE = 'http://localhost:3000/agenciaViajes';
 
@@ -13,6 +14,8 @@ const Login = () => {
     contrasena: ''
   });
   
+  const [show2FA, setShow2FA] = useState(false);
+  const [userId2FA, setUserId2FA] = useState(null);
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -69,44 +72,44 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // 1. Conectar con la API real
-      const response = await fetch(`${API_BASE}/usuarios/obtenerTodosUsuarios`);
+      const datosParaBackend = {
+        correo: formData.correo,
+        contra: formData.contrasena, 
+        usuario: formData.correo   
+      };
+
+      const response = await fetch(`${API_BASE}/autenticacion/registro`, {
+      method: 'POST',
+      credentials: 'include', // 👈 ESTO ES CLAVE
+      headers: { 
+      'Content-Type': 'application/json' 
+    },
+  body: JSON.stringify(datosParaBackend)
+});
       
       if (!response.ok) {
-        throw new Error('Error al conectar con el servidor');
+        throw new Error('Error al conectar con el servidor o credenciales inválidas');
       }
 
-      const usuarios = await response.json();
+      // 1. Recibimos el OBJETO del backend (no una lista)
+      const data = await response.json();
 
-      // 2. Buscar el usuario que coincida con el correo y contraseña
-      // NOTA: Esto es una validación básica frontend. Lo ideal es un endpoint /login en el backend que maneje bcrypt.
-      // Aquí buscamos coincidencia exacta. 
-      const userFound = usuarios.find(u => 
-        u.correo.toLowerCase() === formData.correo.toLowerCase() && 
-        (u.contra === formData.contrasena || u.contrasena === formData.contrasena || u.usuario === formData.contrasena) // Flexibilidad para pruebas
-      );
-
-      if (userFound) {
-        // 3. Login Exitoso
-        const token = 'dummy-token-' + Date.now(); // Simulamos token
-        
-        const userData = {
-            id: userFound.id,
-            nombre: userFound.nombre,
-            apellido: userFound.apellido,
-            email: userFound.correo,
-            usuario: userFound.usuario
-        };
-
-        // Guardar en localStorage
-        handleLoginSuccess(userData, token);
-        
-        // Redirigir
-        navigate('/'); 
-      } else {
-        // Fallo de credenciales
-        throw new Error('Credenciales inválidas');
+      // 2. Verificamos si requiere Autenticación de Dos Pasos (2FA)
+      if (data.requiere2FA) {
+        setUserId2FA(data.userId); 
+        setShow2FA(true);
+        setLoading(false);
+        return; // Detenemos el flujo
       }
+
+      // 3. LOGIN NORMAL (Si no tiene 2FA y todo salió bien)
+      // Como tu backend manda el token en una cookie HttpOnly, no viene en el JSON, 
+      // pero simulamos uno para que tu contexto de React funcione por ahora.
+      const token = 'token-cookie-establecida'; 
+      const userData = data.usuario; // Tu backend ya te manda los datos del usuario aquí
+
+      handleLoginSuccess(userData, token);
+      navigate('/'); 
       
     } catch (error) {
       console.error('Error en login:', error);
@@ -114,7 +117,7 @@ const Login = () => {
     } finally {
       setLoading(false);
     }
-  };
+    };
 
   return (
     <div className="auth-container">
@@ -228,6 +231,14 @@ const Login = () => {
           </div>
         </div>
       </div>
+
+      {show2FA && (
+      <ModalVerificar2FA 
+          userId={userId2FA} 
+          onSuccess={() => navigate('/')} 
+         onCancel={() => setShow2FA(false)} 
+         />
+      )}
 
       {/* ESTILOS INTEGRADOS */}
       <style>{`
