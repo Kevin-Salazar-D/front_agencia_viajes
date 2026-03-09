@@ -1,0 +1,174 @@
+/* =========================================
+   HOTEL CARD - DISEÑO CORREGIDO
+   ========================================= */
+.package-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f3f4f6; /* Borde súper sutil */
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.package-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.package-image {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+}
+
+.package-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.package-card:hover .package-image img {
+  transform: scale(1.08);
+}
+
+/* ========== BADGE "DISPONIBLE" (DEGRADADO) ========== */
+.package-badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  /* El degradado que querías (Naranja a Rosa vibrante) */
+  background: linear-gradient(135deg, #f97316, #ec4899); 
+  color: white;
+  padding: 6px 14px;
+  border-radius: 50px; /* Forma de píldora */
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 10px rgba(236, 72, 153, 0.3); /* Sombra rosada */
+  z-index: 2;
+}
+
+/* ========== RATING (ESTRELLAS ARRIBA A LA DERECHA) ========== */
+.package-rating {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 6px 10px;
+  border-radius: 50px; /* Forma de píldora */
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+
+.star-icon {
+  color: #f59e0b;
+  fill: #f59e0b;
+}
+
+.rating-value {
+  font-weight: 800;
+  color: #111827;
+}
+
+.rating-count {
+  color: #6b7280;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* ========== CONTENIDO Y TEXTO ========== */
+.package-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.package-content h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 0.25rem;
+  /* Trunca el texto a 1 línea si es muy largo */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.package-hotel {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  /* Trunca a 1 línea */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ========== NUEVA SECCIÓN DE PRECIO ========== */
+.package-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f3f4f6;
+  margin-top: auto; /* Empuja el precio al fondo siempre */
+}
+
+.price-text-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.price-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.price-sub {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.price-value {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #2563eb; /* Azul primario para destacar el precio */
+  line-height: 1;
+}
+
+/* ========== EL BOTÓN ORIGINAL Y PODEROSO ========== */
+.btn-package {
+  width: 100%;
+  background: linear-gradient(135deg, #2563eb, #06b6d4); /* Tu azul/cyan original */
+  color: white;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.btn-package:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+}

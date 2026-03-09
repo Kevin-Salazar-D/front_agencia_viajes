@@ -5,89 +5,7 @@ import { getCities } from '../services/cities';
 import { getAllPackages } from '../services/packages';
 import '../App.css';
 
-// ========== NAVBAR ==========
-const Navbar = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const navigate = useNavigate();
-  
-  const isAdmin = true;
 
-  return (
-    <header className="navbar">
-      <nav className="nav-container">
-        <div className="nav-content">
-          <div className="logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
-            <div className="logo-icon">
-              <MapPin size={24} />
-            </div>
-            <span className="logo-text">ViajesFácil</span>
-          </div>
-          
-          <div className="nav-links">
-            <a href="/#inicio">Inicio</a>
-            <a href="/hoteles">Destinos</a>
-            <a href="/paquetes">Paquetes</a>
-            <a href="/transportes">Transportes</a>
-          </div>
-
-          <div className="nav-actions">
-            <button className="btn-text" onClick={() => navigate('/login')}>
-              Iniciar sesión
-            </button>
-            <button className="btn-primary" onClick={() => navigate('/register')}>
-              Registrarse
-            </button>
-            
-            {isAdmin && (
-              <button 
-                className="btn-primary" 
-                onClick={() => navigate('/admin')}
-                style={{ 
-                  background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                  marginLeft: '8px'
-                }}
-              >
-                🔧 Admin
-              </button>
-            )}
-          </div>
-
-          <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-
-        {mobileMenuOpen && (
-          <div className="mobile-menu">
-            <a href="/#inicio">Inicio</a>
-            <a href="/hoteles">Destinos</a>
-            <a href="/paquetes">Paquetes</a>
-            <a href="/#contacto">Contacto</a>
-            <button className="btn-text" onClick={() => navigate('/login')}>
-              Iniciar sesión
-            </button>
-            <button className="btn-primary" onClick={() => navigate('/register')}>
-              Registrarse
-            </button>
-            
-            {isAdmin && (
-              <button 
-                className="btn-primary" 
-                onClick={() => navigate('/admin')}
-                style={{ 
-                  background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-                  marginTop: '8px'
-                }}
-              >
-                🔧 Admin
-              </button>
-            )}
-          </div>
-        )}
-      </nav>
-    </header>
-  );
-};
 
 // ========== PACKAGE CARD ==========
 const PackageCard = ({ packageData, navigate }) => {
@@ -168,67 +86,8 @@ const PackageCard = ({ packageData, navigate }) => {
   );
 };
 
-// ========== FOOTER ==========
-const Footer = () => {
-  return (
-    <footer className="footer">
-      <div className="footer-container">
-        <div className="footer-grid">
-          <div className="footer-column">
-            <div className="footer-logo">
-              <div className="logo-icon">
-                <MapPin size={24} />
-              </div>
-              <span>ViajesFácil</span>
-            </div>
-            <p>Tu compañero perfecto para descubrir el mundo</p>
-          </div>
 
-          <div className="footer-column">
-            <h3>Empresa</h3>
-            <ul>
-              <li><a href="#">Sobre nosotros</a></li>
-              <li><a href="#">Trabaja con nosotros</a></li>
-              <li><a href="#">Blog</a></li>
-            </ul>
-          </div>
 
-          <div className="footer-column">
-            <h3>Soporte</h3>
-            <ul>
-              <li><a href="#">Centro de ayuda</a></li>
-              <li><a href="#">Términos y condiciones</a></li>
-              <li><a href="#">Política de privacidad</a></li>
-            </ul>
-          </div>
-
-          <div className="footer-column">
-            <h3>Contacto</h3>
-            <ul>
-              <li className="contact-item">
-                <Phone size={16} />
-                <span>+52 33 1234 5678</span>
-              </li>
-              <li className="contact-item">
-                <Mail size={16} />
-                <span>info@viajesfacil.com</span>
-              </li>
-            </ul>
-            <div className="social-links">
-              <a href="#"><Facebook size={24} /></a>
-              <a href="#"><Instagram size={24} /></a>
-              <a href="#"><Twitter size={24} /></a>
-            </div>
-          </div>
-        </div>
-
-        <div className="footer-bottom">
-          <p>&copy; 2025 ViajesFácil. Todos los derechos reservados.</p>
-        </div>
-      </div>
-    </footer>
-  );
-};
 
 // ========== PACKAGES COMPONENT ==========
 function Packages() {
@@ -292,7 +151,7 @@ function Packages() {
   if (loading) {
     return (
       <div className="app">
-        <Navbar />
+   
         <div style={{ 
           display: 'flex', 
           justifyContent: 'center', 
@@ -310,7 +169,7 @@ function Packages() {
 
   return (
     <div className="app">
-      <Navbar />
+    
       
       {/* Header Section */}
       <section style={{
@@ -440,7 +299,7 @@ function Packages() {
         </div>
       </section>
 
-      <Footer />
+    
     </div>
   );
 }

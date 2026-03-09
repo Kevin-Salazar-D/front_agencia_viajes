@@ -1,0 +1,300 @@
+
+
+.hotel-details-page {
+  background-color: #f8fafc; 
+  min-height: 100vh;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  padding-bottom: 5rem;
+}
+
+.hd-main-container {
+  max-width: 1150px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+
+
+.hd-btn-back-clean {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 8px 12px 8px 0;
+  transition:
+    color 0.2s,
+    transform 0.2s;
+}
+
+
+/* --- HEADER --- */
+.hd-hotel-header {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.hd-hotel-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0.5rem 0;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.hd-hotel-address {
+  color: #64748b;
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.hd-badges {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 0.75rem;
+}
+
+.hd-badge-stars {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #d97706;
+  font-weight: 700;
+  background: #fef3c7;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.hd-badge-city {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #2563eb;
+  font-weight: 600;
+  background: #eff6ff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.hd-header-price {
+  text-align: right;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .hd-header-price {
+    display: block;
+  }
+}
+
+.hd-price-label {
+  display: block;
+  color: #64748b;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.hd-price-amount {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1;
+}
+
+/* --- GALLERY --- */
+.hd-gallery-section {
+  margin-bottom: 3rem;
+}
+
+.hd-main-image-container {
+  width: 100%;
+  height: 500px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  background: #e2e8f0;
+}
+
+.hd-main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.hd-main-image-container:hover .hd-main-image {
+  transform: scale(1.02);
+}
+
+.hd-thumbnails {
+  display: flex;
+  gap: 12px;
+  margin-top: 1rem;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+.hd-thumbnails::-webkit-scrollbar {
+  height: 6px;
+}
+.hd-thumbnails::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.hd-thumb-btn {
+  width: 110px;
+  height: 75px;
+  flex-shrink: 0;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s;
+  opacity: 0.7;
+}
+
+.hd-thumb-btn:hover {
+  opacity: 1;
+}
+.hd-thumb-btn.active {
+  border-color: #2563eb;
+  opacity: 1;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.hd-thumb-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* --- GRID Y CARTAS DE DETALLES --- */
+.hd-content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+}
+
+@media (min-width: 900px) {
+  .hd-content-grid {
+    grid-template-columns: 1.8fr 1fr;
+  }
+}
+
+.hd-section-card {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 20px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f1f5f9;
+}
+
+.hd-section-card h3 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.4rem;
+  color: #0f172a;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.hd-description-text {
+  color: #475569;
+  line-height: 1.8;
+  font-size: 1.05rem;
+  white-space: pre-line;
+}
+
+/* Amenidades */
+.hd-amenities-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.hd-amenity-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #334155;
+  font-weight: 500;
+}
+
+.hd-amenity-icon {
+  color: #2563eb;
+}
+.hd-text-empty {
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* Políticas */
+.hd-policies-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.hd-policy-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: #f8fafc;
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.hd-policy-icon {
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.hd-policy-item p {
+  margin: 0;
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 1.1rem;
+}
+
+.hd-policy-item strong {
+  display: block;
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.hd-policy-text-block {
+  padding-top: 1.5rem;
+  border-top: 1px solid #f1f5f9;
+  font-size: 0.95rem;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.hd-policy-text-block strong {
+  color: #0f172a;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+

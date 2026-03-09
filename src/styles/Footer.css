@@ -1,0 +1,152 @@
+/* ========== FOOTER BASE ========== */
+.footer {
+  background-color: #0f172a; /* Azul noche muy oscuro, super premium */
+  color: #f8fafc;
+  padding: 4rem 0 2rem 0;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.footer-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ========== GRID RESPONSIVO ========== */
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Móvil: 1 columna */
+  gap: 3rem 2rem;
+  margin-bottom: 3rem;
+}
+
+/* ========== COLUMNAS Y TIPOGRAFÍA ========== */
+.footer-column h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Efecto moderno en los enlaces */
+.footer-column a {
+  color: #94a3b8;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.footer-column a:hover {
+  color: #38bdf8; /* Azul claro vibrante */
+  transform: translateX(5px); /* Se desliza un poquito a la derecha */
+}
+
+/* ========== LOGO DEL FOOTER ========== */
+.brand-column {
+  max-width: 320px;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.footer-logo-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #2563eb, #06b6d4);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+}
+
+.footer-logo-text {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+}
+
+.brand-description {
+  color: #94a3b8;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* ========== CONTACTO Y REDES SOCIALES ========== */
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+.contact-icon {
+  color: #38bdf8;
+}
+
+.social-links {
+  display: flex;
+  gap: 12px;
+  margin-top: 1.5rem;
+}
+
+.social-links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  color: #94a3b8;
+  transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+  background-color: #2563eb;
+  color: #ffffff;
+  transform: translateY(-3px); /* Se elevan al hacer hover */
+}
+
+/* ========== FOOTER BOTTOM (Derechos reservados) ========== */
+.footer-bottom {
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+/* ========== MEDIA QUERIES (El secreto del buen Responsive) ========== */
+
+/* Tablets (iPad, etc) */
+@media (min-width: 640px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 Columnas */
+  }
+}
+
+/* Desktop (PC) */
+@media (min-width: 1024px) {
+  .footer-grid {
+    grid-template-columns: 2fr 1fr 1fr 1fr; /* 4 Columnas, dándole más espacio a la marca */
+  }
+}
