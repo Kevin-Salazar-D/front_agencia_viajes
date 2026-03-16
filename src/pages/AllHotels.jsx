@@ -86,6 +86,10 @@ function AllHotels() {
           return a.nombre.localeCompare(b.nombre);
         case "estrellas":
           return (b.estrellas || 0) - (a.estrellas || 0);
+        case "precio_alto":
+          return (b.precio_noche || 0 ) - (a.precio_noche || 0);
+        case "precio_bajo":
+          return (a.precio_noche || 0 ) - (b.precio_noche || 0);
         default:
           return 0;
       }
@@ -145,6 +149,8 @@ function AllHotels() {
             >
               <option value="nombre">Ordenar por nombre (A-Z)</option>
               <option value="estrellas">Mejor calificados</option>
+              <option value="precio_alto">Precio alto</option>
+              <option value="precio_bajo">Precio bajo</option>
             </select>
           </div>
 

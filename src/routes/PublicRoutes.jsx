@@ -12,6 +12,7 @@ import Destination from "../pages/AllHotels";
 import AllTransports from "../pages/AllTransports";
 import TransportDetails from "../pages/TransportDetails";
 import HotelDetails from "../pages/HotelDetails";
+import PackageDetails from "../pages/PackageDetails";
 
 // Pages de autorizacion
 import Login from "../pages/Login";
@@ -29,6 +30,7 @@ const PublicRoutes = (
       <Route path="/transportes/:id" element={<TransportDetails />} />
 
       <Route path="/hotel/:id" element={<HotelDetails />} />
+      <Route path="/paquete/:id" element={<PackageDetails />} />
     </Route>
 
     {/* Layout para la autorizacion */}

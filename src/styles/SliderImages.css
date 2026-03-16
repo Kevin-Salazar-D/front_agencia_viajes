@@ -1,0 +1,133 @@
+/* ========== SliderImages.css ========== */
+.gallery-section {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.main-image-container {
+  width: 100%;
+  height: 480px; 
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative; /* Clave para las flechas */
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  background: #e5e7eb;
+}
+
+.main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+@media (min-width: 768px) {
+  .main-image-container:hover .main-image {
+    transform: scale(1.03);
+  }
+}
+
+.thumbnails {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scroll-behavior: smooth;
+  scrollbar-width: none; 
+}
+.thumbnails::-webkit-scrollbar {
+  display: none;
+}
+
+.thumb-btn {
+  width: 100px;
+  height: 70px;
+  flex-shrink: 0;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+}
+
+.thumb-btn:hover {
+  opacity: 1;
+}
+
+.thumb-btn.active {
+  border-color: #2563eb;
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+}
+
+.thumb-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Botones de Flechas */
+.slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.8);
+  color: #0f172a;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.slider-arrow:hover {
+  background: #ffffff;
+  color: #0ea5e9;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.slider-arrow.prev { left: 15px; }
+.slider-arrow.next { right: 15px; }
+
+/* Responsive del Slider */
+@media (max-width: 900px) {
+  .main-image-container {
+    height: 380px;
+    border-radius: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .slider-arrow { width: 38px; height: 38px; }
+  .slider-arrow.prev { left: 10px; }
+  .slider-arrow.next { right: 10px; }
+}
+
+@media (max-width: 480px) {
+  .main-image-container {
+    height: 250px;
+    border-radius: 12px;
+  }
+  .thumb-btn {
+    width: 75px;
+    height: 55px;
+    border-radius: 8px;
+  }
+  .slider-arrow {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.95); 
+  }
+  .slider-arrow.prev { left: 6px; }
+  .slider-arrow.next { right: 6px; }
+}

@@ -1,0 +1,172 @@
+/* ========== TARJETA DE PAQUETE ========== */
+.pkg-card {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Hover de la tarjeta activo */
+.pkg-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Imagen y Etiqueta */
+.pkg-card-image-wrapper {
+  height: 200px;
+  position: relative;
+  overflow: hidden; /* Clave para que el zoom no se salga de la tarjeta */
+}
+
+.pkg-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease; /* Transición suave para el zoom */
+}
+
+/* El hover mágico que acerca la imagen */
+.pkg-card:hover .pkg-card-image {
+  transform: scale(1.08); /* Aumenta el tamaño un 8% */
+}
+
+.pkg-card-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: white;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  z-index: 2; /* Para que el badge siempre quede arriba de la imagen */
+}
+
+/* Contenido Principal */
+.pkg-card-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.pkg-card-header h3 {
+  font-size: 1.3rem;
+  color: #0f172a;
+  margin: 0 0 0.5rem 0;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.pkg-card-location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #64748b;
+  font-size: 0.9rem;
+  margin: 0 0 1.5rem 0;
+}
+
+/* Caja de Especificaciones Rediseñada */
+.pkg-card-specs {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.pkg-spec-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Todo alineado a la izquierda */
+  gap: 12px; /* Espacio entre el círculo y el texto */
+}
+
+/* El nuevo circulito contenedor de los iconos */
+.pkg-spec-icon-wrapper {
+  background-color: #f1f5f9; /* Círculo gris claro/azulado */
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569; /* Icono en tono neutro, más elegante que el azul chillón */
+  flex-shrink: 0; /* Evita que el círculo se aplaste */
+}
+
+.pkg-spec-text {
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Estrella Amarilla directa */
+.pkg-star-yellow {
+  color: #f59e0b;
+  fill: #f59e0b;
+}
+
+/* Footer: Precio y Botón */
+.pkg-card-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pkg-price-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-top: 1px dashed #e2e8f0;
+  padding-top: 1.2rem;
+}
+
+.pkg-price-label {
+  color: #111827;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pkg-price-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #2563eb; 
+  line-height: 1;
+}
+
+/* Botón Ver Detalles */
+.pkg-btn-details {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: linear-gradient(135deg, #2563eb, #06b6d4);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.pkg-btn-details:hover {
+  background-color: #0284c7; 
+   transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+}

@@ -47,6 +47,15 @@ export const API_ROUTES = {
     UPDATE_TRASPORT: "/transportes/actualizarTransporte",
     DELETE_TRASPORT: "/transportes/eliminarTransporte"
 
+  },
+  PACKAGE:{
+    GET_PACKAGE: "/paquetes/mostrarTodosPaquetes",
+    GET_PACKAGE_ID: "/paquetes/mostrarPaquete",
+    GET_PACKAGE_HOTEL_ID: "/paquetes/mostrarPaquetesPorHotel",
+    CREATE_PACKAGE: "/paquetes/crearPaquete",
+    UPDATE_PACKAGE: "/paquetes/actualizarPaquete",
+    DELETE_PACKAGE: "/paquetes/borrarPaquete"
+
   }
 };
 

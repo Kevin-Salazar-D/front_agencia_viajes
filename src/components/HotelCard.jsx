@@ -1,22 +1,12 @@
 import { Link } from 'react-router-dom';
-import { Star, ArrowRight } from 'lucide-react';
 import '../styles/HotelCard.css';
+import icons from "../constants/icons";
 
-const HotelCard = ({ hotel, hotelDetails }) => {
+const HotelCard = ({ hotel }) => {
   const rating = hotel.estrellas || 4.0;
-  const reviews = hotelDetails?.total_resenas || 0;
-  const precioNoche = hotelDetails?.precio_noche || 999;
-  
-  const hotelImages = [
-    "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
-    "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80",
-    "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80",
-    "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80",
-    "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80",
-    "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=800&q=80"
-  ];
-
-  const imageUrl = hotel.imagen || hotelImages[hotel.id % hotelImages.length];
+  const reviews = hotel?.total_resenas || 0;
+  const precioNoche = hotel?.precio_noche || 999;
+  const imageUrl = hotel.imagen 
 
   return (
     <article className="package-card">
@@ -28,7 +18,7 @@ const HotelCard = ({ hotel, hotelDetails }) => {
         
         {/* Rating limpio en la esquina */}
         <div className="package-rating">
-          <Star className="star-icon" size={14} />
+          {icons.star}
           <span className="rating-value">{rating}</span>
           <span className="rating-count">({reviews} reseñas)</span>
         </div>
@@ -52,7 +42,7 @@ const HotelCard = ({ hotel, hotelDetails }) => {
       
         <Link to={`/hotel/${hotel.id}`} className="btn-package">
           <span>Ver detalles</span>
-          <ArrowRight size={18} />
+          {icons.arrow}
         </Link>
       </div>
     </article>

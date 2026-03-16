@@ -1,7 +1,7 @@
-
-
+/* ========== COMPONENTE DE RESERVA (Reservation.jsx) ========== */
 .hd-booking-column {
   position: relative;
+  width: 100%;
 }
 
 .hd-booking-card {
@@ -11,7 +11,7 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
   border: 1px solid #f1f5f9;
   position: sticky;
-  top: 30px; /* Se queda pegada arriba elegantemente */
+  top: 100px; /* Separación desde el navbar al hacer scroll */
 }
 
 .hd-booking-header {
@@ -34,10 +34,15 @@
 
 /* --- SELECTOR DE FECHAS --- */
 .hd-date-selector {
+  border: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+}
+
+.hd-date-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
-  margin-bottom: 1.5rem;
 }
 
 .hd-date-input-group label {
@@ -66,13 +71,14 @@
   border-color: #2563eb;
 }
 
-/* --- INFORMACIÓN ADICIONAL (Teléfono, etc) --- */
+/* --- INFORMACIÓN ADICIONAL --- */
 .hd-booking-info {
   background: #f8fafc;
   padding: 1.25rem;
   border-radius: 12px;
   margin-bottom: 1.5rem;
   border: 1px solid #e2e8f0;
+  list-style: none;
 }
 
 .hd-info-row {
@@ -90,6 +96,7 @@
 
 .hd-info-row svg {
   color: #64748b;
+  flex-shrink: 0;
 }
 
 /* --- BOTÓN DE RESERVA --- */
@@ -126,6 +133,12 @@
   border-top: 1px solid #e2e8f0;
 }
 
+.hd-total-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 .hd-total-row {
   display: flex;
   justify-content: space-between;
@@ -138,4 +151,35 @@
   color: #0f172a;
   font-size: 1.2rem;
   margin-top: 1rem;
+}
+@media (max-width: 900px) {
+  .hd-booking-card {
+    /* Quitamos el sticky para que fluya naturalmente debajo de la info y no tape la pantalla */
+    position: static; 
+    margin-top: 1rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* Pantallas pequeñas (Celulares) */
+@media (max-width: 480px) {
+  .hd-booking-card {
+    padding: 1.5rem; /* Reducimos el padding para ganar espacio en la pantalla */
+    border-radius: 16px;
+  }
+
+  .hd-price-large {
+    font-size: 1.6rem; /* Achicamos un poco el precio gigante */
+  }
+
+  .hd-date-grid {
+    /* Apilamos los inputs de fecha uno sobre otro para que sean fáciles de tocar */
+    grid-template-columns: 1fr; 
+    gap: 1rem;
+  }
+
+  .hd-btn-book-full {
+    padding: 1rem;
+    font-size: 1.05rem;
+  }
 }

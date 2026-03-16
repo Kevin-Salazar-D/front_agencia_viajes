@@ -1,13 +1,8 @@
-
-
+/* ========== VISTA DETALLE DE HOTEL ========== */
 .hotel-details-page {
   background-color: #f8fafc; 
   min-height: 100vh;
-  font-family:
-    "Inter",
-    system-ui,
-    -apple-system,
-    sans-serif;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
   padding-bottom: 5rem;
 }
 
@@ -16,8 +11,6 @@
   margin: 0 auto;
   padding: 0 1.5rem;
 }
-
-
 
 .hd-btn-back-clean {
   display: inline-flex;
@@ -30,11 +23,8 @@
   font-size: 0.95rem;
   cursor: pointer;
   padding: 8px 12px 8px 0;
-  transition:
-    color 0.2s,
-    transform 0.2s;
+  transition: color 0.2s, transform 0.2s;
 }
-
 
 /* --- HEADER --- */
 .hd-hotel-header {
@@ -116,75 +106,6 @@
   line-height: 1;
 }
 
-/* --- GALLERY --- */
-.hd-gallery-section {
-  margin-bottom: 3rem;
-}
-
-.hd-main-image-container {
-  width: 100%;
-  height: 500px;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  background: #e2e8f0;
-}
-
-.hd-main-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.hd-main-image-container:hover .hd-main-image {
-  transform: scale(1.02);
-}
-
-.hd-thumbnails {
-  display: flex;
-  gap: 12px;
-  margin-top: 1rem;
-  overflow-x: auto;
-  padding-bottom: 10px;
-}
-
-.hd-thumbnails::-webkit-scrollbar {
-  height: 6px;
-}
-.hd-thumbnails::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
-}
-
-.hd-thumb-btn {
-  width: 110px;
-  height: 75px;
-  flex-shrink: 0;
-  border: 2px solid transparent;
-  border-radius: 12px;
-  overflow: hidden;
-  cursor: pointer;
-  padding: 0;
-  transition: all 0.2s;
-  opacity: 0.7;
-}
-
-.hd-thumb-btn:hover {
-  opacity: 1;
-}
-.hd-thumb-btn.active {
-  border-color: #2563eb;
-  opacity: 1;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-}
-
-.hd-thumb-btn img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 /* --- GRID Y CARTAS DE DETALLES --- */
 .hd-content-grid {
   display: grid;
@@ -240,6 +161,7 @@
 .hd-amenity-icon {
   color: #2563eb;
 }
+
 .hd-text-empty {
   color: #94a3b8;
   font-style: italic;
@@ -297,4 +219,94 @@
   margin-bottom: 0.5rem;
 }
 
+/* ==========================================
+   MAGIA RESPONSIVE (Tablets y Celulares)
+   ========================================== */
 
+/* --- Tablets (Pantallas medianas) --- */
+@media (max-width: 900px) {
+  /* El grid principal pasa de 2 columnas (Izquierda: Info, Derecha: Reserva) a 1 sola columna */
+  .hd-content-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  /* El header (Título a la izq, precio a la der) se apila hacia abajo */
+  .hd-hotel-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  /* El precio ahora se alinea a la izquierda para seguir el flujo del texto */
+  .hd-header-price {
+    text-align: left;
+    display: block; /* Aseguramos que se vea en tablet/móvil */
+  }
+}
+
+/* --- Celulares (Pantallas pequeñas) --- */
+@media (max-width: 480px) {
+  /* Reducimos márgenes generales de la página */
+  .hotel-details-page {
+    padding-bottom: 2rem;
+  }
+
+  .hd-main-container {
+    padding: 0 1rem; /* Menos padding lateral para ganar espacio */
+  }
+
+  /* Achicamos la tipografía del Título y Precio */
+  .hd-hotel-title {
+    font-size: 1.8rem;
+  }
+
+  .hd-price-amount {
+    font-size: 1.8rem;
+  }
+
+  .hd-hotel-address {
+    font-size: 0.95rem;
+  }
+
+  /* Las tarjetas de información (Descripción, Amenidades) ocupaban mucho espacio */
+  .hd-section-card {
+    padding: 1.5rem;
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+  }
+
+  .hd-section-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .hd-description-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* Las amenidades (Wifi, Alberca) pasan de 2 columnas a 1 columna */
+  .hd-amenities-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Las tarjetas de políticas (Check-in / Check-out) pasan de 2 columnas a 1 columna */
+  .hd-policies-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  
+  .hd-badges {
+    flex-wrap: wrap; 
+    gap: 8px;
+  }
+
+  .hd-badge-stars, 
+  .hd-badge-city {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+}

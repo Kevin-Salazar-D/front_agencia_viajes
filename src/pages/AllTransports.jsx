@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Bus, Plane, Loader, ArrowLeft, Filter } from "lucide-react";
+
+import icons from "../constants/icons";
 
 // Importación del servicio
 import trasportService from "../services/transportService";
 // Importamos alertas y el loading
 import { useLoading } from "../context/LoadingContext";
 import { useAlert } from "../context/AlerContext";
-// Importamos el CSS aislado
+// Importamos el CSS
 import "../styles/AllTransports.css";
 
 // Componentes
@@ -97,7 +98,7 @@ const AllTransports = () => {
             className="transport-ui-btn-back"
             onClick={() => navigate("/")}
           >
-            <ArrowLeft size={20} />
+            {icons.backArrow}
             <span>Volver al inicio</span>
           </button>
 
@@ -114,7 +115,7 @@ const AllTransports = () => {
           {/* Grupo de Búsqueda */}
           <div className="transport-ui-filter-group">
             <div className="transport-ui-filter-icon">
-              <Search size={22} />
+              {icons.search}
             </div>
             <input
               className="transport-ui-input"
@@ -136,24 +137,17 @@ const AllTransports = () => {
               className={`transport-ui-tab ${typeFilter === "avion" ? "active" : ""}`}
               onClick={() => setTypeFilter("avion")}
             >
-              <Plane size={18} /> Aéreos
+              {icons.planeButton} Aéreos
             </button>
             <button
               className={`transport-ui-tab ${typeFilter === "camion" ? "active" : ""}`}
               onClick={() => setTypeFilter("camion")}
             >
-              <Bus size={18} /> Terrestres
+              {icons.busButton} Terrestres
             </button>
           </div>
           <div className="transport-ui-counter-badge">
-            <Filter
-              size={14}
-              style={{
-                display: "inline",
-                marginRight: "6px",
-                verticalAlign: "middle",
-              }}
-            />
+            {icons.filterBadge}
             {filtered.length}{" "}
             {filtered.length === 1 ? "resultado" : "resultados"}
           </div>
@@ -165,7 +159,7 @@ const AllTransports = () => {
         {filtered.length === 0 ? (
           <div className="transport-ui-empty-state">
             <div className="transport-ui-empty-icon-wrapper">
-              <Search size={40} />
+              {icons.searchLarge}
             </div>
             <h3 className="transport-ui-empty-title">Sin resultados</h3>
             <p className="transport-ui-empty-text">
