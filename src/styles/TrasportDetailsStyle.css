@@ -1,0 +1,106 @@
+.success-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(to right, #f8fafc, #e0f2fe);
+  padding: 20px;
+  animation: fadeIn 0.6s ease-in;
+}
+
+.success-card {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  padding: 40px 30px;
+  max-width: 500px;
+  text-align: center;
+  animation: slideUp 0.6s ease-in;
+}
+
+.icon-circle {
+  width: 100px;
+  height: 100px;
+  background: #d1fae5;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 20px;
+}
+
+.success-card h1 {
+  font-size: 2rem;
+  color: #10b981;
+  margin-bottom: 10px;
+}
+
+.success-msg {
+  color: #374151;
+  margin-bottom: 25px;
+}
+
+.confirmation-details {
+  text-align: left;
+  margin-bottom: 25px;
+}
+
+.hotel-info {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.hotel-info img {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.hotel-info h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #1f2937;
+}
+
+.stars {
+  color: #facc15;
+  font-size: 0.9rem;
+}
+
+.booking-details p {
+  margin: 5px 0;
+  font-size: 0.95rem;
+}
+
+.total-paid {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.btn-primary {
+  background: #10b981;
+  color: #fff;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: #059669;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+@keyframes slideUp {
+  from {transform: translateY(20px); opacity: 0;}
+  to {transform: translateY(0); opacity: 1;}
+}
