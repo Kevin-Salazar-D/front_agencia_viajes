@@ -1,0 +1,395 @@
+/* ========== VISTA DETALLE DE PAQUETE ========== */
+.package-page {
+  background: #f8fafc; /* Fondo un poco más limpio */
+  min-height: 100vh;
+  font-family: "Inter", system-ui, sans-serif;
+  padding-bottom: 4rem;
+}
+
+.main-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* HEADER DEL PAQUETE */
+.pkg-header {
+  margin: 2rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.pkg-title {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0.5rem 0;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.pkg-subtitle {
+  color: #64748b;
+  font-size: 1.05rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.badges {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.badge-transport {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: white;
+  font-weight: 600;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+}
+
+.badge-hotel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #2563eb;
+  font-weight: 600;
+  background: #eff6ff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+}
+
+.header-price {
+  text-align: right;
+}
+
+.price-label {
+  display: block;
+  color: #64748b;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.price-amount {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+/* GRID DE CONTENIDO */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+}
+
+@media (min-width: 900px) {
+  .content-grid {
+    grid-template-columns: 1.8fr 1fr; /* Más espacio a la info, la tarjeta no se ve tan ancha */
+  }
+}
+
+/* TARJETAS DE INFORMACIÓN (IZQUIERDA) */
+.section-card {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 20px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f1f5f9;
+}
+
+.highlight-card {
+  border-left: 5px solid #f59e0b;
+}
+
+.section-card h3 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.35rem;
+  color: #0f172a;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.description-text {
+  color: #475569;
+  line-height: 1.8;
+  font-size: 1.05rem;
+}
+
+.itinerary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  background: #f8fafc;
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.itinerary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.itinerary-item .label {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.itinerary-item .value {
+  font-weight: 800;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1.1rem;
+}
+
+.services-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+
+.service-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #334155;
+  font-weight: 500;
+}
+
+/* ==========================================================
+   NUEVO DISEÑO: TARJETA DE RESERVA FLOTANTE (Derecha)
+   ========================================================== */
+.booking-column {
+  position: relative;
+}
+
+.booking-card {
+  background: white;
+  padding: 2.5rem 2rem;
+  border-radius: 16px;
+  box-shadow:
+    0 12px 30px -10px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Sombra muy suave y elegante */
+  position: sticky;
+  top: 100px;
+  border: 1px solid #f1f5f9;
+}
+
+.booking-header {
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.price-large {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.price-unit {
+  color: #64748b;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 0.95rem;
+  gap: 1rem;
+}
+
+.summary-item span {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.summary-item strong {
+  color: #0f172a;
+  font-weight: 800;
+  text-align: right;
+  max-width: 65%; /* Evita que textos largos rompan el flexbox */
+}
+
+/* Separadores */
+.divider-solid {
+  border-top: 1px solid #f1f5f9;
+}
+
+.divider-dashed {
+  border-top: 1px dashed #cbd5e1;
+  margin: 1.5rem 0;
+}
+
+.total-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.total-section span:first-child {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.total-amount {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #2563eb; /* Azul brillante como en la foto */
+}
+
+.btn-book-full {
+  width: 100%;
+  background: linear-gradient(135deg, #2563eb, #06b6d4);
+  color: white;
+  border: none;
+  padding: 1.1rem;
+  border-radius: 10px; /* Bordes ligeramente redondeados */
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.btn-book-full:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+}
+
+.charge-notice {
+  text-align: center;
+  color: #64748b;
+  font-size: 0.85rem;
+  margin-top: 1rem;
+}
+
+/* ==========================================
+   MAGIA RESPONSIVE ARREGLADA
+   ========================================== */
+
+/* --- Tablets (Pantallas medianas) --- */
+@media (max-width: 900px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .pkg-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .header-price {
+    text-align: left;
+  }
+
+  /* ¡EL SECRETO! En tablet, centramos la tarjeta y le ponemos un ancho máximo
+     para que no se vea como un rectángulo infinito horrible */
+  .booking-column {
+    display: flex;
+    justify-content: center;
+  }
+
+  .booking-card {
+    position: static;
+    margin-top: 1rem;
+    width: 100%;
+    max-width: 450px; /* Tamaño de ticket perfecto */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* --- Celulares (Pantallas pequeñas) --- */
+@media (max-width: 480px) {
+  .package-page {
+    padding-bottom: 2rem;
+  }
+  .main-container {
+    padding: 0 1rem;
+  }
+
+  .pkg-title {
+    font-size: 2rem;
+  }
+  .price-amount {
+    font-size: 2rem;
+  }
+  .pkg-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .badges {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .section-card {
+    padding: 1.5rem;
+    border-radius: 16px;
+  }
+
+  .section-card h3 {
+    font-size: 1.2rem;
+  }
+  .description-text {
+    font-size: 0.95rem;
+  }
+
+  .itinerary-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1.2rem;
+  }
+
+  .services-list {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-card {
+    max-width: 100%;
+    padding: 1.5rem;
+    border-radius: 16px;
+  }
+
+  .price-large {
+    font-size: 2rem;
+  }
+  .btn-book-full {
+    padding: 1rem;
+    font-size: 1.05rem;
+  }
+}

@@ -1,0 +1,59 @@
+/* ========== GLOBAL LOADER (Estilo Transportes) ========== */
+.global-loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  /* Fondo casi blanco sólido para una apariencia muy limpia (Clean UI) */
+  background-color: rgba(244, 247, 249, 0.95); /* Color #f4f7f9 que usaste en transports */
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+  /* z-index altísimo para tapar TODO */
+  z-index: 99999; 
+}
+
+/* El spinner y el texto central (Directo de tu AllTransports) */
+.global-loader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #2563eb; /* Azul primario */
+  gap: 1.5rem;
+  /* Efecto de aparición suave */
+  animation: fadeIn 0.3s ease-in-out; 
+}
+
+.global-spinner {
+  /* Misma animación de Transportes */
+  animation: transport-spin 1s linear infinite;
+  color: #2563eb;
+}
+
+.global-loader-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #64748b; /* Gris oscuro para el texto */
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  letter-spacing: 0.3px;
+}
+
+/* Animación del spinner idéntica a la tuya */
+@keyframes transport-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,322 @@
+/* =========================================
+   MODAL 2FA - "DOS TONOS" SULTAN YAIR
+   ========================================= */
+
+/* Overlay oscuro con desenfoque de fondo */
+.m2fa-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  animation: m2fa-fadeIn 0.2s ease-out;
+}
+
+/* El Modal - Contenedor principal */
+.m2fa-content {
+  background: #ffffff;
+  width: 90%;
+  max-width: 440px;
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  animation: m2fa-slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* =========================================
+   CABECERA AZUL VIBRANTE
+   ========================================= */
+.m2fa-header-blue {
+  background-color: #2563eb;
+  color: white;
+  padding: 2.5rem 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Icono blanco con interior azul */
+.m2fa-icon-wrapper-white {
+  background: #ffffff;
+  color: #2563eb;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.m2fa-title-white {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: #ffffff;
+}
+
+.m2fa-subtitle-white {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #e0e7ff;
+  max-width: 300px;
+  line-height: 1.4;
+}
+
+/* Botón cerrar blanco integrado */
+.m2fa-btn-close-white {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  color: #e0e7ff;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.m2fa-btn-close-white:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+/* =========================================
+   CUERPO BLANCO CON PASOS
+   ========================================= */
+.m2fa-form-body {
+  padding: 2rem 1.5rem 2rem;
+}
+
+.m2fa-step-container {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.m2fa-step-container:last-of-type {
+  margin-bottom: 2.5rem;
+}
+
+.m2fa-step-label,
+.m2fa-input-label {
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.2px;
+}
+
+.m2fa-step-desc {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+/* Agrupador del QR */
+.m2fa-qr-group {
+  background: #f8fafc;
+  padding: 1.25rem;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  display: inline-block;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.m2fa-qr-image {
+  width: 180px;
+  height: 180px;
+  border-radius: 10px;
+}
+
+/* =========================================
+   EL INPUT MODERNO (Corregido para ambos modales)
+   ========================================= */
+.m2fa-input-modern {
+  width: 100%;
+  max-width: 100% !important; /* Forza a ocupar todo el ancho disponible */
+  display: block;
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: 0.25em; /* Espaciado proporcional */
+  padding: 16px;
+  border: 2px solid #cbd5e1;
+  border-radius: 16px;
+  color: #0f172a;
+  outline: none;
+  background-color: #f8fafc;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    background-color 0.2s;
+  box-sizing: border-box;
+}
+
+.m2fa-input-modern::placeholder {
+  color: #cbd5e1;
+  letter-spacing: normal;
+}
+
+.m2fa-input-modern:focus {
+  border-color: #2563eb;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+/* =========================================
+   ACCIONES (Botones Horizontales - Activación)
+   ========================================= */
+.m2fa-action-group {
+  display: flex;
+  gap: 12px;
+}
+
+.m2fa-btn-primary-modern {
+  flex: 1.2;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+}
+
+.m2fa-btn-primary-modern:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.3);
+}
+
+.m2fa-btn-primary-modern:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+  opacity: 0.7;
+  box-shadow: none;
+}
+
+.m2fa-btn-secondary-modern {
+  flex: 0.8;
+  background: white;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.m2fa-btn-secondary-modern:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+/* =========================================
+   EXTRAS PARA EL MODAL DE LOGIN (Verificar)
+   ========================================= */
+
+/* Alerta de Error Roja */
+.m2fa-error-alert {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  animation: m2fa-fadeIn 0.2s ease-out;
+}
+
+/* Forzamos los botones a estar en COLUMNA (uno sobre otro) */
+.m2fa-action-column {
+  display: flex;
+  flex-direction: column !important;
+  width: 100%;
+  gap: 12px;
+  margin-top: 1.5rem;
+}
+
+/* Spinner dentro del botón de verificar */
+.m2fa-btn-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: m2fa-spin 1s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+/* =========================================
+   ESTADOS Y ANIMACIONES
+   ========================================= */
+.m2fa-loading-body {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: #64748b;
+}
+
+.m2fa-spinner-blue {
+  width: 44px;
+  height: 44px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #2563eb;
+  border-radius: 50%;
+  margin: 0 auto 1.25rem;
+  animation: m2fa-spin 1s linear infinite;
+}
+
+@keyframes m2fa-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes m2fa-slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes m2fa-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

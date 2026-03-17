@@ -1,0 +1,126 @@
+/* ========== TARJETA INDIVIDUAL DE TRANSPORTE ========== */
+.transport-ui-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.transport-ui-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.transport-ui-card-image {
+  height: 200px;
+  position: relative;
+}
+
+.transport-ui-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Etiquetas de Avión o Camión */
+.transport-ui-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: white;
+}
+
+.transport-ui-badge.avion {
+  background: #0ea5e9;
+}
+
+.transport-ui-badge.camion {
+  background: #f59e0b;
+}
+
+.transport-ui-card-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.transport-ui-card-header {
+  margin-bottom: 1rem;
+}
+
+.transport-ui-card-header h3 {
+  font-size: 1.25rem;
+  color: #0f172a;
+  margin: 0 0 0.2rem 0;
+}
+
+.transport-ui-model {
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+/* Stats (Capacidad y Precio) */
+.transport-ui-stats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+.transport-ui-stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #475569;
+  font-size: 0.95rem;
+  background: #f8fafc;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  flex: 1;
+}
+
+.transport-ui-stat-icon {
+  color: #2563eb; /* Azul original */
+}
+
+.transport-ui-stat-icon.green {
+  color: #059669; 
+}
+
+.transport-ui-btn-details {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+   background: linear-gradient(135deg, #2563eb, #06b6d4); 
+  color: white;
+  border: none; 
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(14, 165, 233, 0.2); 
+}
+
+.transport-ui-btn-details:hover {
+ 
+  transform: translateY(-2px); 
+  box-shadow: 0 6px 12px rgba(14, 165, 233, 0.3); 
+}

@@ -1,0 +1,232 @@
+/* ========== CONTENEDOR PRINCIPAL ========== */
+.pkg-ui-page {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  font-family: system-ui, -apple-system, sans-serif;
+  padding-bottom: 4rem;
+}
+
+/* ========== GRAN BANNER SUPERIOR (Fondo Rosado/Coral) ========== */
+.pkg-ui-banner {
+  /* Padding amplio para darle aire a la barra flotante */
+  padding: 4rem 2rem 7rem; 
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.pkg-ui-banner-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: left; 
+}
+
+/* Botón de volver al inicio */
+.pkg-ui-btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.pkg-ui-btn-back:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.pkg-ui-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.pkg-ui-title-wrapper h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+}
+
+.pkg-ui-banner-content p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  font-weight: 400;
+  margin: 0;
+}
+
+/* ========== BARRA DE CONTROLES FLOTANTE ========== */
+.pkg-ui-controls {
+  padding: 0 2rem 2rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.pkg-ui-controls-wrapper {
+  max-width: 1200px; 
+  margin: -3.5rem auto 0; /* Margen negativo para solapar con el banner */
+  background: #ffffff;
+  padding: 1.25rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap; /* Esto permite que los filtros bajen de línea si hay muchos */
+  position: relative;
+  z-index: 10;
+}
+
+/* Grupo de Filtro Integrado */
+.pkg-ui-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 220px; /* Un poco más angosto para que quepan mejor */
+}
+
+.pkg-ui-filter-icon {
+  color: #f5576c; /* Coral */
+  background: #fff1f2; /* Fondo coral súper claro */
+  padding: 10px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Selectores y Buscador */
+.pkg-ui-input,
+.pkg-ui-select {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background-color: #f8fafc;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #0f172a;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.pkg-ui-select {
+  cursor: pointer;
+  appearance: none;
+  /* Flecha personalizada moderna */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.2em;
+}
+
+.pkg-ui-input:focus, 
+.pkg-ui-select:focus, 
+.pkg-ui-select:hover {
+  border-color: #f5576c;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(245, 87, 108, 0.1);
+}
+
+/* Badge del contador */
+.pkg-ui-counter-badge {
+  margin-left: auto;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+/* ========== GRID DE PAQUETES ========== */
+.pkg-ui-grid-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.pkg-ui-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+/* ========== ESTADO VACÍO (Simétrico a Hoteles y Transportes) ========== */
+.pkg-ui-empty-state {
+  background: #ffffff;
+  max-width: 650px; 
+  margin: 2rem auto 5rem; 
+  padding: 4rem 3rem;
+  border-radius: 24px;
+  text-align: center;
+  border: 2px dashed #cbd5e1;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.pkg-ui-empty-icon-wrapper {
+  background: #fff1f2; /* Fondo coral claro */
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  color: #f5576c; /* Icono coral */
+}
+
+.pkg-ui-empty-title {
+  font-size: 1.5rem;
+  color: #0f172a;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+}
+
+.pkg-ui-empty-text {
+  color: #64748b;
+  font-size: 1rem;
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+
+.pkg-ui-btn-clear {
+  background: #f5576c; /* Botón coral */
+  color: white;
+  border: none;
+  padding: 0.85rem 2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(245, 87, 108, 0.2);
+}
+
+.pkg-ui-btn-clear:hover {
+  background: #e11d48; /* Coral más oscuro */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(245, 87, 108, 0.3);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .pkg-ui-controls-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .pkg-ui-counter-badge {
+    margin-left: 0;
+    text-align: center;
+  }
+}

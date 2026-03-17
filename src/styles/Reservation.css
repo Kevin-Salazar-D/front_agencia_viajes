@@ -1,0 +1,185 @@
+/* ========== COMPONENTE DE RESERVA (Reservation.jsx) ========== */
+.hd-booking-column {
+  position: relative;
+  width: 100%;
+}
+
+.hd-booking-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f5f9;
+  position: sticky;
+  top: 100px; /* Separación desde el navbar al hacer scroll */
+}
+
+.hd-booking-header {
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.hd-price-large {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.hd-price-unit {
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* --- SELECTOR DE FECHAS --- */
+.hd-date-selector {
+  border: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+}
+
+.hd-date-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.hd-date-input-group label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.hd-date-input-group input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-family: inherit;
+  color: #0f172a;
+  font-weight: 600;
+  transition: border-color 0.2s;
+}
+
+.hd-date-input-group input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+/* --- INFORMACIÓN ADICIONAL --- */
+.hd-booking-info {
+  background: #f8fafc;
+  padding: 1.25rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e2e8f0;
+  list-style: none;
+}
+
+.hd-info-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  color: #475569;
+  align-items: center;
+}
+
+.hd-info-row:last-child {
+  margin: 0;
+}
+
+.hd-info-row svg {
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+/* --- BOTÓN DE RESERVA --- */
+.hd-btn-book-full {
+  width: 100%;
+  background: linear-gradient(135deg, #2563eb, #06b6d4);
+  color: white;
+  border: none;
+  padding: 1.1rem;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.hd-btn-book-full:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+}
+
+.hd-charge-notice {
+  text-align: center;
+  color: #64748b;
+  font-size: 0.85rem;
+  margin-top: 1rem;
+}
+
+/* --- VISTA PREVIA DEL TOTAL --- */
+.hd-total-preview {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.hd-total-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.hd-total-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  color: #475569;
+}
+
+.hd-total-final {
+  font-weight: 800;
+  color: #0f172a;
+  font-size: 1.2rem;
+  margin-top: 1rem;
+}
+@media (max-width: 900px) {
+  .hd-booking-card {
+    /* Quitamos el sticky para que fluya naturalmente debajo de la info y no tape la pantalla */
+    position: static; 
+    margin-top: 1rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* Pantallas pequeñas (Celulares) */
+@media (max-width: 480px) {
+  .hd-booking-card {
+    padding: 1.5rem; /* Reducimos el padding para ganar espacio en la pantalla */
+    border-radius: 16px;
+  }
+
+  .hd-price-large {
+    font-size: 1.6rem; /* Achicamos un poco el precio gigante */
+  }
+
+  .hd-date-grid {
+    /* Apilamos los inputs de fecha uno sobre otro para que sean fáciles de tocar */
+    grid-template-columns: 1fr; 
+    gap: 1rem;
+  }
+
+  .hd-btn-book-full {
+    padding: 1rem;
+    font-size: 1.05rem;
+  }
+}

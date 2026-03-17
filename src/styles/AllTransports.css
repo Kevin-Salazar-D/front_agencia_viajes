@@ -1,0 +1,272 @@
+/* ========== CONTENEDOR PRINCIPAL ========== */
+.transport-ui-page {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  padding-bottom: 4rem;
+}
+
+/* ========== LOADING ========== */
+.transport-ui-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  color: #2563eb; /* Azul original */
+  gap: 1rem;
+}
+.transport-ui-spinner {
+  animation: transport-spin 1s linear infinite;
+}
+@keyframes transport-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ========== GRAN BANNER SUPERIOR (Fondo Verde) ========== */
+.transport-ui-banner {
+  /* Padding amplio para darle aire a la barra flotante */
+  padding: 4rem 2rem 7rem;
+  background: linear-gradient(135deg, #047857 0%, #10b981 100%);
+  color: white;
+}
+
+.transport-ui-banner-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+/* Botón de volver al inicio */
+.transport-ui-btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.transport-ui-btn-back:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.transport-ui-banner-content h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+}
+
+.transport-ui-banner-content p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  font-weight: 400;
+}
+
+/* ========== BARRA DE CONTROLES FLOTANTE ========== */
+.transport-ui-controls {
+  padding: 0 2rem 2rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.transport-ui-controls-wrapper {
+  max-width: 1200px;
+  margin: -3.5rem auto 0;
+  background: #ffffff;
+  padding: 1.25rem 2rem;
+  border-radius: 16px;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 10;
+}
+
+/* Grupo de Búsqueda Integrado */
+.transport-ui-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 240px;
+}
+
+.transport-ui-filter-icon {
+  color: #2563eb; /* Azul */
+  background: #eff6ff; /* Fondo azul clarito */
+  padding: 10px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.transport-ui-input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background-color: #f8fafc;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #0f172a;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.transport-ui-input:focus {
+  border-color: #2563eb; /* Azul */
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Tabs de Filtro */
+.transport-ui-filters-tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.transport-ui-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.75rem 1.2rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.transport-ui-tab:hover {
+  background: #f8fafc;
+}
+
+.transport-ui-tab.active {
+  /* Fondo Azul Original */
+  background: linear-gradient(135deg, #2563eb, #06b6d4);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+}
+
+/* Badge del contador */
+.transport-ui-counter-badge {
+  margin-left: auto;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: 1px solid #e2e8f0;
+}
+
+/* ========== GRID DE TARJETAS (ESTO ES LO QUE FALTABA) ========== */
+.transport-ui-grid-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.transport-ui-grid {
+  display: grid;
+  /* La magia para que se acomoden en columnas y no se estiren */
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+/* ========== ESTADO VACÍO (Simétrico) ========== */
+.transport-ui-empty-state {
+  background: #ffffff;
+  max-width: 650px;
+  margin: 2rem auto 5rem;
+  padding: 4rem 3rem;
+  border-radius: 24px;
+  text-align: center;
+  border: 2px dashed #cbd5e1;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.transport-ui-empty-icon-wrapper {
+  background: #eff6ff; /* Fondo azulito */
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  color: #2563eb; /* Icono azul */
+}
+
+.transport-ui-empty-title {
+  font-size: 1.5rem;
+  color: #0f172a;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+}
+
+.transport-ui-empty-text {
+  color: #64748b;
+  font-size: 1rem;
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+
+.transport-ui-btn-clear {
+  background: #2563eb; /* Botón azul */
+  color: white;
+  border: none;
+  padding: 0.85rem 2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+}
+
+.transport-ui-btn-clear:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .transport-ui-controls-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .transport-ui-filters-tabs {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .transport-ui-tab {
+    flex: 1;
+    justify-content: center;
+  }
+}

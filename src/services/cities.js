@@ -1,5 +1,8 @@
 import api from "./axiosConfig";
 
+//llamamos al objeto con los endpoints
+import { API_ROUTES } from "../constants/endpoints";
+
 // Obtener todas las ciudades
 // GET /agenciaViajes/ciudades/obtenerTodasCiudades
 export const getCities = () => api.get("/agenciaViajes/ciudades/obtenerTodasCiudades");

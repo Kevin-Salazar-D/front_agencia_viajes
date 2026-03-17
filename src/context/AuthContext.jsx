@@ -1,57 +1,65 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import authService from "../services/authService";
 
 const AuthContext = createContext();
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth debe usarse dentro de AuthProvider');
-  }
-  return context;
-};
+export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [userAuth, setUserAuth] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Cargar usuario del localStorage al iniciar
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
-    
-    if (storedUser && token) {
-      setUser(JSON.parse(storedUser));
-    }
+   //Verificamos que la sesión este activa
+ const checkAuth = async () => {
+  try {
+    console.log("Entra")
+    const data = await authService.perfil();
+    setUserAuth(data.usuario);
+
+  } catch (error) {
+    setUserAuth(null);
+  } finally {
     setLoading(false);
+  }
+};
+
+  useEffect(() => {
+    checkAuth();
+
+    // cuando el cookie expire
+    const handleUnauthorized = () => {
+      setUserAuth(null);
+    };
+
+    window.addEventListener("unauthorized", handleUnauthorized);
+
+    return () => {
+      window.removeEventListener("unauthorized", handleUnauthorized);
+    };
   }, []);
 
-  // Login
-  const login = (userData, token) => {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('token', token);
+   //cuando el usuaio se logea  traemos los datos
+  const login = (userData) => {
+    setUserAuth(userData);
   };
 
-  // Logout
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-  };
-
-  // Actualizar usuario
-  const updateUser = (userData) => {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+  
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } catch (error) {
+      console.error("Error cerrando sesión:", error.message);
+    } finally {
+      setUserAuth(null);
+    }
   };
 
   const value = {
-    user,
+    userAuth,
     loading,
     login,
     logout,
-    updateUser,
-    isAuthenticated: !!user
+    isAuthenticated: !!userAuth,
   };
 
   return (

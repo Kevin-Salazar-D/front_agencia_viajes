@@ -1,0 +1,312 @@
+/* ========== VISTA DETALLE DE HOTEL ========== */
+.hotel-details-page {
+  background-color: #f8fafc; 
+  min-height: 100vh;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  padding-bottom: 5rem;
+}
+
+.hd-main-container {
+  max-width: 1150px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.hd-btn-back-clean {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 8px 12px 8px 0;
+  transition: color 0.2s, transform 0.2s;
+}
+
+/* --- HEADER --- */
+.hd-hotel-header {
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.hd-hotel-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0.5rem 0;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.hd-hotel-address {
+  color: #64748b;
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.hd-badges {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 0.75rem;
+}
+
+.hd-badge-stars {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #d97706;
+  font-weight: 700;
+  background: #fef3c7;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.hd-badge-city {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #2563eb;
+  font-weight: 600;
+  background: #eff6ff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.hd-header-price {
+  text-align: right;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .hd-header-price {
+    display: block;
+  }
+}
+
+.hd-price-label {
+  display: block;
+  color: #64748b;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.hd-price-amount {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1;
+}
+
+/* --- GRID Y CARTAS DE DETALLES --- */
+.hd-content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+}
+
+@media (min-width: 900px) {
+  .hd-content-grid {
+    grid-template-columns: 1.8fr 1fr;
+  }
+}
+
+.hd-section-card {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 20px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f1f5f9;
+}
+
+.hd-section-card h3 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.4rem;
+  color: #0f172a;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.hd-description-text {
+  color: #475569;
+  line-height: 1.8;
+  font-size: 1.05rem;
+  white-space: pre-line;
+}
+
+/* Amenidades */
+.hd-amenities-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.hd-amenity-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #334155;
+  font-weight: 500;
+}
+
+.hd-amenity-icon {
+  color: #2563eb;
+}
+
+.hd-text-empty {
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* Políticas */
+.hd-policies-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.hd-policy-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: #f8fafc;
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.hd-policy-icon {
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.hd-policy-item p {
+  margin: 0;
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 1.1rem;
+}
+
+.hd-policy-item strong {
+  display: block;
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.hd-policy-text-block {
+  padding-top: 1.5rem;
+  border-top: 1px solid #f1f5f9;
+  font-size: 0.95rem;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.hd-policy-text-block strong {
+  color: #0f172a;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+/* ==========================================
+   MAGIA RESPONSIVE (Tablets y Celulares)
+   ========================================== */
+
+/* --- Tablets (Pantallas medianas) --- */
+@media (max-width: 900px) {
+  /* El grid principal pasa de 2 columnas (Izquierda: Info, Derecha: Reserva) a 1 sola columna */
+  .hd-content-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  /* El header (Título a la izq, precio a la der) se apila hacia abajo */
+  .hd-hotel-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  /* El precio ahora se alinea a la izquierda para seguir el flujo del texto */
+  .hd-header-price {
+    text-align: left;
+    display: block; /* Aseguramos que se vea en tablet/móvil */
+  }
+}
+
+/* --- Celulares (Pantallas pequeñas) --- */
+@media (max-width: 480px) {
+  /* Reducimos márgenes generales de la página */
+  .hotel-details-page {
+    padding-bottom: 2rem;
+  }
+
+  .hd-main-container {
+    padding: 0 1rem; /* Menos padding lateral para ganar espacio */
+  }
+
+  /* Achicamos la tipografía del Título y Precio */
+  .hd-hotel-title {
+    font-size: 1.8rem;
+  }
+
+  .hd-price-amount {
+    font-size: 1.8rem;
+  }
+
+  .hd-hotel-address {
+    font-size: 0.95rem;
+  }
+
+  /* Las tarjetas de información (Descripción, Amenidades) ocupaban mucho espacio */
+  .hd-section-card {
+    padding: 1.5rem;
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+  }
+
+  .hd-section-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .hd-description-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* Las amenidades (Wifi, Alberca) pasan de 2 columnas a 1 columna */
+  .hd-amenities-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Las tarjetas de políticas (Check-in / Check-out) pasan de 2 columnas a 1 columna */
+  .hd-policies-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  
+  .hd-badges {
+    flex-wrap: wrap; 
+    gap: 8px;
+  }
+
+  .hd-badge-stars, 
+  .hd-badge-city {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+}
