@@ -1,9 +1,8 @@
 import axios from "axios";
 
-const API_URL =
-  import.meta.env.VITE_API_URL_BASE ||
-  "http://localhost:3000/agenciaViajes";
-
+const API_URL = import.meta.env.PROD 
+  ? "https://back-end-agencia-viajes.onrender.com/agenciaViajes" 
+  : "http://localhost:3000/agenciaViajes";
 const api = axios.create({
   baseURL: API_URL,
   withCredentials: true,
