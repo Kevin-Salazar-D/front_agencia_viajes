@@ -7,8 +7,6 @@ import AuthService from "../services/authService";
 import { useAuth } from '../context/AuthContext';
 import { useAlert } from '../context/AlerContext';
 
-// El estilo global para los dos (como el login como el crear cuenta)
-import '../styles/Register.css';
 
 
 const Register = () => {
@@ -144,7 +142,6 @@ const Register = () => {
                 <div className="form-group">
                   <label>Nombre</label>
                   <div className="input-wrapper">
-                    <User className="input-icon" size={20} />
                     <input type="text" name="nombre" placeholder="Juan" value={formData.nombre} onChange={handleChange} className={errors.nombre ? 'error' : ''} />
                   </div>
                   {errors.nombre && <span className="error-message">{errors.nombre}</span>}
@@ -152,7 +149,6 @@ const Register = () => {
                 <div className="form-group">
                   <label>Apellido</label>
                   <div className="input-wrapper">
-                    <User className="input-icon" size={20} />
                     <input type="text" name="apellido" placeholder="Pérez" value={formData.apellido} onChange={handleChange} className={errors.apellido ? 'error' : ''} />
                   </div>
                   {errors.apellido && <span className="error-message">{errors.apellido}</span>}
@@ -162,7 +158,6 @@ const Register = () => {
               <div className="form-group">
                 <label>Nombre de Usuario</label>
                 <div className="input-wrapper">
-                  <User className="input-icon" size={20} />
                   <input type="text" name="usuario" placeholder="juanperez" value={formData.usuario} onChange={handleChange} className={errors.usuario ? 'error' : ''} />
                 </div>
                 {errors.usuario && <span className="error-message">{errors.usuario}</span>}
@@ -171,7 +166,6 @@ const Register = () => {
               <div className="form-group">
                 <label>Correo electrónico</label>
                 <div className="input-wrapper">
-                  <Mail className="input-icon" size={20} />
                   <input type="email" name="correo" placeholder="tu@email.com" value={formData.correo} onChange={handleChange} className={errors.correo ? 'error' : ''} />
                 </div>
                 {errors.correo && <span className="error-message">{errors.correo}</span>}
@@ -180,7 +174,6 @@ const Register = () => {
               <div className="form-group">
                 <label>Teléfono</label>
                 <div className="input-wrapper">
-                  <Phone className="input-icon" size={20} />
                   <input type="tel" name="telefono" placeholder="3312345678" value={formData.telefono} onChange={handleChange} className={errors.telefono ? 'error' : ''} maxLength="10" />
                 </div>
                 {errors.telefono && <span className="error-message">{errors.telefono}</span>}
@@ -190,7 +183,6 @@ const Register = () => {
                 <div className="form-group">
                   <label>Contraseña</label>
                   <div className="input-wrapper">
-                    <Lock className="input-icon" size={20} />
                     <input type={showPassword ? 'text' : 'password'} name="contrasena" placeholder="••••••" value={formData.contrasena} onChange={handleChange} className={errors.contrasena ? 'error' : ''} />
                     <button type="button" className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
                       {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -202,7 +194,6 @@ const Register = () => {
                 <div className="form-group">
                   <label>Confirmar</label>
                   <div className="input-wrapper">
-                    <Lock className="input-icon" size={20} />
                     <input type={showConfirmPassword ? 'text' : 'password'} name="confirmPassword" placeholder="••••••" value={formData.confirmPassword} onChange={handleChange} className={errors.confirmPassword ? 'error' : ''} />
                     <button type="button" className="toggle-password" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
                       {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}

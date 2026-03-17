@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Mail, Lock, Eye, EyeOff, MapPin, AlertCircle } from "lucide-react";
+import {  Eye, EyeOff, MapPin, AlertCircle } from "lucide-react";
 
 // Modales
 import Verify2FAModal from "../components/Verify2FAModal";
@@ -127,7 +127,7 @@ const Login = () => {
             <h1>Iniciar sesión</h1>
             <p className="auth-subtitle">
               ¿No tienes cuenta?{" "}
-              <Link to="/register" className="link">
+              <Link to="/crear-cuenta" className="link">
                 Regístrate aquí
               </Link>
             </p>
@@ -143,7 +143,7 @@ const Login = () => {
               <div className="form-group">
                 <label>Correo electrónico</label>
                 <div className="input-wrapper">
-                  <Mail className="input-icon" size={20} />
+                 
                   <input
                     type="email"
                     name="correo"
@@ -161,7 +161,7 @@ const Login = () => {
               <div className="form-group">
                 <label>Contraseña</label>
                 <div className="input-wrapper">
-                  <Lock className="input-icon" size={20} />
+                
                   <input
                     type={showPassword ? "text" : "password"}
                     name="contrasena"

@@ -1,17 +1,26 @@
-/* ELIMINAMOS EL BODY. Usamos este wrapper como fondo exclusivo */
+/* ==========================================
+   RESETEO Y FUENTES
+   ========================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ==========================================
+   ESTILOS GLOBALES
+   ========================================== */
 .auth-wrapper {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #2563eb;
-  padding: 2rem;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
+  background: linear-gradient(135deg, #1e40af, #2563eb);
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
   width: 100%;
-  box-sizing: border-box;
 }
 
 .auth-content {
@@ -23,13 +32,21 @@
   width: 100%;
   max-width: 1000px;
   min-height: 600px;
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Lado Izquierdo (Degradado Azul) */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================
+   LADO IZQUIERDO (AZUL)
+   ========================================== */
 .auth-side {
   flex: 1;
   background: linear-gradient(135deg, #2563eb, #0ea5e9);
-  padding: 3rem;
+  padding: 48px;
   display: flex;
   align-items: center;
   color: white;
@@ -40,170 +57,206 @@
 .auth-side::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url("https://www.shutterstock.com/image-photo/airplane-wing-many-thick-clouds-600nw-2043208451.jpg")
-    center/cover;
-  opacity: 0.15;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url("https://www.shutterstock.com/image-photo/airplane-wing-many-thick-clouds-600nw-2043208451.jpg") center/cover;
+  opacity: 0.12;
   mix-blend-mode: overlay;
+  pointer-events: none;
 }
 
 .auth-side-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
+
 .auth-logo {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 3rem;
+  margin-bottom: 40px;
 }
+
 .logo-icon {
   background: rgba(255, 255, 255, 0.2);
   padding: 8px;
   border-radius: 12px;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
+  display: flex;
 }
+
 .logo-text {
   font-size: 1.5rem;
-  font-weight: 700;
-  color: white;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 .auth-side h2 {
   font-size: 2.5rem;
   font-weight: 800;
-  margin-bottom: 1rem;
+  margin-bottom: 16px;
   line-height: 1.2;
-  color: white;
 }
+
+.auth-side p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
 .auth-features {
-  margin-top: 3rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 12px;
 }
+
 .feature-item {
   background: rgba(255, 255, 255, 0.1);
-  padding: 12px 20px;
+  padding: 14px 20px;
   border-radius: 12px;
   backdrop-filter: blur(4px);
   font-weight: 500;
-  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Lado Derecho (Formulario) */
+/* ==========================================
+   LADO DERECHO (FORMULARIO)
+   ========================================== */
 .auth-form-container {
   flex: 1;
-  padding: 3rem;
+  padding: 48px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background: #ffffff;
 }
+
 .auth-form-content {
-  max-width: 400px;
+  max-width: 360px;
   margin: 0 auto;
   width: 100%;
 }
+
 .auth-form-content h1 {
   font-size: 2rem;
-  color: #1f2937;
-  margin-bottom: 0.5rem;
+  color: #111827;
+  font-weight: 800;
+  margin-bottom: 8px;
 }
+
 .auth-subtitle {
   color: #6b7280;
-  margin-bottom: 2rem;
+  margin-bottom: 32px;
+  font-size: 0.95rem;
 }
 
 .link {
   color: #2563eb;
   text-decoration: none;
-  font-weight: 500;
-}
-.link:hover {
-  text-decoration: underline;
-  color: #1d4ed8;
+  font-weight: 600;
 }
 
+.link:hover { text-decoration: underline; }
+
+/* ==========================================
+   INPUTS - EL ARREGLO MAESTRO
+   ========================================== */
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 20px;
 }
+
 .form-group label {
   display: block;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #1f2937;
-  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
 }
 
 .input-wrapper {
   position: relative;
+  width: 100%;
 }
+
+/* Iconos de Lucide */
 .input-icon {
   position: absolute;
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: #6b7280;
+  color: #9ca3af;
+  pointer-events: none; /* No clickable */
+  z-index: 10;
 }
 
 .auth-form input {
   width: 100%;
-  padding: 12px 14px 12px 44px;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  padding: 12px 16px 12px 48px; /* 48px deja espacio al icono */
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
   font-size: 1rem;
   transition: all 0.2s;
-  box-sizing: border-box;
-}
-.auth-form input:focus {
-  border-color: #2563eb;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-.auth-form input.error {
-  border-color: #ef4444;
-}
-
-.error-message {
-  color: #ef4444;
-  font-size: 0.85rem;
-  margin-top: 4px;
+  background-color: #ffffff;
+  color: #1f2937;
   display: block;
 }
 
+/* 🚨 HACK PARA OCULTAR ICONOS DEL NAVEGADOR (Autocompletado) */
+input::-webkit-contacts-auto-fill-button,
+input::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}
+
+input:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+/* Botón de ver contraseña */
 .toggle-password {
   position: absolute;
-  right: 14px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: #6b7280;
+  color: #9ca3af;
   cursor: pointer;
-  padding: 0;
+  padding: 4px;
+  z-index: 11;
+  display: flex;
 }
 
+.toggle-password:hover { color: #4b5563; }
+
+/* ==========================================
+   BOTONES Y EXTRAS
+   ========================================== */
 .form-options {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
+  margin-bottom: 24px;
+  font-size: 0.85rem;
 }
+
 .checkbox-label {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #6b7280;
+  color: #4b5563;
   cursor: pointer;
 }
+
 .forgot-password {
   color: #2563eb;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .btn-submit {
@@ -212,109 +265,102 @@
   background: #2563eb;
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.1s;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
-  margin-top: 1rem;
+  gap: 10px;
 }
-.btn-submit:hover {
-  background: #1d4ed8;
-}
+
+.btn-submit:hover { background: #1d4ed8; }
+.btn-submit:active { transform: scale(0.98); }
+
 .btn-submit:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
 
-.spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .auth-divider {
   text-align: center;
-  margin: 2rem 0;
+  margin: 24px 0;
   position: relative;
 }
+
 .auth-divider::before {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
+  left: 0; right: 0; top: 50%;
   height: 1px;
-  background: #e5e7eb;
+  background: #f3f4f6;
 }
+
 .auth-divider span {
   background: white;
-  padding: 0 1rem;
-  color: #6b7280;
+  padding: 0 12px;
+  color: #9ca3af;
   position: relative;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .social-login {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: 12px;
 }
+
 .social-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   padding: 10px;
   background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  border: 1.5px solid #f3f4f6;
+  border-radius: 12px;
   cursor: pointer;
-  font-weight: 500;
-  color: #1f2937;
+  font-weight: 600;
+  color: #374151;
   transition: background 0.2s;
 }
-.social-btn:hover {
-  background: #f9fafb;
-}
-.social-btn img {
-  width: 20px;
-  height: 20px;
-}
 
+.social-btn:hover { background: #f9fafb; }
+.social-btn img { width: 18px; height: 18px; }
+
+/* ERROR ALERT */
 .error-alert {
-  background: #fee2e2;
-  color: #991b1b;
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  color: #b91c1c;
   padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 24px;
   display: flex;
   align-items: center;
   gap: 10px;
   font-size: 0.9rem;
 }
 
+/* RESPONSIVIDAD */
 @media (max-width: 900px) {
-  .auth-side {
-    display: none;
-  }
-  .auth-wrapper {
-    padding: 1rem;
-    background-color: #2563eb;
-  }
-  .auth-content {
-    min-height: auto;
-  }
+  .auth-side { display: none; }
+  .auth-wrapper { padding: 12px; }
+  .auth-content { max-width: 450px; min-height: auto; }
+  .auth-form-container { padding: 32px 24px; }
 }
+
+/* SPINNER */
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
