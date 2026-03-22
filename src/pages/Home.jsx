@@ -36,7 +36,7 @@ function Home() {
         cityService.getCities(),
         hotelService.getHotels(),
       ]);
-
+    
       setCities(cityData || []);
       setHotels(hotelData || []);
       setHotelBacUp(hotelData || []); // Guardamos copia de seguridad
