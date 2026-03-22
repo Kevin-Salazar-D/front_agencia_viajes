@@ -30,5 +30,5 @@ Este proyecto corresponde al **sistema completo de la Agencia de Viajes**, inclu
 - **Axios** → Conexión con el backend a través de API REST.
 - **TailwindCSS** *(opcional)* → Estilos rápidos y modernos.
 
----
-
+## Version 1.0.0
+- **HTTPS EN LOCAL** → Agregar el protocolo https en local para pruebas.
