@@ -56,6 +56,14 @@ export const API_ROUTES = {
     UPDATE_PACKAGE: "/paquetes/actualizarPaquete",
     DELETE_PACKAGE: "/paquetes/borrarPaquete"
 
+  },
+  JOURNEY:{
+    GET_JOURNEYS: "/viajes/mostrarTodosLosViajes",
+    GET_JOURNEY_ID: "/viajes/mostrarViaje",
+    GET_FILTER_JOURNEY: "/viajes/mostrarFiltroViaje",
+    CREATE_JOURNEY: "/viajes/crearViaje",
+    UPDATE_JOURNEY: "/viajes/actualizarViaje",
+    DELETE_JOURNEY: "/viajes/borrarViaje"
   }
 };
 

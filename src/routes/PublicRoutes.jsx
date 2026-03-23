@@ -13,7 +13,7 @@ import AllTransports from "../pages/AllTransports";
 import TransportDetails from "../pages/TransportDetails";
 import HotelDetails from "../pages/HotelDetails";
 import PackageDetails from "../pages/PackageDetails";
-
+import JourneyDestiny from "../pages/Results";
 // Pages de autorizacion
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -31,6 +31,9 @@ const PublicRoutes = (
 
       <Route path="/hotel/:id" element={<HotelDetails />} />
       <Route path="/paquete/:id" element={<PackageDetails />} />
+
+       {/* Resultado de la busqueda  */}
+      <Route path="/journeyDestiny/:origenId/:destinoId" element={<JourneyDestiny />} />
     </Route>
 
     {/* Layout para la autorizacion */}
