@@ -28,31 +28,40 @@ function Home() {
   const { showLoading, hideLoading } = useLoading();
   const { error } = useAlert();
 
-  // Cargamos la data de las ciudades y hoteles (Carga Inicial)
+  //loadData
   const loadData = async () => {
-    try {
-      showLoading("Preparando tu próxima aventura...");
-      const [cityData, hotelData] = await Promise.all([
-        cityService.getCities(),
-        hotelService.getHotels(),
-      ]);
-    
-      setCities(cityData || []);
-      setHotels(hotelData || []);
-      setHotelBacUp(hotelData || []); // Guardamos copia de seguridad
-    } catch (err) {
-      console.error("Error cargando datos:", err);
-      setCities([]);
-      // Disparamos la alerta de error global
-      error(
-        "Problema de conexión",
-        "No pudimos cargar los datos iniciales. Por favor, intenta de nuevo más tarde."
-      );
-    } finally {
-      hideLoading();
-    }
-  };
+  try {
+    showLoading("Preparando tu próxima aventura...");
 
+    const [cityData, hotelData] = await Promise.all([
+      cityService.getCities(),
+      hotelService.getHotels(),
+    ]);
+
+    const citiesArray = Array.isArray(cityData)
+      ? cityData
+      : cityData?.cities || cityData?.data || [];
+
+    const hotelsArray = Array.isArray(hotelData)
+      ? hotelData
+      : hotelData?.hotels || hotelData?.data || [];
+
+    setCities(citiesArray);
+    setHotels(hotelsArray);
+    setHotelBacUp(hotelsArray);
+
+  } catch (err) {
+    console.error("Error cargando datos:", err);
+    setCities([]);
+    setHotels([]);
+    error(
+      "Problema de conexión",
+      "No pudimos cargar los datos iniciales. Por favor, intenta de nuevo más tarde."
+    );
+  } finally {
+    hideLoading();
+  }
+};
   // Función para filtrar los hoteles desde el backend
   const filterHotels = async () => {
     // Si no hay ciudad seleccionada, restauramos el respaldo
