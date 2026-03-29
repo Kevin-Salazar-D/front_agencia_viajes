@@ -1,0 +1,140 @@
+.premium-sidebar {
+  width: 280px;
+  height: 100vh;
+  background-color: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start !important; 
+  align-items: stretch;
+  z-index: 50; 
+  transition: width 0.3s ease; /* Transición suave para el colapso */
+  overflow-x: hidden; /* Evita que salgan barras de scroll al animar */
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px 15px 0 15px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.sidebar-toggle-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #64748b;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.sidebar-toggle-btn:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+/* =========================================
+   NAVEGACIÓN Y SUBTÍTULOS
+   ========================================= */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 5px 20px 20px 20px !important; 
+  margin-top: 0 !important; 
+  gap: 6px; 
+}
+
+.nav-subtitle {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin: 15px 0 8px 10px !important; 
+  white-space: nowrap; /* Evita que el texto se caiga al colapsar */
+}
+
+.nav-subtitle:first-of-type {
+  margin-top: 5px !important;
+}
+
+.mt-4 {
+  margin-top: 20px !important;
+}
+
+/* =========================================
+   LOS BOTONES (LINKS)
+   ========================================= */
+.nav-link {
+  text-decoration: none;
+  color: #475569; 
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 16px;
+  border-radius: 10px; 
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px; 
+  border-left: 4px solid transparent; 
+  white-space: nowrap; /* Evita que el texto se apile */
+}
+
+.nav-link svg {
+  color: #64748b; 
+  width: 18px;
+  height: 18px;
+  transition: all 0.3s ease;
+  flex-shrink: 0; /* Evita que el icono se aplaste */
+}
+
+.nav-link:hover {
+  background-color: #f1f5f9; 
+  color: #1d4ed8; 
+  transform: translateX(4px); 
+}
+
+.nav-link:hover svg {
+  color: #2563eb;
+}
+
+/* --- 🔥 ESTADO ACTIVO --- */
+.nav-link.active {
+  background: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+  color: white; 
+  font-weight: 700;
+  border-left: 4px solid #ffffff; 
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); 
+}
+
+.nav-link.active svg {
+  color: white !important; 
+}
+
+
+.premium-sidebar.collapsed {
+  width: 90px; 
+}
+
+.premium-sidebar.collapsed .sidebar-header {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.premium-sidebar.collapsed .nav-link {
+  justify-content: center; 
+  padding: 12px 0; 
+  border-radius: 12px;
+  margin: 0 10px;
+}
+
+.premium-sidebar.collapsed .nav-link.active {
+  border-left: none; 
+}

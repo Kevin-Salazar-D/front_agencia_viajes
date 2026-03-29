@@ -12,7 +12,6 @@ export const AuthProvider = ({ children }) => {
    //Verificamos que la sesión este activa
  const checkAuth = async () => {
   try {
-    console.log("Entra")
     const data = await authService.perfil();
     setUserAuth(data.usuario);
 

@@ -9,6 +9,14 @@ export const API_ROUTES = {
     CONFIRM_2FA: "/autenticacion/confirmarDosPasos",
     PERFIL: "/autenticacion/perfil",
   },
+  USER:{
+    GET_USERS: "/usuarios/obtenerTodosUsuarios",
+    GET_USER_ID: "/usuarios/buscarUsuarioPorId",
+    GET_USER_EMAIL: "/usuarios/buscarUsuarioPorCorreo/",
+    CREATE_USER:"/usuarios/crearUsuarios",
+    UPDATE_USER: "/usuarios/actualizarUsuario",
+    DELETE_USER: "/usuarios/eliminarUsuario"
+  },
   CITY: {
     GET_CITIES: "/ciudades/obtenerTodasCiudades",
     CREATE_CITIES: "/ciudades/crearCiudad",

@@ -1,17 +1,21 @@
-import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { Route } from "react-router-dom";
 
-const PrivateRoute = () => {
-  const { isAuthenticated, loading } = useAuth();
+//layouts
+import PrivateLayout from "../layout/PrivateLayout";
+//guards
+import ProtectedRoute from "../guards/ProtectedRoute";
+//pages
+import Profile from "../pages/Profile"; 
 
-  if (loading) return null;
+const PrivateRoute = (
+  <>
+   <Route element={<ProtectedRoute allowedRole={"user"}/>}>
+    <Route element={<PrivateLayout/>}>
+      <Route path="/perfil" element={<Profile />} />
+    </Route>
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return <Outlet />;
-};
+   </Route>
+  </>
+);
 
 export default PrivateRoute;

@@ -11,9 +11,7 @@ const AppRoutes = () => {
       {PublicRoutes}
 
       {/* Rutas privadas */}
-      <Route element={<PrivateRoute />}>
-        <Route path="/perfil" element={<Profile />} />
-      </Route>
+      {PrivateRoute}
 
     </Routes>
   );

@@ -3,14 +3,17 @@ import {
   MapPin, ArrowRight, Bus, Calendar, Hotel, Star, Phone, 
   ArrowLeft, Package, Filter, Tag, SearchX, Search, ArrowDownUp,
   Building, Plane, Clock, Users,DollarSign, ChevronLeft, ChevronRight,
-  Wifi,Coffee,CheckCircle,User,Info,Car
+  Wifi,Coffee,CheckCircle,User,Info,Car,Mail, ShieldCheck, Menu,
+  X
 } from 'lucide-react';
 
 const icons = {
   location: <MapPin size={16} />,
   bus: <Bus size={16} />,
   calendar: <Calendar size={16} />,
+  calendarMedium: <Calendar size={20} />,
   hotel: <Hotel size={16} />,
+  hotelMedium: <Hotel size={20} />,
   star: <Star size={14} className="pkg-star-yellow" />,
   arrow: <ArrowRight size={18} />,
   phone: <Phone size={16} />,
@@ -36,7 +39,11 @@ const icons = {
   bus:<Bus size={16}/>,
   checkCircle: <CheckCircle size={16}/>,
   info: <Info size={20}/>,
-  car: <Car size={20}/>
+  car: <Car size={20}/>,
+  email: <Mail size={20}/>,
+  protected: <ShieldCheck size={20}/>,
+  menu: <Menu size={20} />,
+  close: <X size={20} />
 };
 
 export default icons;

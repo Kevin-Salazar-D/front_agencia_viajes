@@ -1,0 +1,103 @@
+/* Contenedor Principal (igual) */
+.user-profile-wrapper {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.user-profile-column {
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center;
+  padding: 20px 15px 15px 15px; 
+  border-bottom: 1px solid #f1f5f9; 
+}
+
+.info-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 12px;
+  width: 100%;
+}
+
+/* Nombre (igual) */
+.user-profile-name {
+  margin: 0 0 15px 0; /* Un poco más de espacio abajo para separar de las píldoras */
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.name-star-icon {
+  color: #f59e0b; 
+  display: flex;
+  align-items: center;
+}
+
+/* --- 💊 LISTA DE PÍLDORAS CENTRADAS --- */
+.user-details-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Esto las centra perfectamente debajo del nombre */
+  gap: 10px; /* Separación entre píldoras */
+  width: 100%;
+}
+
+/* 💊 LA PÍLDORA MAESTRA (El rectángulo ovalado) */
+.profile-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  gap: 8px;
+  padding: 6px 16px; 
+  border-radius: 50px; 
+  font-size: 12px;
+  font-weight: 600;
+  width: fit-content; 
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Ajuste al icono de la píldora */
+.profile-pill svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* 1. Por defecto (Gris clarito para Correo y Teléfono) */
+.pill-default {
+  background-color: #f8fafc;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+/* 2. Peligro / Aviso (Rojito igual a tu foto de "Proteger") */
+.pill-warning {
+  background-color: #fff1f2;
+  color: #ef4444; 
+  border: 1px solid #fecaca;
+}
+
+/* 3. Seguro (Verde, por si algún día lo activan) */
+.pill-secure {
+  background-color: #ecfdf5;
+  color: #10b981;
+  border: 1px solid #a7f3d0;
+}
+
+/* MODO FILA y SOMBRA (igual) */
+.user-profile-row {
+  flex-direction: row;
+  align-items: center;
+  padding: 5px 10px;
+}
+.avatar-shadow {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}

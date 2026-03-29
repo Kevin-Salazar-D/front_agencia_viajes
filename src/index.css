@@ -20,3 +20,30 @@ body {
 .public-layout-content {
   flex: 1 0 auto; /* Empuja al footer hasta abajo si hay poco contenido */
 }
+
+/* ==========================================
+   CSS PARA EL PRIVATE LAYOUT (El blindaje)
+   ========================================== */
+/* Envuelve toda la pantalla */
+/* Envuelve toda la pantalla de esquina a esquina */
+.master-layout {
+  display: flex;
+  height: 100vh;
+  background-color: #f8fafc; /* Gris ultra premium y limpio */
+  overflow: hidden;
+}
+
+/* El panel derecho que contiene el Navbar arriba y tu perfil abajo */
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* Toma todo el ancho que dejó el Sidebar */
+  overflow: hidden;
+}
+
+/* El área donde inyectas tus pantallas */
+.content-area {
+  flex: 1;
+  padding: 40px 60px; /* Mucho espacio para respirar */
+  overflow-y: auto;
+}

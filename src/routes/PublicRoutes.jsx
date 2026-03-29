@@ -4,7 +4,7 @@ import PublicLayout from "../layout/PublicLayout";
 import AuthLayout from "../layout/AuthLayout";
 
 //importamos el autenticador de rutas
-import GuestRoute from "./GuestRoute";
+import GuestRoute from "../guards/GuestRoute"
 // Importamos los pages publicos
 import Home from "../pages/Home";
 import Packages from "../pages/Packages";
