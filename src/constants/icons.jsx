@@ -4,15 +4,14 @@ import {
   ArrowLeft, Package, Filter, Tag, SearchX, Search, ArrowDownUp,
   Building, Plane, Clock, Users,DollarSign, ChevronLeft, ChevronRight,
   Wifi,Coffee,CheckCircle,User,Info,Car,Mail, ShieldCheck, Menu,
-  X,Map, AtSign, Flag, UserCog, EyeOff, Eye, AlertCircle, Lock, InfoIcon
+  X,Map, AtSign, Flag, UserCog, EyeOff, Eye, AlertCircle, Lock, InfoIcon,
+  Trash2, ArrowUpRight, AlertTriangle
 } from 'lucide-react';
 
 const icons = {
   location: <MapPin size={16} />,
   locationBig: <MapPin size={32} />,
-
   alertCircle: <AlertCircle size={24} />,
-  
   eyeoff: <EyeOff size={16}/>,
   Eye: <Eye size={16}/>,
   Bigmap: <Map size={20}  color='#2563eb'/>,
@@ -61,6 +60,12 @@ const icons = {
   closeMedium: <X size={24} />,
   info: <InfoIcon size={16}/>,
   infoMedium: <InfoIcon size={24}/>,
+  trash: <Trash2 size={16}/>,
+  trashMedium: <Trash2 size={24}/>,
+  arowUpRight: <ArrowUpRight size={16}/>,
+  arowUpRightMedium: <ArrowUpRight size={24}/>,
+  alert: <AlertTriangle size={16}/>,
+  alertMedium: <AlertTriangle size={24}/>
 
 };
 

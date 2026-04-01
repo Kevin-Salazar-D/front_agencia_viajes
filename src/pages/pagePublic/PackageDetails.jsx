@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import { useAlert } from "@/context/AlerContext";
 import { useLoading } from "@/context/LoadingContext";
+import { useModal } from "@/context/ModalConfirmContext";
+import { useAuth } from "@/context/AuthContext";
 
 // Importamos los servicios
 import packageService from "@/services/packageService";
@@ -20,6 +22,8 @@ const PackageDetails = () => {
   
   const { error } = useAlert();
   const { showLoading, hideLoading } = useLoading();
+  const { userAuth } = useAuth();
+  const { showModal } = useModal();
 
   const [pkg, setPkg] = useState(null); 
   const [gallery, setGallery] = useState([]);
@@ -68,16 +72,21 @@ const PackageDetails = () => {
     }
   };
 
-  const handleReserveClick = () => {
-    const userStr = localStorage.getItem("user");
+  const handleReserveClick  = async () => {
+     if (!userAuth) {
 
-    if (!userStr) {
-      error(
-        "Inicia sesión para continuar",
-        "Necesitas una cuenta para poder reservar este paquete exclusivo."
-      );
-      setTimeout(() => navigate("/login"), 1500);
-      return;
+       const isConfirm = await showModal({
+         type: "warning",
+         title: "¿No tienes cuenta?",
+         message: "Crea una cuenta para reservar en este hotel y disfrutar de todas nuestras ofertas.",
+         confirmText: "Sí, registrarme",
+         cancelText: "No por el momento", 
+         navigateRoute: "/crear-cuenta" 
+       });
+       
+      
+       if(!isConfirm) return;
+       return; 
     }
 
     const hotelObj = {

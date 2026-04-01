@@ -4,6 +4,7 @@ import Flag from "react-world-flags";
 import { useAuth } from "@/context/AuthContext";
 import { useLoading } from "@/context/LoadingContext";
 import { useAlert } from "@/context/AlerContext";
+import { useModal } from "@/context/ModalConfirmContext";
 
 // Funciones utils
 import validateRequiredFields from "@/utils/validateRequiredFields";
@@ -48,6 +49,7 @@ const Profile = () => {
   const { updateUser, userAuth } = useAuth();
   const { showLoading, hideLoading } = useLoading();
   const { error, success, warning } = useAlert();
+  const { showModal } = useModal();
 
   // Obtenemos el id del usuario
   const idUser = userAuth?.id;
@@ -76,7 +78,7 @@ const Profile = () => {
         usuario: user?.usuario || "",
         correo: user?.correo || "",
         telefono: user?.telefono || "",
-        fecha_nacimiento: formatDate(user?.fecha_nacimiento), 
+        fecha_nacimiento: formatDate(user?.fecha_nacimiento),
         genero: user?.genero || "",
         nacionalidad: user?.nacionalidad || "",
       });
@@ -122,6 +124,16 @@ const Profile = () => {
 
     if (!handleValidet()) return;
 
+   const isConfirm = await showModal({
+    type: "warning",
+    title: "¿Actualizar perfil?",
+    message: "Estás a punto de modificar tu información personal. Verifica tus datos.",
+    confirmText: "Sí, guardar cambios",
+    cancelText: "Cancelar"
+  });
+
+  if(!isConfirm) return
+
     try {
       showLoading("Actualizando los datos...");
 
@@ -134,33 +146,35 @@ const Profile = () => {
         telefono: formData.telefono || null,
         genero: formData.genero || null,
         fecha_nacimiento: formatDate(formData.fecha_nacimiento) || null,
-        nacionalidad: formData.nacionalidad ? formData.nacionalidad.replace(/["']/g, "") : null,
+        nacionalidad: formData.nacionalidad
+          ? formData.nacionalidad.replace(/["']/g, "")
+          : null,
       };
 
       await userService.updateUser(formatData);
 
       //objeto nuevo para pasar los datos actualizados a nuestro context usuario
-      const updateData ={
-        nombre:formatData.nombre,
+      const updateData = {
+        nombre: formatData.nombre,
         apellido: formData.apellido,
         correo: formData.correo,
         id: idUser,
         telefono: formatData.telefono,
-        usuario: formData.usuario
-      }
+        usuario: formData.usuario,
+      };
 
       setUserData(formatData);
       updateUser(updateData);
       success("Felicidades", "Tus datos se actualizaron correctamente");
     } catch (errorM) {
-       let messageError = "Error al tus datos, intentelo mas tarde";
+      let messageError = "Error al tus datos, intentelo mas tarde";
 
-      if(errorM.status === 409){
-          messageError = "El Usuario o Correo ya estan registrado, intente con otro"
+      if (errorM.status === 409) {
+        messageError =
+          "El Usuario o Correo ya estan registrado, intente con otro";
       }
 
       error("Error", messageError);
-     
     } finally {
       hideLoading();
     }
