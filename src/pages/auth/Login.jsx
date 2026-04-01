@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, {useState} from "react";
 import { useNavigate, Link } from "react-router-dom";
-import {  Eye, EyeOff, MapPin, AlertCircle } from "lucide-react";
 
+//constantes
+import icons from "@/constants/icons";
 // Modales
-import Verify2FAModal from "../components/Verify2FAModal";
-
+import Verify2FAModal from "@/components/modal/Verify2FAModal";
 // Servicio y Hook
-import AuthService from "../services/authService";
-import { useAuth } from "../context/AuthContext";
-import { useAlert } from "../context/AlerContext";
+import AuthService from "@/services/authService";
+import { useAuth } from "@/context/AuthContext";
+import { useAlert } from "@/context/AlerContext";
 
 // Estilos limpios y encapsulados
-import "../styles/Login.css";
+import "@/styles/Login.css";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -105,7 +105,7 @@ const Login = () => {
           <div className="auth-side-content">
             <div className="auth-logo">
               <div className="logo-icon">
-                <MapPin size={32} />
+               {icons.locationBig}
               </div>
               <span className="logo-text">ViajesFácil</span>
             </div>
@@ -134,7 +134,7 @@ const Login = () => {
 
             {apiError && (
               <div className="error-alert">
-                <AlertCircle size={20} />
+                 {icons.alertCircle}
                 <span>{apiError}</span>
               </div>
             )}
@@ -143,7 +143,8 @@ const Login = () => {
               <div className="form-group">
                 <label>Correo electrónico</label>
                 <div className="input-wrapper">
-                 
+                  {/* 🌟 ICONO AGREGADO AQUÍ */}
+                  <span className="input-icon">{icons.email}</span>
                   <input
                     type="email"
                     name="correo"
@@ -161,7 +162,8 @@ const Login = () => {
               <div className="form-group">
                 <label>Contraseña</label>
                 <div className="input-wrapper">
-                
+                  {/* 🌟 ICONO AGREGADO AQUÍ */}
+                  <span className="input-icon">{icons.password}</span>
                   <input
                     type={showPassword ? "text" : "password"}
                     name="contrasena"
@@ -175,7 +177,7 @@ const Login = () => {
                     className="toggle-password"
                     onClick={() => setShowPassword(!showPassword)}
                   >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    {showPassword ? icons.eyeOff : icons.eye}
                   </button>
                 </div>
                 {errors.contrasena && (

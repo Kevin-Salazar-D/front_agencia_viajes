@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MapPin, User, LogOut, Menu, X, ShieldCheck, Settings } from 'lucide-react';
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 
 //importal Modal
-import Modal2FA from "../components/ModalActivate2FA";
+import Modal2FA from "@/components/modal/ModalActivate2FA";
 
 // Importar estilos
-import '../styles/NavBar.css';
+import '@/styles/NavBar.css';
 
 
 const Navbar = () => {

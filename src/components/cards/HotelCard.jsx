@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import '../styles/HotelCard.css';
-import icons from "../constants/icons";
+import '@/styles/HotelCard.css';
+import icons from "@/constants/icons";
 
 const HotelCard = ({ hotel }) => {
   const rating = hotel.estrellas || 4.0;

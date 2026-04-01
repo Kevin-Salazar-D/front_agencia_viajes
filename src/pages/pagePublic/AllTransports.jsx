@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import icons from "../constants/icons";
+import icons from "@/constants/icons";
 
 // Importación del servicio
-import trasportService from "../services/transportService";
+import trasportService from "@/services/transportService";
 // Importamos alertas y el loading
-import { useLoading } from "../context/LoadingContext";
-import { useAlert } from "../context/AlerContext";
+import { useLoading } from "@/context/LoadingContext";
+import { useAlert } from "@/context/AlerContext";
 // Importamos el CSS
-import "../styles/AllTransports.css";
+import "@/styles/AllTransports.css";
 
 // Componentes
-import TransportCard from "../components/TrasportCard";
+import TransportCard from "@/components/cards/TrasportCard";
 
 const AllTransports = () => {
   const navigate = useNavigate();

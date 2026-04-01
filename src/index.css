@@ -44,6 +44,13 @@ body {
 /* El área donde inyectas tus pantallas */
 .content-area {
   flex: 1;
-  padding: 40px 60px; /* Mucho espacio para respirar */
+  padding: 40px 60px; /* Espacio para PC */
   overflow-y: auto;
+}
+
+/* 📱 LA CURA PARA EL CELULAR: Quitamos ese margen gigante */
+@media (max-width: 768px) {
+  .content-area {
+    padding: 20px 15px; /* Mucho menos margen para que respire el contenido */
+  }
 }

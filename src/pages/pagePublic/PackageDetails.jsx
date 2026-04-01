@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { useAlert } from "../context/AlerContext";
-import { useLoading } from "../context/LoadingContext";
+import { useAlert } from "@/context/AlerContext";
+import { useLoading } from "@/context/LoadingContext";
 
 // Importamos los servicios
-import packageService from "../services/packageService";
-import hotelService from "../services/hotelService";
+import packageService from "@/services/packageService";
+import hotelService from "@/services/hotelService";
 
-import icons from "../constants/icons";
-import "../styles/PackageDeatails.css"; 
+import icons from "@/constants/icons";
+import "@/styles/PackageDeatails.css"; 
 
-import SliderImages from "../components/SliderImages";
+import SliderImages from "@/components/carousels/SliderImages";
 
 const PackageDetails = () => {
   // Obtenemos la id de la url

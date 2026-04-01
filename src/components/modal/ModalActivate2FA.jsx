@@ -1,10 +1,10 @@
 // src/components/ModalActivar2FA.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { X, ShieldCheck } from "lucide-react";
-import { useAlert } from "../context/AlerContext";
+import { useAlert } from "@/context/AlerContext";
 
-import AuthService from "../services/authService";
-import "../styles/Modal2FA.css";
+import AuthService from "@/services/authService";
+import "@/styles/Modal2FA.css";
 
 const ModalActivate2FA = ({ onClose }) => {
   const { error, success } = useAlert();

@@ -4,12 +4,12 @@ import {
   ArrowLeft, Bus, Plane, Users, CheckCircle, Shield, SearchX 
 } from 'lucide-react';
 
-import { useLoading } from '../context/LoadingContext';
-import { useAlert } from "../context/AlerContext";
+import { useLoading } from '@/context/LoadingContext';
+import { useAlert } from "@/context/AlerContext";
 
-import trasportService from '../services/transportService';
+import trasportService from '@/services/transportService';
 // Importamos el nuevo CSS aislado
-import '../styles/TrasportDetails.css';
+import '@/styles/TrasportDetails.css';
 
 const TransportDetails = () => {
   const { id } = useParams();

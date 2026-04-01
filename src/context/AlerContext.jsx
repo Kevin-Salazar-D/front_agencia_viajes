@@ -1,5 +1,5 @@
 import { useContext, createContext, useState } from "react";
-import { AlertContainer } from "../components/Alert";
+import { AlertContainer } from "@/components/alerts/Alert";
 
 //creamos el contexto para la alerta global
 const AlertContext = createContext();

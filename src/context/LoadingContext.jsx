@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
-import "../styles/Loading.css";
+import "@/styles/Loading.css";
 import { Loader } from "lucide-react";
 
 // Creamos el contexto

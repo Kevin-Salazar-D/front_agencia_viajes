@@ -1,11 +1,11 @@
 import { Route } from "react-router-dom";
 
 //layouts
-import PrivateLayout from "../layout/PrivateLayout";
+import PrivateLayout from "@/layout/PrivateLayout";
 //guards
-import ProtectedRoute from "../guards/ProtectedRoute";
+import ProtectedRoute from "@/guards/ProtectedRoute";
 //pages
-import Profile from "../pages/Profile"; 
+import Profile from "@/pages/pageUser/Profile"; 
 
 const PrivateRoute = (
   <>

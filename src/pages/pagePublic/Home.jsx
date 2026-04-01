@@ -3,19 +3,19 @@ import { useNavigate } from "react-router-dom";
 import { ArrowRight, Loader, MapPin } from "lucide-react";
 
 // Hooks Globales
-import { useLoading } from "../context/LoadingContext";
-import { useAlert } from "../context/AlerContext";
+import { useLoading } from "@/context/LoadingContext";
+import { useAlert } from "@/context/AlerContext";
 
 // Componentes
-import HotelCard from "../components/HotelCard";
-import SearchBar from "../components/SearchBar";
+import HotelCard from "@/components/cards/HotelCard";
+import SearchBar from "@/components/navigation/SearchBar";
 
 // Servicios
-import cityService from "../services/cityService";
-import hotelService from "../services/hotelService";
+import cityService from "@/services/cityService";
+import hotelService from "@/services/hotelService";
 
 // Estilos
-import "../App.css";
+import "@/App.css";
 
 function Home() {
   const navigate = useNavigate();

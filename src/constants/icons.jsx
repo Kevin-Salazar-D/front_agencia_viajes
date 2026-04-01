@@ -4,14 +4,27 @@ import {
   ArrowLeft, Package, Filter, Tag, SearchX, Search, ArrowDownUp,
   Building, Plane, Clock, Users,DollarSign, ChevronLeft, ChevronRight,
   Wifi,Coffee,CheckCircle,User,Info,Car,Mail, ShieldCheck, Menu,
-  X
+  X,Map, AtSign, Flag, UserCog, EyeOff, Eye, AlertCircle, Lock, InfoIcon
 } from 'lucide-react';
 
 const icons = {
   location: <MapPin size={16} />,
+  locationBig: <MapPin size={32} />,
+
+  alertCircle: <AlertCircle size={24} />,
+  
+  eyeoff: <EyeOff size={16}/>,
+  Eye: <Eye size={16}/>,
+  Bigmap: <Map size={20}  color='#2563eb'/>,
+  editUser: <UserCog size={16} />,
+  BigeditUser: <UserCog size={20}  color='#2563eb'/>,
+  map: <Map size={16} />,
   bus: <Bus size={16} />,
+  at: <AtSign size={16}/>,
   calendar: <Calendar size={16} />,
   calendarMedium: <Calendar size={20} />,
+  flag: <Flag size={16} />,
+  password: <Lock size={16} />,
   hotel: <Hotel size={16} />,
   hotelMedium: <Hotel size={20} />,
   star: <Star size={14} className="pkg-star-yellow" />,
@@ -38,12 +51,17 @@ const icons = {
   coffe: <Coffee size={16}/>,
   bus:<Bus size={16}/>,
   checkCircle: <CheckCircle size={16}/>,
+  checkCircleMedium: <CheckCircle size={24}/>,
   info: <Info size={20}/>,
   car: <Car size={20}/>,
   email: <Mail size={20}/>,
   protected: <ShieldCheck size={20}/>,
   menu: <Menu size={20} />,
-  close: <X size={20} />
+  close: <X size={20} />,
+  closeMedium: <X size={24} />,
+  info: <InfoIcon size={16}/>,
+  infoMedium: <InfoIcon size={24}/>,
+
 };
 
 export default icons;

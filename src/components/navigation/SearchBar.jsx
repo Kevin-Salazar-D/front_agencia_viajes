@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import icons from "../constants/icons";
-import { useAlert } from "../context/AlerContext";
+import icons from "@/constants/icons";
+import { useAlert } from "@/context/AlerContext";
 
-import '../styles/SearchBar.css';
+import '@/styles/SearchBar.css';
 
 const SearchBar = ({ cities }) => {
   const navigate = useNavigate();

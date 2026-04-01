@@ -3,15 +3,15 @@ import { useNavigate } from "react-router-dom";
 
 import { ArrowLeft, Filter, MapPin, ArrowDownUp, SearchX } from "lucide-react";
 
-import cityService from "../services/cityService";
-import hotelService from "../services/hotelService";
+import cityService from "@/services/cityService";
+import hotelService from "@/services/hotelService";
 
 //agregamos los context
-import { useAlert } from "../context/AlerContext";
-import { useLoading } from "../context/LoadingContext";
+import { useAlert } from "@/context/AlerContext";
+import { useLoading } from "@/context/LoadingContext";
 
-import "../styles/Destination.css";
-import HotelCard from "../components/HotelCard";
+import "@/styles/Destination.css";
+import HotelCard from "@/components/cards/HotelCard";
 
 function AllHotels() {
   const navigate = useNavigate();

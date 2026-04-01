@@ -5,7 +5,7 @@ import {
   Calendar, Plane, Bus, Clock, Users, CheckCircle 
 } from 'lucide-react';
 
-import "../styles/Results.css"; 
+import "@/styles/Results.css"; 
 
 const Results = () => {
   const [searchParams] = useSearchParams();

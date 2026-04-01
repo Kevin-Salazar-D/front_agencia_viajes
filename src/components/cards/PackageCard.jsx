@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import icons from "../constants/icons";
-import "../styles/PackageCard.css";
+import icons from "@/constants/icons";
+import "@/styles/PackageCard.css";
 
 const PackageCard = ({ packageData }) => {
   const precio = packageData.precio || 999;

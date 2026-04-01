@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import authService from "../services/authService";
+import authService from "@/services/authService";
 
 const AuthContext = createContext();
 
@@ -37,6 +37,17 @@ export const AuthProvider = ({ children }) => {
     };
   }, []);
 
+  //actulizar el estado global sin hacer peticion a la DB
+  const updateUser = (newData)=>{
+     setUserAuth((prevUser)=>{
+      //si no hay data nueva no hacemos nada
+      if(!prevUser) return prevUser
+      return {
+        ...prevUser,
+        ...newData,
+      };
+     });
+  }
    //cuando el usuaio se logea  traemos los datos
   const login = (userData) => {
     setUserAuth(userData);
@@ -59,6 +70,7 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     isAuthenticated: !!userAuth,
+    updateUser
   };
 
   return (

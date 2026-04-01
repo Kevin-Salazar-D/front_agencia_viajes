@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom'; // Para el Portal
-import { AlertCircle, CheckCircle, InfoIcon, X } from 'lucide-react';
-import '../styles/Alert.css';
+import { createPortal } from 'react-dom';
+import '@/styles/Alert.css';
 
-// 1. EL COMPONENTE VISUAL DE LA ALERTA INDIVIDUAL
+// Constantes
+import icons from '@/constants/icons';
+
+// EL COMPONENTE VISUAL DE LA ALERTA INDIVIDUAL
 export const Alert = ({ type = 'info', title, message, onClose, autoClose = 4000 }) => {
   const [isVisible, setIsVisible] = useState(true);
 
@@ -21,10 +23,10 @@ export const Alert = ({ type = 'info', title, message, onClose, autoClose = 4000
 
   const getIcon = () => {
     switch (type) {
-      case 'error': return <AlertCircle size={24} />;
-      case 'success': return <CheckCircle size={24} />;
-      case 'warning': return <AlertCircle size={24} />;
-      default: return <InfoIcon size={24} />;
+      case 'error': return icons.alertCircle;
+      case 'success': return icons.checkCircleMedium;
+      case 'warning': return icons.alertCircle;
+      default: return icons.infoMedium;
     }
   };
 
@@ -35,14 +37,17 @@ export const Alert = ({ type = 'info', title, message, onClose, autoClose = 4000
         {title && <h4 className="alert-title">{title}</h4>}
         <p className="alert-message">{message}</p>
       </div>
-      <button className="alert-close" onClick={() => { setIsVisible(false); onClose?.(); }}>
-        <X size={20} />
+      <button 
+        className="alert-close" 
+        onClick={() => { setIsVisible(false); onClose?.(); }}
+      >
+        {icons.close} 
       </button>
     </div>
   );
 };
 
-// 2. EL CONTENEDOR CON EL PORTAL (El que llama el Contexto)
+// 2. EL CONTENEDOR CON EL PORTAL
 export const AlertContainer = ({ alerts, removeAlert }) => {
   return createPortal(
     <div className="alert-container">
@@ -60,4 +65,3 @@ export const AlertContainer = ({ alerts, removeAlert }) => {
     document.body
   );
 };
-

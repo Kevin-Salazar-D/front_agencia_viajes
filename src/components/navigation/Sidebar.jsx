@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-import "../styles/Sidebar.css";
+import "@/styles/Sidebar.css";
 
-import icons from "../constants/icons";
-import Profile from "./Profile";
+import icons from "@/constants/icons";
+import Profile from "@/components/users/Profile";
 
 const Sidebar = () => {
   const location = useLocation(); 

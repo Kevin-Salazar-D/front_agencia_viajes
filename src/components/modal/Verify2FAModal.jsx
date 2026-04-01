@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { ShieldCheck, AlertCircle } from 'lucide-react';
 
-import { useAlert } from '../context/AlerContext';
-import { useAuth } from "../context/AuthContext"; // Importación correcta
-import authService from '../services/authService';
+import { useAlert } from '@/context/AlerContext';
+import { useAuth } from "@/context/AuthContext"; 
+import authService from '@/services/authService';
 
-import '../styles/Modal2FA.css'; 
+import '@/styles/Modal2FA.css'; 
 
 const Verify2FAModal = ({ userId, onSuccess, onCancel }) => {
   const [codigo, setCodigo] = useState("");

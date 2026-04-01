@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 //iconos
-import icons from "../constants/icons";
+import icons from "@/constants/icons";
 
 // Importamos su propio CSS
-import '../styles/TrasportCard.css';
+import '@/styles/TrasportCard.css';
 
 const TransportCard = ({ transport }) => {
 

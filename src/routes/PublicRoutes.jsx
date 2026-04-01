@@ -1,22 +1,22 @@
 import { Route } from "react-router-dom";
 
-import PublicLayout from "../layout/PublicLayout";
-import AuthLayout from "../layout/AuthLayout";
+import PublicLayout from "@/layout/PublicLayout";
+import AuthLayout from "@/layout/AuthLayout";
 
 //importamos el autenticador de rutas
-import GuestRoute from "../guards/GuestRoute"
-// Importamos los pages publicos
-import Home from "../pages/Home";
-import Packages from "../pages/Packages";
-import Destination from "../pages/AllHotels";
-import AllTransports from "../pages/AllTransports";
-import TransportDetails from "../pages/TransportDetails";
-import HotelDetails from "../pages/HotelDetails";
-import PackageDetails from "../pages/PackageDetails";
-import JourneyDestiny from "../pages/Results";
+import GuestRoute from "@/guards/GuestRoute";
+import Home from "@/pages/pagePublic/Home";
+import Packages from "@/pages/pagePublic/Packages";
+import Destination from "@/pages/pagePublic/AllHotels";
+import AllTransports from "@/pages/pagePublic/AllTransports";
+import TransportDetails from "@/pages/pagePublic/TransportDetails";
+import HotelDetails from "@/pages/pagePublic/HotelDetails";
+import PackageDetails from "@/pages/pagePublic/PackageDetails";
+import JourneyDestiny from "@/pages/pagePublic/Results";
 // Pages de autorizacion
-import Login from "../pages/Login";
-import Register from "../pages/Register";
+import Login from "@/pages/auth/Login";
+import Register from "@/pages/auth/Register";
+
 
 const PublicRoutes = (
   <>

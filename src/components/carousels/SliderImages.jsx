@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import '../styles/SliderImages.css';
+import '@/styles/SliderImages.css';
 
-import icons from "../constants/icons";
+import icons from "@/constants/icons";
 const SliderImages = ({ gallery = [] }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 

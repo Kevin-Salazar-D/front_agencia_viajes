@@ -1,0 +1,373 @@
+/* ==========================================
+   RESETEO Y FUENTES (Heredado de su estilo maestro)
+   ========================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ==========================================
+   ESTILOS GLOBALES Y LAYOUT
+   ========================================== */
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1e40af, #2563eb);
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
+  width: 100%;
+}
+
+.auth-content {
+  display: flex;
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  width: 100%;
+  max-width: 1000px;
+  min-height: 600px;
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================
+   LADO IZQUIERDO (AZUL)
+   ========================================== */
+.auth-side {
+  flex: 1;
+  background: linear-gradient(135deg, #2563eb, #0ea5e9);
+  padding: 48px;
+  display: flex;
+  align-items: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-side::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url("https://www.shutterstock.com/image-photo/airplane-wing-many-thick-clouds-600nw-2043208451.jpg") center/cover;
+  opacity: 0.12;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.auth-side-content { position: relative; z-index: 2; }
+
+.auth-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.logo-icon {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  display: flex;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.auth-side h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.auth-side p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+.auth-features { display: flex; flex-direction: column; gap: 12px; }
+
+.feature-item {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 14px 20px;
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ==========================================
+   LADO DERECHO (FORMULARIO DE REGISTRO)
+   ========================================== */
+.auth-form-container {
+  flex: 1;
+  padding: 30px 48px; /* Reduje un poco el padding vertical para que quepa bien */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #ffffff;
+  /* Si la pantalla es muy pequeña a lo alto, permite scroll suave */
+  overflow-y: auto; 
+}
+
+.auth-form-content {
+  max-width: 400px; /* 🌟 Aumenté el ancho a 400px para que las columnas respiren */
+  margin: 0 auto;
+  width: 100%;
+}
+
+.auth-form-content h1 {
+  font-size: 2rem;
+  color: #111827;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.auth-subtitle {
+  color: #6b7280;
+  margin-bottom: 24px;
+  font-size: 0.95rem;
+}
+
+.link { color: #2563eb; text-decoration: none; font-weight: 600; }
+.link:hover { text-decoration: underline; }
+
+/* ==========================================
+   🌟 LA MAGIA DE LOS INPUTS Y COLUMNAS
+   ========================================== */
+
+/* Esto es lo que pone Nombre y Apellido lado a lado */
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.form-row .form-group {
+  flex: 1; /* Hace que ambas columnas midan exactamente lo mismo */
+}
+
+.form-group {
+  margin-bottom: 16px; /* 🌟 Margen más compacto que en el login */
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 10px 16px 10px 42px; /* 🌟 Altura optimizada para registro */
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px; /* Bordes un poco menos redondos para verse más profesionales */
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  background-color: #f9fafb; /* Fondo ligeramente gris que se ve premium */
+  color: #1f2937;
+  display: block;
+}
+
+input:focus {
+  background-color: #ffffff;
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+/* 🌟 ESTILOS DE ERROR (Faltaban en el CSS original) */
+.auth-form input.error {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.auth-form input.error:focus {
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+
+.error-message {
+  display: block;
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* 🚨 Hack para limpiar estilos de navegador */
+input::-webkit-contacts-auto-fill-button,
+input::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}
+
+/* Botón de ver contraseña */
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 4px;
+  z-index: 11;
+  display: flex;
+}
+
+.toggle-password:hover { color: #4b5563; }
+
+/* ==========================================
+   BOTONES Y EXTRAS
+   ========================================== */
+.form-terms {
+  margin-bottom: 20px;
+  font-size: 0.85rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4b5563;
+  cursor: pointer;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 12px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-submit:hover { background: #1d4ed8; }
+.btn-submit:active { transform: scale(0.98); }
+.btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.auth-divider {
+  text-align: center;
+  margin: 20px 0;
+  position: relative;
+}
+
+.auth-divider::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  height: 1px;
+  background: #f3f4f6;
+}
+
+.auth-divider span {
+  background: white;
+  padding: 0 12px;
+  color: #9ca3af;
+  position: relative;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.social-login {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+  background: white;
+  border: 1.5px solid #f3f4f6;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #374151;
+  transition: background 0.2s;
+}
+
+.social-btn:hover { background: #f9fafb; }
+.social-btn img { width: 18px; height: 18px; }
+
+/* ERROR ALERT PRINCIPAL */
+.error-alert {
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  color: #b91c1c;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+
+/* RESPONSIVIDAD */
+@media (max-width: 900px) {
+  .auth-side { display: none; }
+  .auth-wrapper { padding: 12px; }
+  .auth-content { max-width: 450px; min-height: auto; }
+  .auth-form-container { padding: 32px 24px; }
+  .form-row { flex-direction: column; gap: 0; } /* En celulares, las dos columnas se vuelven una */
+}
+
+/* SPINNER */
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }

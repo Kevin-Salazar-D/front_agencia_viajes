@@ -3,20 +3,20 @@ import { useParams } from "react-router-dom";
 import { CheckCircle } from "lucide-react"; // Importamos la palomita para las amenidades
 
 // importamos hook
-import { useLoading } from "../context/LoadingContext";
-import hotelService from "../services/hotelService";
+import { useLoading } from "@/context/LoadingContext";
+import hotelService from "@/services/hotelService";
 
 // importamos iconos
-import icons from "../constants/icons";
+import icons from "@/constants/icons";
 
 // importamos el componente de reserva
-import Reservation from "../components/Reservations";
+import Reservation from "@/components/Reservations";
 
 // IMPORTAMOS EL NUEVO CSS
-import "../styles/HotelDetails.css";
+import "@/styles/HotelDetails.css";
 
 // importamos el componente reutilizable
-import SliderImages from "../components/SliderImages";
+import SliderImages from "@/components/carousels/SliderImages";
 
 const HotelDetails = () => {
   const { id } = useParams();

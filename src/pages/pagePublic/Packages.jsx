@@ -2,22 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // importaciones de iconos
-import icons from '../constants/icons'; 
+import icons from '@/constants/icons'; 
 
 // HOOKS
-import { useLoading } from '../context/LoadingContext';
-import { useAlert } from "../context/AlerContext";
+import { useLoading } from '@/context/LoadingContext';
+import { useAlert } from "@/context/AlerContext";
 
 // Importación de servicios
-import hotelService from '../services/hotelService'; 
-import packagesService from '../services/packageService';
-import cityService from "../services/cityService";
+import hotelService from '@/services/hotelService'; 
+import packagesService from '@/services/packageService';
+import cityService from "@/services/cityService";
 
 //css
-import '../styles/AllPackages.css';
+import '@/styles/AllPackages.css';
 
 // Componentes reutilizables
-import PackageCard from "../components/PackageCard";
+import PackageCard from "@/components/cards/PackageCard";
 
 function Packages() {
   const navigate = useNavigate();

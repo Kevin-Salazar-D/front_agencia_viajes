@@ -1,8 +1,8 @@
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 import Avatar from "react-avatar";
-import { avatarImage } from "../constants/avatarImage";
-import icons from "../constants/icons";
-import "../styles/ProfileUser.css";
+import { avatarImage } from "@/constants/avatarImage";
+import icons from "@/constants/icons";
+import "@/styles/ProfileUser.css";
 
 const Profile = ({
   round = true,
