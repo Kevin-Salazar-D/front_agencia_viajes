@@ -16,6 +16,13 @@ const SecurityTab = () => {
     setShowPassModal(true);
   };
 
+  const confirmPasswordChange = () => {
+    // Aquí tu llamada al backend
+    console.log("Cambiando contraseña...");
+    setShowPassModal(false);
+    setPasswords({ current: "", new: "", confirm: "" });
+  };
+
   return (
     <div className="security-view-container">
       <div className="security-view-header">
@@ -83,14 +90,18 @@ const SecurityTab = () => {
         </section>
       </div>
 
+      {/* MODALES */}
       {show2FAModal && <ModalActivate2FA onClose={() => setShow2FAModal(false)} />}
-      <ConfirmationModal 
-        isOpen={showPassModal} 
-        onClose={() => setShowPassModal(false)}
-        onConfirm={() => { setShowPassModal(false); }}
-        title="¿Confirmar cambio?"
-        message="Tu sesión se mantendrá activa, pero la contraseña cambiará inmediatamente."
-      />
+
+      {/* ✅ Renderizado condicional — mismo patrón que el modal de 2FA */}
+      {showPassModal && (
+        <ConfirmationModal 
+          onClose={() => setShowPassModal(false)}
+          onConfirm={confirmPasswordChange}
+          title="¿Confirmar cambio?"
+          message="Tu sesión se mantendrá activa, pero la contraseña cambiará inmediatamente."
+        />
+      )}
     </div>
   );
 };
