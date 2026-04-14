@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { MapPin, User, LogOut, Menu, X, ShieldCheck, Settings } from 'lucide-react';
+import { MapPin, User, LogOut, Menu, X, Settings } from 'lucide-react';
 import { useAuth } from "@/context/AuthContext";
-
-//importal Modal
-import Modal2FA from "@/components/modal/ModalActivate2FA";
 
 // Importar estilos
 import '@/styles/NavBar.css';
@@ -13,11 +10,9 @@ import '@/styles/NavBar.css';
 const Navbar = () => {
   const { userAuth, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [show2FAModal, setShow2FAModal] = useState(false);
   const navigate = useNavigate();
 
   const isAdmin = userAuth?.rol === "admin";
-  const tiene2FA = userAuth?.activacion_dos_pasos === 1 || userAuth?.activacion_dos_pasos === true;
 
   const handleLogout = () => {
     logout();
@@ -25,18 +20,13 @@ const Navbar = () => {
     navigate('/');
   };
 
-  //funcion para agarrar la url de las paginas
   const handleNavigation = (path) => {
     navigate(path);
     setMobileMenuOpen(false);
   };
 
-  
-
   return (
     <>
-      {show2FAModal && <Modal2FA onClose={() => setShow2FAModal(false)} />}
-
       <header className="navbar">
         <nav className="nav-container">
           <div className="nav-content">
@@ -57,7 +47,6 @@ const Navbar = () => {
               <button className="nav-link-btn" onClick={() => handleNavigation("/transportes")}>Transportes</button>
             </div>
 
-            
             <div className="nav-actions">
               {userAuth ? (
                 <div className="user-logged-info">
@@ -65,12 +54,6 @@ const Navbar = () => {
                     <User size={18} />
                     <span className="user-name">{userAuth.nombre}</span>
                   </div>
-
-                  {!tiene2FA && (
-                    <button className="btn-protect" onClick={() => setShow2FAModal(true)}>
-                      <ShieldCheck size={18} /> Proteger
-                    </button>
-                  )}
 
                   {isAdmin && (
                     <button className="btn-admin" onClick={() => handleNavigation("/admin")}>
@@ -114,12 +97,6 @@ const Navbar = () => {
                 <div className="mobile-user-section">
                   <p className="mobile-user-greeting">Hola, <strong>{userAuth.nombre}</strong></p>
                   
-                  {!tiene2FA && (
-                    <button className="mobile-btn-action protect" onClick={() => setShow2FAModal(true)}>
-                      <ShieldCheck size={20} /> Proteger Cuenta
-                    </button>
-                  )}
-                  
                   {isAdmin && (
                     <button className="mobile-btn-action admin" onClick={() => handleNavigation("/admin")}>
                       <Settings size={20} /> Panel de Administración
@@ -127,7 +104,7 @@ const Navbar = () => {
                   )}
                   
                   <button className="mobile-btn-action logout" onClick={handleLogout}>
-                    <LogOut size={20} /> Crerar Sesión
+                    <LogOut size={20} /> Cerrar Sesión
                   </button>
                 </div>
               ) : (
