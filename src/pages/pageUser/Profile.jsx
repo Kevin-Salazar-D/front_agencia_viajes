@@ -256,14 +256,22 @@ const Profile = () => {
       </div>
 
       <div className="profile-grid">
-        <div className="profile-card user-summary-card">
-          <div className="card-cover-banner"></div>
-          <div className="card-profile-content">
-            <ProfilComponent size="120" direction="column" showInfo={true} />
+        
+        {/* --- OCULTAR FOTO EN PESTAÑA DE SEGURIDAD --- */}
+        {!isSecurityTab && (
+          <div className="profile-card user-summary-card">
+            <div className="card-cover-banner"></div>
+            <div className="card-profile-content">
+              <ProfilComponent size="120" direction="column" showInfo={true} />
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="profile-card user-details-card">
+        {/* --- EXPANDIR TARJETA SI ESTAMOS EN SEGURIDAD --- */}
+        <div 
+          className="profile-card user-details-card"
+          style={isSecurityTab ? { width: "100%", gridColumn: "1 / -1" } : {}}
+        >
           <div className="details-section">
             <h4 className="section-title">
               {isSecurityTab ? icons.protected : icons.Bigmap} 
@@ -271,7 +279,7 @@ const Profile = () => {
             </h4>
 
             {isSecurityTab ? (
-              /* --- PESTAÑA DE SEGURIDAD (Punto 3) --- */
+              /* --- PESTAÑA DE SEGURIDAD --- */
               <form className="edit-profile-form" onSubmit={handleSubmitForm}>
                 <div className="form-grid">
                   <div className="form-control">

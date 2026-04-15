@@ -50,7 +50,14 @@ const Navbar = () => {
             <div className="nav-actions">
               {userAuth ? (
                 <div className="user-logged-info">
-                  <div className="user-badge">
+                  
+                  {/* --- CORRECCIÓN: Botón de usuario clickeable hacia el perfil --- */}
+                  <div 
+                    className="user-badge" 
+                    onClick={() => handleNavigation("/perfil")}
+                    style={{ cursor: "pointer" }}
+                    title="Ir a mi perfil"
+                  >
                     <User size={18} />
                     <span className="user-name">{userAuth.nombre}</span>
                   </div>
@@ -96,6 +103,11 @@ const Navbar = () => {
               {userAuth ? (
                 <div className="mobile-user-section">
                   <p className="mobile-user-greeting">Hola, <strong>{userAuth.nombre}</strong></p>
+                  
+                  {/* --- CORRECCIÓN: Botón explícito para Mi Perfil en móvil --- */}
+                  <button className="mobile-btn-action profile" onClick={() => handleNavigation("/perfil")}>
+                    <User size={20} /> Mi Perfil
+                  </button>
                   
                   {isAdmin && (
                     <button className="mobile-btn-action admin" onClick={() => handleNavigation("/admin")}>
