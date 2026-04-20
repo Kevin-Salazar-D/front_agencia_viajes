@@ -68,7 +68,7 @@ const Navbar = () => {
               {userAuth ? (
                 <div className="user-logged-info">
                   <div className="user-badge">
-                    {icons.userMedium}
+                   {icons.user}
                     <span className="user-name">{userAuth.nombre}</span>
                   </div>
                   <button
@@ -143,18 +143,8 @@ const Navbar = () => {
 
               {userAuth ? (
                 <div className="mobile-user-section">
-                  <p className="mobile-user-greeting">
-                    Hola, <strong>{userAuth.nombre}</strong>
-                  </p>
-
-               
-                  <button
-                    className="mobile-btn-action user-config"
-                    onClick={() => handleNavigation("/perfil/inicio")}
-                  >
-                    {icons.settingsMedium} Configuración Usuario
-                  </button>
-
+                  <p className="mobile-user-greeting">Hola, <strong>{userAuth.nombre}</strong></p>
+                  
                   {isAdmin && (
                     <button
                       className="mobile-btn-action admin"

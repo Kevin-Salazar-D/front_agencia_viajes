@@ -24,7 +24,7 @@ const Profile = () => {
   // Estado para los datos del usuario
   const [userData, setUserData] = useState(null);
 
-
+  // Fields válidos para información personal
   const requiredfIelds = [
     "nombre",
     "apellido",
@@ -33,6 +33,7 @@ const Profile = () => {
     "telefono",
   ];
 
+  // Estado para el formulario (Pura información personal, adiós contraseñas)
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -136,6 +137,7 @@ const Profile = () => {
     try {
       showLoading("Actualizando los datos...");
 
+      // Objeto de datos sin la lógica condicional de seguridad
       const dataToSend = {
         id: idUser,
         usuario: formData.usuario,
@@ -177,6 +179,7 @@ const Profile = () => {
     }
   };
 
+  // 🌟 Ya no necesitamos location.pathname aquí, solo idUser
   useEffect(() => {
     LoadData();
   }, [idUser]);
