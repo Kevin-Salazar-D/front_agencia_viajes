@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { MapPin, User, LogOut, Menu, X, Settings } from 'lucide-react';
 import { useAuth } from "@/context/AuthContext";
 
+//importar iconos
+import icons from "@/constants/icons";
 // Importar estilos
-import '@/styles/NavBar.css';
-
+import "@/styles/NavBar.css";
 
 const Navbar = () => {
   const { userAuth, logout } = useAuth();
@@ -17,7 +17,7 @@ const Navbar = () => {
   const handleLogout = () => {
     logout();
     setMobileMenuOpen(false);
-    navigate('/');
+    navigate("/");
   };
 
   const handleNavigation = (path) => {
@@ -30,47 +30,84 @@ const Navbar = () => {
       <header className="navbar">
         <nav className="nav-container">
           <div className="nav-content">
-            
             {/* LOGO */}
             <div className="logo" onClick={() => handleNavigation("/")}>
-              <div className="logo-icon">
-                <MapPin size={24} />
-              </div>
+              <div className="logo-icon">{icons.location}</div>
               <span className="logo-text">ViajesFácil</span>
             </div>
 
             {/* LINKS DE NAVEGACIÓN (Desktop) */}
             <div className="nav-links">
-              <button className="nav-link-btn" onClick={() => handleNavigation("/")}>Inicio</button>
-              <button className="nav-link-btn" onClick={() => handleNavigation("/destinos")}>Destinos</button>
-              <button className="nav-link-btn" onClick={() => handleNavigation("/paquetes")}>Paquetes</button>
-              <button className="nav-link-btn" onClick={() => handleNavigation("/transportes")}>Transportes</button>
+              <button
+                className="nav-link-btn"
+                onClick={() => handleNavigation("/")}
+              >
+                Inicio
+              </button>
+              <button
+                className="nav-link-btn"
+                onClick={() => handleNavigation("/destinos")}
+              >
+                Destinos
+              </button>
+              <button
+                className="nav-link-btn"
+                onClick={() => handleNavigation("/paquetes")}
+              >
+                Paquetes
+              </button>
+              <button
+                className="nav-link-btn"
+                onClick={() => handleNavigation("/transportes")}
+              >
+                Transportes
+              </button>
             </div>
 
             <div className="nav-actions">
               {userAuth ? (
                 <div className="user-logged-info">
                   <div className="user-badge">
-                    <User size={18} />
+                    {icons.userMedium}
                     <span className="user-name">{userAuth.nombre}</span>
                   </div>
+                  <button
+                    className="btn-user"
+                    onClick={() => handleNavigation("/perfil/inicio")}
+                  >
+                    {icons.settingsMedium} Configuracion
+                  </button>
 
                   {isAdmin && (
-                    <button className="btn-admin" onClick={() => handleNavigation("/admin")}>
-                      <Settings size={18} /> Panel Admin
+                    <button
+                      className="btn-admin"
+                      onClick={() => handleNavigation("/admin")}
+                    >
+                      {icons.settingsMedium} Panel Admin
                     </button>
                   )}
 
-                  <button className="btn-logout" onClick={handleLogout} title="Cerrar sesión">
-                    <LogOut size={20} />
+                  <button
+                    className="btn-logout"
+                    onClick={handleLogout}
+                    title="Cerrar sesión"
+                  >
+                   
+                    {icons.logoutMedium}
                   </button>
                 </div>
               ) : (
                 <div className="auth-buttons">
-                  <button className="btn-login" onClick={() => handleNavigation("/login")}>
+                  <button
+                    className="btn-login"
+                    onClick={() => handleNavigation("/login")}
+                  >
                     Iniciar sesión
                   </button>
-                  <button className="btn-register" onClick={() => handleNavigation("/crear-cuenta")}>
+                  <button
+                    className="btn-register"
+                    onClick={() => handleNavigation("/crear-cuenta")}
+                  >
                     Registrarse
                   </button>
                 </div>
@@ -78,41 +115,74 @@ const Navbar = () => {
             </div>
 
             {/* BOTÓN MENÚ MÓVIL */}
-            <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            <button
+              className="mobile-menu-btn"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? icons.close : icons.menu}
             </button>
           </div>
 
           {/* MENÚ MÓVIL DESPLEGABLE */}
-          <div className={`mobile-menu-container ${mobileMenuOpen ? 'open' : ''}`}>
+          <div
+            className={`mobile-menu-container ${mobileMenuOpen ? "open" : ""}`}
+          >
             <div className="mobile-menu">
               <button onClick={() => handleNavigation("/")}>Inicio</button>
-              <button onClick={() => handleNavigation("/destinos")}>Destinos</button>
-              <button onClick={() => handleNavigation("/paquetes")}>Paquetes</button>
-              <button onClick={() => handleNavigation("/transportes")}>Transportes</button>
-              
+              <button onClick={() => handleNavigation("/destinos")}>
+                Destinos
+              </button>
+              <button onClick={() => handleNavigation("/paquetes")}>
+                Paquetes
+              </button>
+              <button onClick={() => handleNavigation("/transportes")}>
+                Transportes
+              </button>
+
               <div className="mobile-divider"></div>
-              
+
               {userAuth ? (
                 <div className="mobile-user-section">
-                  <p className="mobile-user-greeting">Hola, <strong>{userAuth.nombre}</strong></p>
-                  
+                  <p className="mobile-user-greeting">
+                    Hola, <strong>{userAuth.nombre}</strong>
+                  </p>
+
+               
+                  <button
+                    className="mobile-btn-action user-config"
+                    onClick={() => handleNavigation("/perfil/inicio")}
+                  >
+                    {icons.settingsMedium} Configuración Usuario
+                  </button>
+
                   {isAdmin && (
-                    <button className="mobile-btn-action admin" onClick={() => handleNavigation("/admin")}>
-                      <Settings size={20} /> Panel de Administración
+                    <button
+                      className="mobile-btn-action admin"
+                      onClick={() => handleNavigation("/admin")}
+                    >
+                      {icons.settingsMedium} Panel de Administración
                     </button>
                   )}
-                  
-                  <button className="mobile-btn-action logout" onClick={handleLogout}>
-                    <LogOut size={20} /> Cerrar Sesión
+
+                  <button
+                    className="mobile-btn-action logout"
+                    onClick={handleLogout}
+                  >
+                    {icons.logoutMedium} Cerrar Sesión
                   </button>
                 </div>
               ) : (
                 <div className="mobile-auth-section">
-                  <button className="mobile-btn-login" onClick={() => handleNavigation("/login")}>
+                  <button
+                    className="mobile-btn-login"
+                    onClick={() => handleNavigation("/login")}
+                  >
                     Iniciar sesión
                   </button>
-                  <button className="mobile-btn-register" onClick={() => handleNavigation("/crear-cuenta")}>
+                  <button
+                    className="mobile-btn-register"
+                    onClick={() => handleNavigation("/crear-cuenta")}
+                  >
                     Registrarse gratis
                   </button>
                 </div>

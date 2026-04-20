@@ -5,7 +5,7 @@ import {
   Building, Plane, Clock, Users,DollarSign, ChevronLeft, ChevronRight,
   Wifi,Coffee,CheckCircle,User,Info,Car,Mail, ShieldCheck, Menu,
   X,Map, AtSign, Flag, UserCog, EyeOff, Eye, AlertCircle, Lock, InfoIcon,
-  Trash2, ArrowUpRight, AlertTriangle
+  Trash2, ArrowUpRight, AlertTriangle,Settings,LogOut,Smartphone
 } from 'lucide-react';
 
 const icons = {
@@ -24,6 +24,7 @@ const icons = {
   calendarMedium: <Calendar size={20} />,
   flag: <Flag size={16} />,
   password: <Lock size={16} />,
+  Bpassword: <Lock size={20} color='#2563eb' />,
   hotel: <Hotel size={16} />,
   hotelMedium: <Hotel size={20} />,
   star: <Star size={14} className="pkg-star-yellow" />,
@@ -42,6 +43,10 @@ const icons = {
   busButton: <Bus size={18} />,
   clock: <Clock size={18} />,
   users: <Users size={16}/>,
+  userMedium: <User size={18}/>,
+  smartphone: <Smartphone size={18}/>,
+  smartphoneMedium: <Smartphone size={20}/>,
+  Bsmartphone: <Smartphone size={20} color='#2563eb'/>,
   user: <User size={16}/>,
   dollar: <DollarSign size={16} />,
   chevronLeft: <ChevronLeft size={16}/>,
@@ -55,6 +60,8 @@ const icons = {
   car: <Car size={20}/>,
   email: <Mail size={20}/>,
   protected: <ShieldCheck size={20}/>,
+  Bigprotected: <ShieldCheck size={20} color='#2563eb'/>,
+
   menu: <Menu size={20} />,
   close: <X size={20} />,
   closeMedium: <X size={24} />,
@@ -65,7 +72,12 @@ const icons = {
   arowUpRight: <ArrowUpRight size={16}/>,
   arowUpRightMedium: <ArrowUpRight size={24}/>,
   alert: <AlertTriangle size={16}/>,
-  alertMedium: <AlertTriangle size={24}/>
+  alertMedium: <AlertTriangle size={24}/>,
+  settings:<Settings size={16}/>,
+  settingsMedium:<Settings size={18}/>,
+  logout: <LogOut size={18}/>,
+  logoutMedium: <LogOut size={18}/>
+
 
 };
 

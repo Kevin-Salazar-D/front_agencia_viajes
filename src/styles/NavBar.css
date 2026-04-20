@@ -146,6 +146,27 @@
   box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
 }
 
+.btn-user {
+  background: transparent;
+  color: #4b5563;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.btn-user:hover {
+  background: #e2e8f0; /* Fondo sutil al pasar el mouse */
+  color: #2563eb;      /* Texto azul para resaltar */
+}
+
 /* ==========================================
    5. USUARIO LOGUEADO & ADMIN
    ========================================== */
