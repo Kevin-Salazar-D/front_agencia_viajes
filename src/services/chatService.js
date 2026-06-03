@@ -1,23 +1,21 @@
-const API_BASE_URL = 'http://localhost:3000/agenciaViajes'; 
+
+import api from "./axiosConfig";
+import { API_ROUTES } from "../constants/endpoints";
 
 export const sendChatMessage = async (message, history) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/chat`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message, history }),
+    // hAcemos el post 
+    const response = await api.post(API_ROUTES.IA.CHAT, { 
+      message, 
+      history 
     });
 
-    if (!response.ok) {
-      throw new Error('Error en la respuesta del servidor');
-    }
+    //convertimos la data en string
+    return response.data.reply;
 
-    const data = await response.json();
-    return data.reply; 
   } catch (error) {
-    console.error('Error en sendChatMessage:', error);
+  
+    console.error('Error en sendChatMessage:', error.message || error);
     throw error;
   }
 };

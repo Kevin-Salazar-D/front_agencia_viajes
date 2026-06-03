@@ -9,6 +9,9 @@ export const API_ROUTES = {
     CONFIRM_2FA: "/autenticacion/confirmarDosPasos",
     PERFIL: "/autenticacion/perfil",
   },
+  IA:{
+    CHAT: "/chat",
+  },
   USER:{
     GET_USERS: "/usuarios/obtenerTodosUsuarios",
     GET_USER_ID: "/usuarios/buscarUsuarioPorId",
